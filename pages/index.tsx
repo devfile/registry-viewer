@@ -1,13 +1,13 @@
 import type { Devfile, TagElem, TypeElem } from 'customTypes'
-import Filter from '@components/Filter'
-import DevfileSearchBar from '@components/DevfileSearchBar'
-import DevfileGrid from '@components/DevfileGrid'
+import Filter from '@components/home_page/Filter'
+import DevfileSearchBar from '@components/home_page/DevfileSearchBar'
+import DevfileGrid from '@components/home_page/DevfileGrid'
 
 import { InferGetStaticPropsType, GetStaticProps } from 'next'
 import { useState, useEffect } from 'react'
 import { Grid, GridItem } from '@patternfly/react-core'
 
-const Home = ({ devfiles, types, tags }: InferGetStaticPropsType<typeof getStaticProps>) => {
+const Home = ({ devfiles, tags, types }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const [searchValue, setSearchValue] = useState<string>('')
   const [filterDevfiles, setFilterDevfiles] = useState<Devfile[]>(devfiles)
 
@@ -137,16 +137,7 @@ const Home = ({ devfiles, types, tags }: InferGetStaticPropsType<typeof getStati
   )
 }
 
-export const getStaticProps: GetStaticProps = async () => {
-  const res: Response = await fetch('https://registry.devfile.io/index/all')
-  const devfiles: Devfile[] = await res.json()
-
-  const types: string[] = devfiles?.map((devfile) => {
-    return devfile.type
-  }).filter((value, index, self) => { // remove duplicate values
-    return self.indexOf(value) === index
-  })
-
+const getSortedTags = (devfiles: Devfile[]) => {
   const tags: string[] = devfiles?.map((devfile) => {
     return devfile?.tags
   }).reduce((acc, curVal) => { // flatten the array
@@ -155,13 +146,32 @@ export const getStaticProps: GetStaticProps = async () => {
     return self.indexOf(value) === index
   }).filter((tag) => { // remove null value
     return tag !== null
-  })
+  }).sort()
+  return tags
+}
+
+const getSortedTypes = (devfiles: Devfile[]) => {
+  const types: string[] = devfiles?.map((devfile) => {
+    return devfile.type
+  }).filter((value, index, self) => { // remove duplicate values
+    return self.indexOf(value) === index
+  }).sort()
+  return types
+}
+
+export const getStaticProps: GetStaticProps = async () => {
+  const res: Response = await fetch('https://registry.devfile.io/index/all')
+  let devfiles: Devfile[] = await res.json()
+  devfiles = devfiles.sort((a, b) => { return a.displayName.localeCompare(b.displayName) })
+
+  const tags: string[] = getSortedTags(devfiles)
+  const types: string[] = getSortedTypes(devfiles)
 
   return {
     props: {
       devfiles,
-      types,
-      tags
+      tags,
+      types
     },
     revalidate: 21600 // Regenerate page every 6 hours
   }
