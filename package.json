@@ -1,0 +1,37 @@
+{
+  "name": "registry-viewer",
+  "author": "Paul Schultz & Nadia Waid",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "next",
+    "build": "next build && next export",
+    "start": "next start",
+    "clean": "rm -rf .next/ out/ node_modules/"
+  },
+  "dependencies": {
+    "@patternfly/react-core": "^4.121.1",
+    "@patternfly/react-icons": "^4.10.7",
+    "next": "latest",
+    "next-compose-plugins": "^2.2.1",
+    "next-pwa": "^5.2.21",
+    "next-transpile-modules": "^7.2.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "license": "EPL-2.0",
+  "devDependencies": {
+    "@babel/core": "^7.14.3",
+    "@types/node": "^15.6.1",
+    "@types/react": "^17.0.8",
+    "@typescript-eslint/eslint-plugin": "^4.26.0",
+    "@typescript-eslint/parser": "^4.26.0",
+    "eslint": "^7.27.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "eslint-plugin-react": "^7.24.0",
+    "typescript": "^4.3.2",
+    "webpack": "^5.38.1"
+  }
+}
