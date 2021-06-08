@@ -1,4 +1,4 @@
-import type { Devfile, TagElem, TypeElem } from 'customTypes'
+import type { Devfile, TagElem, TypeElem, StringFreqMap } from 'customTypes'
 import Filter from '@components/home_page/Filter'
 import DevfileSearchBar from '@components/home_page/DevfileSearchBar'
 import DevfileGrid from '@components/home_page/DevfileGrid'
@@ -7,14 +7,14 @@ import { InferGetStaticPropsType, GetStaticProps } from 'next'
 import { useState, useEffect } from 'react'
 import { Grid, GridItem } from '@patternfly/react-core'
 
-const Home = ({ devfiles, tags, types }: InferGetStaticPropsType<typeof getStaticProps>) => {
+const Home = ({ devfiles, tagsMap, typesMap }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const [searchValue, setSearchValue] = useState<string>('')
-  const [filterDevfiles, setFilterDevfiles] = useState<Devfile[]>(devfiles)
+  const [filteredDevfiles, setFilteredDevfiles] = useState<Devfile[]>(devfiles)
 
-  const [checkboxTagsValues, setCheckboxTagsValues] = useState<TagElem[]>(tags.map((tag: string) => {
+  const [checkboxTagsValues, setCheckboxTagsValues] = useState<TagElem[]>(tagsMap.values.map((tag: string) => {
     return { tag: tag, value: false }
   }))
-  const [checkboxTypesValues, setCheckboxTypesValues] = useState<TypeElem[]>(types.map((type: string) => {
+  const [checkboxTypesValues, setCheckboxTypesValues] = useState<TypeElem[]>(typesMap.values.map((type: string) => {
     return { type: type, value: false }
   }))
 
@@ -81,7 +81,7 @@ const Home = ({ devfiles, tags, types }: InferGetStaticPropsType<typeof getStati
     const filteredOnTagDevfiles: Devfile[] = filterDevfilesOnTags(filteredOnSearchDevfiles)
     const filteredOnTypeDevfiles: Devfile[] = filterDevfilesOnTypes(filteredOnTagDevfiles)
 
-    setFilterDevfiles(filteredOnTypeDevfiles)
+    setFilteredDevfiles(filteredOnTypeDevfiles)
 
   }, [checkboxTagsValues, checkboxTypesValues, searchValue])
 
@@ -120,8 +120,8 @@ const Home = ({ devfiles, tags, types }: InferGetStaticPropsType<typeof getStati
       <Grid hasGutter>
         <GridItem span={3}>
           <Filter
-            tags={tags}
-            types={types}
+            tagsMap={tagsMap}
+            typesMap={typesMap}
             checkboxTagsValues={checkboxTagsValues}
             checkboxTypesValues={checkboxTypesValues}
             onCheckboxTagsChange={onCheckboxTagsChange}
@@ -129,34 +129,54 @@ const Home = ({ devfiles, tags, types }: InferGetStaticPropsType<typeof getStati
           />
         </GridItem>
         <GridItem span={9}>
-          <DevfileSearchBar count={filterDevfiles.length} onSearchChange={onSearchChange} searchValue={searchValue} />
-          <DevfileGrid searchDevfiles={filterDevfiles} />
+          <DevfileSearchBar count={filteredDevfiles.length} onSearchChange={onSearchChange} searchValue={searchValue} />
+          <DevfileGrid searchDevfiles={filteredDevfiles} />
         </GridItem>
       </Grid>
     </div>
   )
 }
 
-const getSortedTags = (devfiles: Devfile[]) => {
+const getStringArrFreq = (arr: string[]) => {
+  let tags: string[] = []
+  let freq: number[] = []
+  let prev: string = ''
+
+  arr.sort();
+  for (let i = 0; i < arr.length; i++) {
+    arr[i] = arr[i] ?? null
+    if (arr[i]) {
+      if (arr[i] !== prev) {
+        tags.push(arr[i]);
+        freq.push(1);
+      } else {
+        freq[freq.length - 1]++;
+      }
+      prev = arr[i];
+    }
+  }
+
+  return { values: tags, freq: freq }
+}
+
+const getSortedTagsAndFreq = (devfiles: Devfile[]) => {
   const tags: string[] = devfiles?.map((devfile) => {
     return devfile?.tags
-  }).reduce((acc, curVal) => { // flatten the array
-    return acc.concat(curVal ?? null)
-  }, []).filter((value, index, self) => { // remove duplicate values
-    return self.indexOf(value) === index
-  }).filter((tag) => { // remove null value
-    return tag !== null
-  }).sort()
-  return tags
+  }).flat()
+
+  const tagsMap: StringFreqMap = getStringArrFreq(tags)
+
+  return tagsMap
 }
 
 const getSortedTypes = (devfiles: Devfile[]) => {
   const types: string[] = devfiles?.map((devfile) => {
     return devfile.type
-  }).filter((value, index, self) => { // remove duplicate values
-    return self.indexOf(value) === index
-  }).sort()
-  return types
+  })
+
+  const typesMap: StringFreqMap = getStringArrFreq(types)
+
+  return typesMap
 }
 
 export const getStaticProps: GetStaticProps = async () => {
@@ -164,14 +184,14 @@ export const getStaticProps: GetStaticProps = async () => {
   let devfiles: Devfile[] = await res.json()
   devfiles = devfiles.sort((a, b) => { return a.displayName.localeCompare(b.displayName) })
 
-  const tags: string[] = getSortedTags(devfiles)
-  const types: string[] = getSortedTypes(devfiles)
+  const tagsMap: StringFreqMap = getSortedTagsAndFreq(devfiles)
+  const typesMap: StringFreqMap = getSortedTypes(devfiles)
 
   return {
     props: {
       devfiles,
-      tags,
-      types
+      tagsMap,
+      typesMap
     },
     revalidate: 21600 // Regenerate page every 6 hours
   }
