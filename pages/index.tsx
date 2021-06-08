@@ -1,4 +1,4 @@
-import type { Devfile, TagElem, TypeElem, StringFreqMap } from 'customTypes'
+import type { Devfile, FilterDataElem } from 'customTypes'
 import Filter from '@components/home_page/Filter'
 import DevfileSearchBar from '@components/home_page/DevfileSearchBar'
 import DevfileGrid from '@components/home_page/DevfileGrid'
@@ -11,12 +11,8 @@ const Home = ({ devfiles, tagsMap, typesMap }: InferGetStaticPropsType<typeof ge
   const [searchValue, setSearchValue] = useState<string>('')
   const [filteredDevfiles, setFilteredDevfiles] = useState<Devfile[]>(devfiles)
 
-  const [checkboxTagsValues, setCheckboxTagsValues] = useState<TagElem[]>(tagsMap.values.map((tag: string) => {
-    return { tag: tag, value: false }
-  }))
-  const [checkboxTypesValues, setCheckboxTypesValues] = useState<TypeElem[]>(typesMap.values.map((type: string) => {
-    return { type: type, value: false }
-  }))
+  const [tagsData, setTagsData] = useState<FilterDataElem[]>(tagsMap)
+  const [typesData, setTypesData] = useState<FilterDataElem[]>(typesMap)
 
   const filterDevfilesOnSearch = (devfiles: Devfile[], searchValue: string) => {
     if (searchValue === '') {
@@ -38,7 +34,7 @@ const Home = ({ devfiles, tagsMap, typesMap }: InferGetStaticPropsType<typeof ge
   }
 
   const filterDevfilesOnTags = (devfiles: Devfile[]) => {
-    const filteredTags: TagElem[] = checkboxTagsValues.filter(tag => tag.value)
+    const filteredTags: FilterDataElem[] = tagsData.filter(tagData => tagData.state)
 
     if (!filteredTags.length) {
       return devfiles
@@ -48,7 +44,7 @@ const Home = ({ devfiles, tagsMap, typesMap }: InferGetStaticPropsType<typeof ge
       let isSelected: boolean = false
       devfile.tags?.some((tag) => {
         filteredTags.some((filteredTag) => {
-          if (tag === filteredTag.tag)
+          if (tag === filteredTag.value)
             return isSelected = true
         })
         return isSelected
@@ -59,7 +55,7 @@ const Home = ({ devfiles, tagsMap, typesMap }: InferGetStaticPropsType<typeof ge
   }
 
   const filterDevfilesOnTypes = (devfiles: Devfile[]) => {
-    const filteredTypes: TypeElem[] = checkboxTypesValues.filter(type => type.value)
+    const filteredTypes: FilterDataElem[] = typesData.filter(type => type.state)
 
     if (!filteredTypes.length) {
       return devfiles
@@ -68,7 +64,7 @@ const Home = ({ devfiles, tagsMap, typesMap }: InferGetStaticPropsType<typeof ge
     const filteredOnTypeDevfiles: Devfile[] = devfiles.filter((devfile: Devfile) => {
       let isSelected: boolean = false
       filteredTypes.some((filteredType) => {
-        if (devfile.type === filteredType.type)
+        if (devfile.type === filteredType.value)
           return isSelected = true
       })
       return isSelected
@@ -83,33 +79,7 @@ const Home = ({ devfiles, tagsMap, typesMap }: InferGetStaticPropsType<typeof ge
 
     setFilteredDevfiles(filteredOnTypeDevfiles)
 
-  }, [checkboxTagsValues, checkboxTypesValues, searchValue])
-
-  const onCheckboxTagsChange = (checked: boolean, event: React.FormEvent<HTMLInputElement>) => {
-    const target: EventTarget = event.target
-    const value: boolean = (target as HTMLInputElement).checked
-    const name: string = (target as HTMLInputElement).name
-    const index: number = checkboxTagsValues.findIndex((elem) => {
-      return elem.tag === name
-    })
-    
-    const copy: TagElem[] = [...checkboxTagsValues]
-    copy[index] = { tag: name, value }
-    setCheckboxTagsValues(copy)
-  }
-
-  const onCheckboxTypesChange = (checked: boolean, event: React.FormEvent<HTMLInputElement>) => {
-    const target: EventTarget = event.target
-    const value: boolean = (target as HTMLInputElement).checked
-    const name: string = (target as HTMLInputElement).name
-    const index: number = checkboxTypesValues.findIndex((elem) => {
-      return elem.type === name
-    })
-
-    const copy: TypeElem[] = [...checkboxTypesValues]
-    copy[index] = { type: name, value }
-    setCheckboxTypesValues(copy)
-  }
+  }, [tagsData, typesData, searchValue])
 
   const onSearchChange = (value: string) => {
     setSearchValue(value)
@@ -120,12 +90,10 @@ const Home = ({ devfiles, tagsMap, typesMap }: InferGetStaticPropsType<typeof ge
       <Grid hasGutter>
         <GridItem span={3}>
           <Filter
-            tagsMap={tagsMap}
-            typesMap={typesMap}
-            checkboxTagsValues={checkboxTagsValues}
-            checkboxTypesValues={checkboxTypesValues}
-            onCheckboxTagsChange={onCheckboxTagsChange}
-            onCheckboxTypesChange={onCheckboxTypesChange}
+            tagsData={tagsData}
+            typesData={typesData}
+            setTagsData={setTagsData}
+            setTypesData={setTypesData}
           />
         </GridItem>
         <GridItem span={9}>
@@ -138,25 +106,23 @@ const Home = ({ devfiles, tagsMap, typesMap }: InferGetStaticPropsType<typeof ge
 }
 
 const getStringArrFreq = (arr: string[]) => {
-  let tags: string[] = []
-  let freq: number[] = []
+  let filterDataArr: FilterDataElem[] = []
   let prev: string = ''
 
-  arr.sort();
+  arr.sort((a, b) => { return a.localeCompare(b, 'en', { sensitivity: 'accent' }) });
   for (let i = 0; i < arr.length; i++) {
     arr[i] = arr[i] ?? null
     if (arr[i]) {
       if (arr[i] !== prev) {
-        tags.push(arr[i]);
-        freq.push(1);
+        filterDataArr.push({ value: arr[i], state: false, freq: 1 })
       } else {
-        freq[freq.length - 1]++;
+        filterDataArr[filterDataArr.length - 1].freq++
       }
-      prev = arr[i];
+      prev = arr[i]
     }
   }
 
-  return { values: tags, freq: freq }
+  return filterDataArr
 }
 
 const getSortedTagsAndFreq = (devfiles: Devfile[]) => {
@@ -164,7 +130,7 @@ const getSortedTagsAndFreq = (devfiles: Devfile[]) => {
     return devfile?.tags
   }).flat()
 
-  const tagsMap: StringFreqMap = getStringArrFreq(tags)
+  const tagsMap: FilterDataElem[] = getStringArrFreq(tags)
 
   return tagsMap
 }
@@ -174,7 +140,7 @@ const getSortedTypes = (devfiles: Devfile[]) => {
     return devfile.type
   })
 
-  const typesMap: StringFreqMap = getStringArrFreq(types)
+  const typesMap: FilterDataElem[] = getStringArrFreq(types)
 
   return typesMap
 }
@@ -182,10 +148,10 @@ const getSortedTypes = (devfiles: Devfile[]) => {
 export const getStaticProps: GetStaticProps = async () => {
   const res: Response = await fetch('https://registry.devfile.io/index/all')
   let devfiles: Devfile[] = await res.json()
-  devfiles = devfiles.sort((a, b) => { return a.displayName.localeCompare(b.displayName) })
+  devfiles = devfiles.sort((a, b) => { return a.displayName.localeCompare(b.displayName, 'en', { sensitivity: 'accent' }) })
 
-  const tagsMap: StringFreqMap = getSortedTagsAndFreq(devfiles)
-  const typesMap: StringFreqMap = getSortedTypes(devfiles)
+  const tagsMap: FilterDataElem[] = getSortedTagsAndFreq(devfiles)
+  const typesMap: FilterDataElem[] = getSortedTypes(devfiles)
 
   return {
     props: {

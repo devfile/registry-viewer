@@ -1,69 +1,85 @@
-import type { TagElem, TypeElem, StringFreqMap } from 'customTypes'
+import type { FilterDataElem } from 'customTypes'
+import type { Dispatch, SetStateAction } from 'react'
 
 import { Checkbox, Form, FormGroup, FormSelect, FormSelectOption, Text, TextContent, TextVariants } from '@patternfly/react-core'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 interface Props {
-  tagsMap: StringFreqMap,
-  typesMap: StringFreqMap,
-  checkboxTagsValues: TagElem[],
-  checkboxTypesValues: TypeElem[],
-  onCheckboxTagsChange: (checked: boolean, event: React.FormEvent<HTMLInputElement>) => void,
-  onCheckboxTypesChange: (checked: boolean, event: React.FormEvent<HTMLInputElement>) => void,
+  tagsData: FilterDataElem[],
+  typesData: FilterDataElem[],
+  setTagsData: Dispatch<SetStateAction<FilterDataElem[]>>,
+  setTypesData: Dispatch<SetStateAction<FilterDataElem[]>>
 }
 
-interface ObjData {
-  value: string,
-
-}
-
-const Filter = ({ tagsMap, typesMap, checkboxTagsValues, checkboxTypesValues, onCheckboxTagsChange, onCheckboxTypesChange }: Props) => {
+const Filter = ({ tagsData, typesData, setTagsData, setTypesData }: Props) => {
   const [tagOrder, setTagOrder] = useState<string>('name')
-  const [tagsShown, setTagsShown] = useState<string[]>(tagsMap.values)
-  const [typesShown, setTypesShown] = useState<string[]>(typesMap.values)
 
   useEffect(() => {
-    setTagsShown(() => {
-      return tagsShown.sort((a, b) => {
-        const aIsChecked = checkboxTagsValues.find((elem: TagElem) => { return elem.tag === a })?.value
-        const bIsChecked = checkboxTagsValues.find((elem: TagElem) => { return elem.tag === b })?.value
-
-        if (aIsChecked == bIsChecked) {
-          if (tagOrder === 'popularity') {
-      
+    const copy: FilterDataElem[] = tagsData.sort((a, b) => {
+      if (a.state === b.state) {
+        if (tagOrder === 'popularity') {
+          if (b.freq - a.freq) {
+            return b.freq - a.freq
           }
-          return a.localeCompare(b)
+          
+          return a.value.localeCompare(b.value, 'en', { sensitivity: 'accent' })
         }
 
-        if (aIsChecked && !bIsChecked) {
-          return -1
-        }
-        
-        return 1
-      })
+        return a.value.localeCompare(b.value, 'en', { sensitivity: 'accent' })
+      }
+
+      if (a.state && !b.state) {
+        return -1
+      }
+      
+      return 1
     })
+    setTagsData(tagsData => copy)
 
-  }, [checkboxTagsValues])
+  }, [tagsData, tagOrder])
 
   useEffect(() => {
-    setTypesShown(() => {
-      return typesShown.sort((a, b) => {
-        const aIsChecked = checkboxTypesValues.find((elem: TypeElem) => { return elem.type === a })?.value
-        const bIsChecked = checkboxTypesValues.find((elem: TypeElem) => { return elem.type === b })?.value
+    setTypesData(typesData.sort((a, b) => {
+      if (a.state == b.state) {
+        return a.value.localeCompare(b.value, 'en', { sensitivity: 'accent' })
+      }
 
-        if (aIsChecked == bIsChecked) {
-          return a.localeCompare(b)
-        }
+      if (a.state && !b.state) {
+        return -1
+      }
+      
+      return 1
+    }))
 
-        if (aIsChecked && !bIsChecked) {
-          return -1
-        }
-        
-        return 1
-      })
+  }, [typesData])
+
+  const onCheckboxTagsChange = (checked: boolean, event: React.FormEvent<HTMLInputElement>) => {
+    const target: EventTarget = event.target
+    const state: boolean = (target as HTMLInputElement).checked
+    const value: string = (target as HTMLInputElement).name
+
+    const index: number = tagsData.findIndex((elem) => {
+      return elem.value === value
+    })
+    
+    const copy: FilterDataElem[] = [...tagsData]
+    copy[index].state = state
+    setTagsData(copy)
+  }
+
+  const onCheckboxTypesChange = (checked: boolean, event: React.FormEvent<HTMLInputElement>) => {
+    const target: EventTarget = event.target
+    const state: boolean = (target as HTMLInputElement).checked
+    const value: string = (target as HTMLInputElement).name
+
+    const index: number = typesData.findIndex((elem) => {
+      return elem.value === value
     })
 
-  }, [checkboxTypesValues])
+    const copy: FilterDataElem[] = [...typesData]
+    copy[index].state = state
+    setTypesData(copy)
+  }
 
   const onTagChange = (value: string) => {
     setTagOrder(value)
@@ -83,16 +99,16 @@ const Filter = ({ tagsMap, typesMap, checkboxTagsValues, checkboxTypesValues, on
     <Form isHorizontal>
       <FormGroup fieldId="type-selector" label="Types" isStack hasNoPaddingTop>
       <div style={{ height: '5rem', overflow: 'auto' }}>
-        {typesShown.map((type: string, index) => {
+        {typesData.map((type: FilterDataElem, index) => {
           return (
             <div style={{ marginBottom: '0.75rem' }} key={index}>
               <Checkbox
-                isChecked={checkboxTypesValues.find((elem: TypeElem) => { return elem.type === type })?.value }
+                isChecked={type.state}
                 onChange={onCheckboxTypesChange}
                 key={index}
-                id={`types-${type}`}
-                label={type[0].toUpperCase() + type.slice(1)} // Label capitalizes first letter
-                name={type}
+                id={`types-${type.value}`}
+                label={type.value[0].toUpperCase() + type.value.slice(1)} // Label capitalizes first letter
+                name={type.value}
               />
             </div>
           )
@@ -108,16 +124,16 @@ const Filter = ({ tagsMap, typesMap, checkboxTagsValues, checkboxTypesValues, on
       </FormGroup>
       <FormGroup fieldId="tag-selector" label="Tags" isStack hasNoPaddingTop>
         <div style={{ height: '25rem', overflow: 'auto' }}>
-          { tagsShown.map((tag: string, index) => {
+          { tagsData.map((tag: FilterDataElem, index) => {
             return (
               <div style={{ marginBottom: '0.75rem' }} key={index}>
                 <Checkbox
-                  isChecked={checkboxTagsValues.find((elem: TagElem) => { return elem.tag === tag })?.value }
+                  isChecked={tag.state}
                   onChange={onCheckboxTagsChange}
-                  key={index}
-                  id={`types-${tag}`}
-                  label={tag}
-                  name={tag}
+                  key={tag.value}
+                  id={`types-${tag.value}`}
+                  label={tag.value}
+                  name={tag.value}
                 />
               </div>
           )

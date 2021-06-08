@@ -20,24 +20,16 @@ declare module 'customTypes' {
     }
   }
 
-  interface TypeElem {
-    type: string,
-    value: boolean
-  }
-
-  interface TagElem {
-    tag: string,
-    value: boolean
-  }
-
-  interface StringFreqMap {
-    values: string[],
-    freq: number[]
+  interface FilterDataElem {
+    value: string,
+    state: boolean,
+    freq: number
   }
 }
 
 module.exports = {
   Devfile,
+  FilterDataElem,
   TagElem,
   TypeElem,
   StringFreqMap
