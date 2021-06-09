@@ -35,15 +35,15 @@ const DevfileTile = ({ devfile, onClick }: Props, ref: ForwardedRef<HTMLElement>
   }
 
   return (
-    <Card onClick={onCardClick} isHoverable>
+    <Card className="h-52 m-2" onClick={onCardClick} isHoverable>
       <CardTitle>{devfile.displayName}</CardTitle>
-      <CardBody>{devfile.description}</CardBody>
+      <CardBody className="h-1 overflow-hidden">{devfile.description}</CardBody>
       <CardFooter>
         {devfile.tags?.slice(0, numTags).map((tag: string, index) => {
-          return <Badge style={{ margin: '0.1rem' }} key={index}>{tag}</Badge>
+          return <Badge className="m-0.5" key={index}>{tag}</Badge>
         })}
-        { numTags < devfile.tags?.length && <Badge style={{ margin: '0.1rem' }} onClick={onMoreClick} isRead>{devfile.tags?.length - numTags} more</Badge> }
-        { numTags > 3 && <Badge style={{ margin: '0.1rem' }} onClick={onLessClick} isRead>Less</Badge> }
+        { numTags < devfile.tags?.length && <Badge className="m-0.5" onClick={onMoreClick} isRead>{devfile.tags?.length - numTags} more</Badge> }
+        { numTags > 3 && <Badge className="m-0.5" onClick={onLessClick} isRead>Less</Badge> }
       </CardFooter>
     </Card>
   )

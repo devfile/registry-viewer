@@ -8,12 +8,12 @@ interface Props {
 
 const DevfileSearchBar = ({ count, onSearchChange, searchValue }: Props): React.ReactElement => {
   return (
-    <div style={{ display: 'flex' }}>
-      <TextContent style={{ paddingRight: '1rem' }}>
+    <div className="flex">
+      <TextContent className="pr-4">
         <Text component={TextVariants.h2}>Search</Text>
       </TextContent>
       <SearchInput
-        style={{ flex: '1' }}
+        className="flex-1"
         placeholder='Find by name, tag, or description'
         value={searchValue}
         onChange={onSearchChange}

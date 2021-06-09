@@ -108,54 +108,54 @@ const Filter = ({ tagsData, typesData, setTagsData, setTypesData }: Props): Reac
 
   return (
     <>
-    <TextContent>
-      <Text component={TextVariants.h2}>Filters</Text>
-    </TextContent>
-    <Form isHorizontal>
-      <FormGroup fieldId="type-selector" label="Types" isStack hasNoPaddingTop>
-      <div style={{ height: '5rem', overflow: 'auto' }}>
-        {typesData.map((type: FilterDataElem, index) => {
-          return (
-            <div style={{ marginBottom: '0.75rem' }} key={index}>
-              <Checkbox
-                isChecked={type.state}
-                onChange={onCheckboxTypesChange}
-                key={index}
-                id={`types-${type.value}`}
-                label={type.value[0].toUpperCase() + type.value.slice(1)} // Label capitalizes first letter
-                name={type.value}
-              />
-            </div>
-          )
-        }) }
-      </div>
-      </FormGroup>
-      <FormGroup fieldId="tag-sort-selector" label="Sort Tags by" isStack hasNoPaddingTop>
-        <FormSelect id="tag-sort-options" value={tagOrder} onChange={onTagOrderChange}>
-          { tagSortOptions.map((option, index) => {
-            return <FormSelectOption isDisabled={option.disabled} key={index} value={option.value} label={option.label}/>
-          }) }
-        </FormSelect>
-      </FormGroup>
-      <FormGroup fieldId="tag-selector" label="Tags" isStack hasNoPaddingTop>
-        <div style={{ height: '25rem', overflow: 'auto' }}>
-          { tagsData.map((tag: FilterDataElem, index) => {
+      <TextContent>
+        <Text component={TextVariants.h2}>Filters</Text>
+      </TextContent>
+      <Form isHorizontal>
+        <FormGroup fieldId="type-selector" label="Types" isStack hasNoPaddingTop>
+        <div className="h-auto overflow-auto">
+          {typesData.map((type: FilterDataElem, index) => {
             return (
-              <div style={{ marginBottom: '0.75rem' }} key={index}>
+              <div className="mb-3" key={index}>
                 <Checkbox
-                  isChecked={tag.state}
-                  onChange={onCheckboxTagsChange}
-                  key={tag.value}
-                  id={`types-${tag.value}`}
-                  label={tag.value}
-                  name={tag.value}
+                  isChecked={type.state}
+                  onChange={onCheckboxTypesChange}
+                  key={index}
+                  id={`types-${type.value}`}
+                  label={type.value[0].toUpperCase() + type.value.slice(1)} // Label capitalizes first letter
+                  name={type.value}
                 />
               </div>
             )
           }) }
         </div>
-      </FormGroup>
-    </Form>
+        </FormGroup>
+        <FormGroup fieldId="tag-sort-selector" label="Sort Tags by" isStack hasNoPaddingTop>
+          <FormSelect id="tag-sort-options" value={tagOrder} onChange={onTagOrderChange}>
+            { tagSortOptions.map((option, index) => {
+              return <FormSelectOption isDisabled={option.disabled} key={index} value={option.value} label={option.label}/>
+            }) }
+          </FormSelect>
+        </FormGroup>
+        <FormGroup fieldId="tag-selector" label="Tags" isStack hasNoPaddingTop>
+          <div className="h-2/3 overflow-auto">
+            { tagsData.map((tag: FilterDataElem, index) => {
+              return (
+                <div className="mb-3" key={index}>
+                  <Checkbox
+                    isChecked={tag.state}
+                    onChange={onCheckboxTagsChange}
+                    key={tag.value}
+                    id={`types-${tag.value}`}
+                    label={tag.value}
+                    name={tag.value}
+                  />
+                </div>
+              )
+            }) }
+          </div>
+        </FormGroup>
+      </Form>
     </>
   )
 }

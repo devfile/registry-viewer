@@ -89,7 +89,7 @@ const Home = ({ devfiles, tagsMap, typesMap }: InferGetStaticPropsType<typeof ge
   }
 
   return (
-    <div style={{ padding: '1rem 4.5rem' }}>
+    <div className="py-4 px-16">
       <Grid hasGutter>
         <GridItem span={3}>
           <Filter
