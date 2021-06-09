@@ -6,7 +6,7 @@ interface Props {
   searchValue: string
 }
 
-const DevfileSearchBar = ({ count, onSearchChange, searchValue }: Props) => {
+const DevfileSearchBar = ({ count, onSearchChange, searchValue }: Props): React.ReactElement => {
   return (
     <div style={{ display: 'flex' }}>
       <TextContent style={{ paddingRight: '1rem' }}>

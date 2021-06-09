@@ -7,7 +7,7 @@ import { InferGetStaticPropsType, GetStaticProps } from 'next'
 import { useState, useEffect } from 'react'
 import { Grid, GridItem } from '@patternfly/react-core'
 
-const Home = ({ devfiles, tagsMap, typesMap }: InferGetStaticPropsType<typeof getStaticProps>) => {
+const Home = ({ devfiles, tagsMap, typesMap }: InferGetStaticPropsType<typeof getStaticProps>): React.ReactElement => {
   const [searchValue, setSearchValue] = useState<string>('')
   const [filteredDevfiles, setFilteredDevfiles] = useState<Devfile[]>(devfiles)
 
@@ -41,11 +41,13 @@ const Home = ({ devfiles, tagsMap, typesMap }: InferGetStaticPropsType<typeof ge
     }
 
     const filteredOnTagDevfiles: Devfile[] = devfiles.filter((devfile: Devfile) => {
-      let isSelected: boolean = false
+      let isSelected = false
       devfile.tags?.some((tag) => {
         filteredTags.some((filteredTag) => {
-          if (tag === filteredTag.value)
-            return isSelected = true
+          if (tag === filteredTag.value) {
+            isSelected = true
+          }
+          return isSelected
         })
         return isSelected
       })
@@ -62,10 +64,12 @@ const Home = ({ devfiles, tagsMap, typesMap }: InferGetStaticPropsType<typeof ge
     }
 
     const filteredOnTypeDevfiles: Devfile[] = devfiles.filter((devfile: Devfile) => {
-      let isSelected: boolean = false
+      let isSelected = false
       filteredTypes.some((filteredType) => {
-        if (devfile.type === filteredType.value)
-          return isSelected = true
+        if (devfile.type === filteredType.value) {
+          isSelected = true
+        }
+        return isSelected
       })
       return isSelected
     })
@@ -78,7 +82,6 @@ const Home = ({ devfiles, tagsMap, typesMap }: InferGetStaticPropsType<typeof ge
     const filteredOnTypeDevfiles: Devfile[] = filterDevfilesOnTypes(filteredOnTagDevfiles)
 
     setFilteredDevfiles(filteredOnTypeDevfiles)
-
   }, [tagsData, typesData, searchValue])
 
   const onSearchChange = (value: string) => {
@@ -106,10 +109,10 @@ const Home = ({ devfiles, tagsMap, typesMap }: InferGetStaticPropsType<typeof ge
 }
 
 const getStringArrFreq = (arr: string[]) => {
-  let filterDataArr: FilterDataElem[] = []
-  let prev: string = ''
+  const filterDataArr: FilterDataElem[] = []
+  let prev = ''
 
-  arr.sort((a, b) => { return a.localeCompare(b, 'en', { sensitivity: 'accent' }) });
+  arr.sort((a, b) => { return a.localeCompare(b, 'en', { sensitivity: 'accent' }) })
   for (let i = 0; i < arr.length; i++) {
     arr[i] = arr[i] ?? null
     if (arr[i]) {
@@ -147,7 +150,7 @@ const getSortedTypes = (devfiles: Devfile[]) => {
 
 export const getStaticProps: GetStaticProps = async () => {
   const res: Response = await fetch('https://registry.devfile.io/index/all')
-  let devfiles: Devfile[] = await res.json()
+  let devfiles: Devfile[] = await res.json() as Devfile[]
   devfiles = devfiles.sort((a, b) => { return a.displayName.localeCompare(b.displayName, 'en', { sensitivity: 'accent' }) })
 
   const tagsMap: FilterDataElem[] = getSortedTagsAndFreq(devfiles)

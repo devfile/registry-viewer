@@ -2,7 +2,7 @@ import type { FilterDataElem } from 'customTypes'
 import type { Dispatch, SetStateAction } from 'react'
 
 import { Checkbox, Form, FormGroup, FormSelect, FormSelectOption, Text, TextContent, TextVariants } from '@patternfly/react-core'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 
 interface Props {
   tagsData: FilterDataElem[],
@@ -11,17 +11,30 @@ interface Props {
   setTypesData: Dispatch<SetStateAction<FilterDataElem[]>>
 }
 
-const Filter = ({ tagsData, typesData, setTagsData, setTypesData }: Props) => {
-  const [tagOrder, setTagOrder] = useState<string>('name')
+enum TagOrder {
+  POPULARITY = 'popularity',
+  NAME = 'name'
+}
+
+const Filter = ({ tagsData, typesData, setTagsData, setTypesData }: Props): React.ReactElement => {
+  const [tagOrder, setTagOrder] = useState<TagOrder>(TagOrder.NAME)
 
   useEffect(() => {
+    setTypesData(sortTypes(typesData))
+  }, [typesData])
+
+  useEffect(() => {
+    setTagsData(sortTags(tagsData, tagOrder))
+  }, [tagsData, tagOrder])
+
+  const sortTags = (tagsData: FilterDataElem[], tagOrder: TagOrder): FilterDataElem[] => {
     const copy: FilterDataElem[] = tagsData.sort((a, b) => {
       if (a.state === b.state) {
-        if (tagOrder === 'popularity') {
+        if (tagOrder === TagOrder.POPULARITY) {
           if (b.freq - a.freq) {
             return b.freq - a.freq
           }
-          
+
           return a.value.localeCompare(b.value, 'en', { sensitivity: 'accent' })
         }
 
@@ -31,27 +44,27 @@ const Filter = ({ tagsData, typesData, setTagsData, setTypesData }: Props) => {
       if (a.state && !b.state) {
         return -1
       }
-      
       return 1
     })
-    setTagsData(tagsData => copy)
 
-  }, [tagsData, tagOrder])
+    return copy
+  }
 
-  useEffect(() => {
-    setTypesData(typesData.sort((a, b) => {
-      if (a.state == b.state) {
+  const sortTypes = (typesData: FilterDataElem[]): FilterDataElem[] => {
+    const copy: FilterDataElem[] = typesData.sort((a, b) => {
+      if (a.state === b.state) {
         return a.value.localeCompare(b.value, 'en', { sensitivity: 'accent' })
       }
 
       if (a.state && !b.state) {
         return -1
       }
-      
-      return 1
-    }))
 
-  }, [typesData])
+      return 1
+    })
+
+    return copy
+  }
 
   const onCheckboxTagsChange = (checked: boolean, event: React.FormEvent<HTMLInputElement>) => {
     const target: EventTarget = event.target
@@ -61,7 +74,7 @@ const Filter = ({ tagsData, typesData, setTagsData, setTypesData }: Props) => {
     const index: number = tagsData.findIndex((elem) => {
       return elem.value === value
     })
-    
+
     const copy: FilterDataElem[] = [...tagsData]
     copy[index].state = state
     setTagsData(copy)
@@ -81,14 +94,16 @@ const Filter = ({ tagsData, typesData, setTagsData, setTypesData }: Props) => {
     setTypesData(copy)
   }
 
-  const onTagChange = (value: string) => {
-    setTagOrder(value)
+  const onTagOrderChange = (value: string) => {
+    const tagOrder = value as TagOrder
+    setTagOrder(tagOrder)
+    setTagsData(sortTags(tagsData, tagOrder))
   }
 
   const tagSortOptions = [
-    { value: 'please choose', label:'Please Choose', disabled: true },
-    { value: 'name', label:'Name', disabled: false },
-    { value: 'popularity', label:'Popularity', disabled: false }
+    { value: 'please choose', label: 'Please Choose', disabled: true },
+    { value: TagOrder.NAME, label: 'Name', disabled: false },
+    { value: TagOrder.POPULARITY, label: 'Popularity', disabled: false }
   ]
 
   return (
@@ -116,9 +131,9 @@ const Filter = ({ tagsData, typesData, setTagsData, setTypesData }: Props) => {
       </div>
       </FormGroup>
       <FormGroup fieldId="tag-sort-selector" label="Sort Tags by" isStack hasNoPaddingTop>
-        <FormSelect id="tag-sort-options" value={tagOrder} onChange={onTagChange}>
+        <FormSelect id="tag-sort-options" value={tagOrder} onChange={onTagOrderChange}>
           { tagSortOptions.map((option, index) => {
-              return <FormSelectOption isDisabled={option.disabled} key={index} value={option.value} label={option.label}/>
+            return <FormSelectOption isDisabled={option.disabled} key={index} value={option.value} label={option.label}/>
           }) }
         </FormSelect>
       </FormGroup>
@@ -136,8 +151,8 @@ const Filter = ({ tagsData, typesData, setTagsData, setTypesData }: Props) => {
                   name={tag.value}
                 />
               </div>
-          )
-        }) }
+            )
+          }) }
         </div>
       </FormGroup>
     </Form>

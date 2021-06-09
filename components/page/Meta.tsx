@@ -6,7 +6,7 @@ interface MetaProps {
   description?: string
 }
 
-const Meta = ({ title, keywords, description }: MetaProps) => {
+const Meta = ({ title, keywords, description }: MetaProps): React.ReactElement => {
   return (
     <Head>
       <title>{title}</title>

@@ -2,8 +2,12 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@components/*": ["components/*"],
-      "@styles/*": ["styles/*"]
+      "@components/*": [
+        "components/*"
+      ],
+      "@styles/*": [
+        "styles/*"
+      ]
     },
     "target": "es5",
     "lib": [
@@ -12,7 +16,6 @@
       "esnext"
     ],
     "allowJs": true,
-    "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
@@ -24,9 +27,13 @@
     "jsx": "preserve",
     "noImplicitAny": true,
     "typeRoots": [
-      "types/types.d.ts",
+      "@types",
       "node_modules/@types"
     ],
+    "types": [
+      "node"
+    ],
+    "skipLibCheck": true
   },
   "include": [
     "next-env.d.ts",

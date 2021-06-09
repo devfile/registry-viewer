@@ -1,5 +1,5 @@
 declare module 'customTypes' {
-  interface Devfile {
+  export interface Devfile {
     name: string;
     version: string;
     displayName: string;
@@ -20,17 +20,9 @@ declare module 'customTypes' {
     }
   }
 
-  interface FilterDataElem {
+  export interface FilterDataElem {
     value: string,
     state: boolean,
     freq: number
   }
-}
-
-module.exports = {
-  Devfile,
-  FilterDataElem,
-  TagElem,
-  TypeElem,
-  StringFreqMap
 }

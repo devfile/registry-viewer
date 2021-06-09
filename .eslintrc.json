@@ -7,10 +7,14 @@
   "extends": [
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "standard"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
+    "project": "./tsconfig.json",
+    "tsconfigRootDir": "./",
     "ecmaFeatures": {
       "jsx": true
     },
@@ -26,17 +30,22 @@
   },
   "settings": {
     "import/resolver": {
+      "typescript": {},
       "node": {
         "extensions": [".js", ".jsx", ".ts", ".tsx", ".d.ts"]
       }
     }
   },
   "rules": {
+    "@typescript-eslint/no-unsafe-member-access": [0],
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "react-hooks/exhaustive-deps": "off",
     "react/react-in-jsx-scope": "off",
-    "import/no-unresolved": [2],
+    "import/no-unresolved": "off",
     "indent": "warn",
     "quotes": "warn",
-    "no-unused-vars": "warn",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "error",
     "keyword-spacing": "warn",
     "space-before-function-paren": "warn",
     "eqeqeq": "warn",

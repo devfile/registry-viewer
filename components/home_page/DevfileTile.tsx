@@ -1,13 +1,15 @@
 import type { Devfile } from 'customTypes'
+import type { ForwardedRef } from 'react'
 
-import React, { useState } from 'react'
+import { useState, forwardRef } from 'react'
 import { Badge, Card, CardTitle, CardBody, CardFooter } from '@patternfly/react-core'
 
 interface Props extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   devfile: Devfile
 }
 
-const DevfileTile = React.forwardRef(({ devfile, onClick }: Props, ref) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const DevfileTile = ({ devfile, onClick }: Props, ref: ForwardedRef<HTMLElement>): React.ReactElement => {
   const [numTags, setNumTags] = useState<number>(3)
 
   const onCardClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -27,14 +29,13 @@ const DevfileTile = React.forwardRef(({ devfile, onClick }: Props, ref) => {
   const onLessClick = () => {
     if (numTags - 6 < 3) {
       setNumTags(3)
-    }
-    else {
+    } else {
       setNumTags(numTags - 6)
     }
   }
 
   return (
-    <Card onClick={onCardClick} isHoverable isRounded>
+    <Card onClick={onCardClick} isHoverable>
       <CardTitle>{devfile.displayName}</CardTitle>
       <CardBody>{devfile.description}</CardBody>
       <CardFooter>
@@ -46,6 +47,6 @@ const DevfileTile = React.forwardRef(({ devfile, onClick }: Props, ref) => {
       </CardFooter>
     </Card>
   )
-})
+}
 
-export default DevfileTile
+export default forwardRef(DevfileTile)

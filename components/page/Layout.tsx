@@ -7,7 +7,7 @@ interface Props {
   children: React.ReactNode
 }
 
-const Layout = ({ children }: Props) => {
+const Layout = ({ children }: Props): React.ReactElement => {
   const logoProps = {
     href: '',
     onClick: () => console.log('clicked logo'),

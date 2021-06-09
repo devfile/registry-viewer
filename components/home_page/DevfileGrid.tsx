@@ -9,7 +9,7 @@ interface Props {
   searchDevfiles: Devfile[]
 }
 
-const DevfileGrid = ({ searchDevfiles }: Props) => {
+const DevfileGrid = ({ searchDevfiles }: Props): React.ReactElement => {
   return (
     <Gallery hasGutter style={{ paddingTop: '1rem' }}>
       {searchDevfiles.map((devfile: Devfile, index) => {
