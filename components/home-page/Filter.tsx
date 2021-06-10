@@ -130,8 +130,18 @@ const Filter = ({ tagsData, typesData, setTagsData, setTypesData }: Props): Reac
               </div>
             )
           }) }
-          { numTags < tagsData.filter(tagData => tagData.value.toLowerCase().includes(tagSearch.toLowerCase())).length && <a onClick={onMoreClick}>More...</a> }
-          { numTags > baseNumTags && <a onClick={onLessClick}>Less...</a> }
+          { numTags < tagsData.filter(tagData => tagData.value.toLowerCase().includes(tagSearch.toLowerCase())).length &&
+            <a onClick={onMoreClick}>
+              <TextContent>
+                <Text>More...</Text>
+              </TextContent>
+            </a> }
+          { numTags > baseNumTags &&
+            <a onClick={onLessClick}>
+              <TextContent>
+                <Text>Less...</Text>
+              </TextContent>
+            </a> }
         </FormGroup>
       </Form>
     </>
