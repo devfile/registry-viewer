@@ -1,4 +1,4 @@
-import type { Devfile } from 'customTypes'
+import type { Devfile } from 'custom-types'
 
 import { InferGetStaticPropsType, GetStaticProps, GetStaticPaths } from 'next'
 import { Text, TextContent, TextVariants } from '@patternfly/react-core'

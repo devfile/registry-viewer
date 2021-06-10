@@ -1,4 +1,4 @@
-import type { Devfile } from 'customTypes'
+import type { Devfile } from 'custom-types'
 import type { ForwardedRef } from 'react'
 
 import { forwardRef } from 'react'

@@ -1,7 +1,9 @@
 import Meta from '@components/page/Meta'
 
 import Link from 'next/link'
-import { Page, PageHeader, PageHeaderTools, PageSection, PageSectionVariants } from '@patternfly/react-core'
+import { Brand, Page, PageHeader, PageHeaderTools, PageSection, PageSectionVariants } from '@patternfly/react-core'
+
+import mainPageLogo from '../../public/mainPageLogo.svg'
 
 interface Props {
   children: React.ReactNode
@@ -16,7 +18,9 @@ const Layout = ({ children }: Props): React.ReactElement => {
 
   const Header = (
     <PageHeader
-      logo="Logo"
+      logo={
+        <Brand src={mainPageLogo} alt="Devfile Registry Logo" className="h-full"/>
+      }
       logoProps={logoProps}
       headerTools={
         <PageHeaderTools>

@@ -14,8 +14,10 @@
   "dependencies": {
     "@patternfly/react-core": "^4.121.1",
     "@patternfly/react-icons": "^4.10.7",
+    "imagemin-svgo": "^9.0.0",
     "next": "latest",
     "next-compose-plugins": "^2.2.1",
+    "next-images": "^2.6.2",
     "next-pwa": "^5.2.21",
     "next-transpile-modules": "^7.2.0",
     "react": "^17.0.2",

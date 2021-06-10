@@ -1,11 +1,12 @@
 const withPlugins = require('next-compose-plugins')
 const withPWA = require('next-pwa')
+const withImages = require('next-images')
 const withTM = require('next-transpile-modules')([
   '@patternfly/react-core',
   '@patternfly/react-styles'
 ])
 
-module.exports = withPlugins([withTM, withPWA], {
+module.exports = withPlugins([withTM, withImages, withPWA], {
   future: {
     webpack5: true
   },
