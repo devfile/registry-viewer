@@ -2,13 +2,15 @@
   "env": {
     "browser": true,
     "es2021": true,
-    "node": true
+    "node": true,
+    "cypress/globals": true
   },
   "extends": [
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:cypress/recommended",
     "standard"
   ],
   "parser": "@typescript-eslint/parser",
@@ -23,7 +25,8 @@
   },
   "plugins": [
     "react",
-    "@typescript-eslint"
+    "@typescript-eslint",
+    "cypress"
   ],
   "globals": {
     "React": "writable"
@@ -37,6 +40,11 @@
     }
   },
   "rules": {
+    "cypress/no-assigning-return-values": "error",
+    "cypress/no-unnecessary-waiting": "error",
+    "cypress/assertion-before-screenshot": "warn",
+    "cypress/no-force": "warn",
+    "cypress/no-async-tests": "error",
     "@typescript-eslint/no-unsafe-member-access": [0],
     "@typescript-eslint/no-non-null-assertion": "off",
     "react-hooks/exhaustive-deps": "off",

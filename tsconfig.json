@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": "./",
+    "baseUrl": ".",
     "paths": {
       "@components/*": [
         "components/*"
@@ -31,16 +31,23 @@
       "node_modules/@types"
     ],
     "types": [
-      "node"
+      "node",
+      "cypress"
     ],
-    "skipLibCheck": true
+    "skipLibCheck": true,
   },
   "include": [
     "next-env.d.ts",
+    "**.*.js",
+    "**.*.jsx",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    "**/*.json"
   ],
   "exclude": [
-    "node_modules"
+    ".yarn",
+    "**/node_modules",
+    "**/.next",
+    "**/out"
   ]
 }
