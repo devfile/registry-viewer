@@ -1,7 +1,7 @@
 import type { FilterDataElem } from 'custom-types'
 import type { Dispatch, SetStateAction } from 'react'
 
-import { Checkbox, Form, FormGroup, SearchInput, Text, TextContent, TextVariants } from '@patternfly/react-core'
+import { Grid, GridItem, Checkbox, Form, FormGroup, SearchInput, Text, TextContent, TextVariants } from '@patternfly/react-core'
 import { useState, useEffect } from 'react'
 
 interface Props {
@@ -92,56 +92,61 @@ const Filter = ({ tagsData, typesData, setTagsData, setTypesData }: Props): Reac
       </TextContent>
       <Form isHorizontal>
         <FormGroup fieldId="type-selector" label="Types" hasNoPaddingTop>
-          { typesData.map((type: FilterDataElem, index) => {
-            return (
-              <div className="mb-3" key={index}>
-                <Checkbox
-                  isChecked={type.state}
-                  onChange={onCheckboxTypesChange}
-                  key={index}
-                  id={`types-${type.value}`}
-                  label={type.value[0].toUpperCase() + type.value.slice(1)} // Label capitalizes first letter
-                  name={type.value}
-                />
-              </div>
-            )
-          }) }
+          <Grid hasGutter>
+            { typesData.map((type: FilterDataElem, index) => {
+              return (
+                <GridItem md={12} sm={3} key={index}>
+                  <Checkbox
+                    isChecked={type.state}
+                    onChange={onCheckboxTypesChange}
+                    key={index}
+                    id={`types-${type.value}`}
+                    label={type.value[0].toUpperCase() + type.value.slice(1)} // Label capitalizes first letter
+                    name={type.value}
+                    />
+                </GridItem>
+              )
+            }) }
+          </Grid>
         </FormGroup>
         <FormGroup fieldId="tag-selector" label="Tags" hasNoPaddingTop>
-          <SearchInput
-            className="mb-3"
-            placeholder='Find by tag name'
-            value={tagSearch}
-            onChange={onSearchChange}
-            onClear={() => onSearchChange('')}
-            resultsCount={tagsData.filter(tagData => tagData.value.toLowerCase().includes(tagSearch.toLowerCase())).length}
-            />
-          { tagsData.filter(tagData => tagData.value.toLowerCase().includes(tagSearch.toLowerCase())).slice(0, numTags).map((tag: FilterDataElem, index) => {
-            return (
-              <div className="mb-3" key={index}>
-                <Checkbox
-                  isChecked={tag.state}
-                  onChange={onCheckboxTagsChange}
-                  key={tag.value}
-                  id={`types-${tag.value}`}
-                  label={tag.value}
-                  name={tag.value}
-                  />
-              </div>
-            )
-          }) }
-          { numTags < tagsData.filter(tagData => tagData.value.toLowerCase().includes(tagSearch.toLowerCase())).length &&
-            <a onClick={onMoreClick}>
-              <TextContent>
-                <Text>More...</Text>
-              </TextContent>
-            </a> }
-          { numTags > baseNumTags &&
-            <a onClick={onLessClick}>
-              <TextContent>
-                <Text>Less...</Text>
-              </TextContent>
-            </a> }
+          <Grid hasGutter>
+            <GridItem span={12}>
+              <SearchInput
+                placeholder='Find by tag name'
+                value={tagSearch}
+                onChange={onSearchChange}
+                onClear={() => onSearchChange('')}
+                resultsCount={tagsData.filter(tagData => tagData.value.toLowerCase().includes(tagSearch.toLowerCase())).length}
+              />
+            </GridItem>
+            { tagsData.filter(tagData => tagData.value.toLowerCase().includes(tagSearch.toLowerCase())).slice(0, numTags).map((tag: FilterDataElem, index) => {
+              return (
+                <GridItem md={12} sm={3} key={index}>
+                  <Checkbox
+                    isChecked={tag.state}
+                    onChange={onCheckboxTagsChange}
+                    key={tag.value}
+                    id={`types-${tag.value}`}
+                    label={tag.value}
+                    name={tag.value}
+                    />
+                </GridItem>
+              )
+            }) }
+            { numTags < tagsData.filter(tagData => tagData.value.toLowerCase().includes(tagSearch.toLowerCase())).length &&
+              <a onClick={onMoreClick}>
+                <TextContent>
+                  <Text>More...</Text>
+                </TextContent>
+              </a> }
+            { numTags > baseNumTags &&
+              <a onClick={onLessClick}>
+                <TextContent>
+                  <Text>Less...</Text>
+                </TextContent>
+              </a> }
+          </Grid>
         </FormGroup>
       </Form>
     </>
