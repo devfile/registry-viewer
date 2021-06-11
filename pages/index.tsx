@@ -89,9 +89,9 @@ const Home = ({ devfiles, tagsMap, typesMap }: InferGetStaticPropsType<typeof ge
   }
 
   return (
-    <div className="py-4 px-16">
+    <div>
       <Grid hasGutter>
-        <GridItem span={3}>
+        <GridItem xl2={3} xl={3} lg={4} md={6} sm={12}>
           <Filter
             tagsData={tagsData}
             typesData={typesData}
@@ -99,7 +99,7 @@ const Home = ({ devfiles, tagsMap, typesMap }: InferGetStaticPropsType<typeof ge
             setTypesData={setTypesData}
           />
         </GridItem>
-        <GridItem span={9}>
+        <GridItem xl2={9} xl={9} lg={8} md={6} sm={12}>
           <DevfileSearchBar count={filteredDevfiles.length} onSearchChange={onSearchChange} searchValue={searchValue} />
           <DevfileGrid searchDevfiles={filteredDevfiles} />
         </GridItem>
