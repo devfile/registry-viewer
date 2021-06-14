@@ -14,7 +14,7 @@ const Home = ({ devfiles, tagsMap, typesMap }: InferGetStaticPropsType<typeof ge
   const [tagsData, setTagsData] = useState<FilterDataElem[]>(tagsMap)
   const [typesData, setTypesData] = useState<FilterDataElem[]>(typesMap)
 
-  const filterDevfilesOnSearch = (devfiles: Devfile[], searchValue: string) => {
+  const filterDevfilesOnSearch = (devfiles: Devfile[], searchValue: string): Devfile[] => {
     if (searchValue === '') {
       return devfiles
     }
@@ -33,7 +33,7 @@ const Home = ({ devfiles, tagsMap, typesMap }: InferGetStaticPropsType<typeof ge
     return filteredOnSearchDevfiles
   }
 
-  const filterDevfilesOnTags = (devfiles: Devfile[]) => {
+  const filterDevfilesOnTags = (devfiles: Devfile[]): Devfile[] => {
     const filteredTags: FilterDataElem[] = tagsData.filter(tagData => tagData.state)
 
     if (!filteredTags.length) {
@@ -56,7 +56,7 @@ const Home = ({ devfiles, tagsMap, typesMap }: InferGetStaticPropsType<typeof ge
     return filteredOnTagDevfiles
   }
 
-  const filterDevfilesOnTypes = (devfiles: Devfile[]) => {
+  const filterDevfilesOnTypes = (devfiles: Devfile[]): Devfile[] => {
     const filteredTypes: FilterDataElem[] = typesData.filter(type => type.state)
 
     if (!filteredTypes.length) {
@@ -108,7 +108,7 @@ const Home = ({ devfiles, tagsMap, typesMap }: InferGetStaticPropsType<typeof ge
   )
 }
 
-const getStringArrFreq = (arr: string[]) => {
+const getStringArrFreq = (arr: string[]): FilterDataElem[] => {
   const filterDataArr: FilterDataElem[] = []
   let prev = ''
 
@@ -128,7 +128,7 @@ const getStringArrFreq = (arr: string[]) => {
   return filterDataArr
 }
 
-const getSortedTagsAndFreq = (devfiles: Devfile[]) => {
+const getSortedTagsAndFreq = (devfiles: Devfile[]): FilterDataElem[] => {
   const tags: string[] = devfiles?.map((devfile) => {
     return devfile?.tags
   }).flat()
@@ -138,7 +138,7 @@ const getSortedTagsAndFreq = (devfiles: Devfile[]) => {
   return tagsMap
 }
 
-const getSortedTypes = (devfiles: Devfile[]) => {
+const getSortedTypesAndFreq = (devfiles: Devfile[]): FilterDataElem[] => {
   const types: string[] = devfiles?.map((devfile) => {
     return devfile.type
   })
@@ -154,7 +154,7 @@ export const getStaticProps: GetStaticProps = async () => {
   devfiles = devfiles.sort((a, b) => { return a.displayName.localeCompare(b.displayName, 'en', { sensitivity: 'accent' }) })
 
   const tagsMap: FilterDataElem[] = getSortedTagsAndFreq(devfiles)
-  const typesMap: FilterDataElem[] = getSortedTypes(devfiles)
+  const typesMap: FilterDataElem[] = getSortedTypesAndFreq(devfiles)
 
   return {
     props: {

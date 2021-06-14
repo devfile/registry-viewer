@@ -12,8 +12,13 @@ interface Props extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
 const DevfileTile = ({ devfile, onClick }: Props, ref: ForwardedRef<HTMLElement>): React.ReactElement => {
   const numTags = 3
 
+  const onTileClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    console.log(`Devfile Tile: ${devfile.displayName}-clicked`)
+    onClick!(event)
+  }
+
   return (
-    <Card className="h-52 m-2" onClick={onClick} isHoverable>
+    <Card className="h-52 m-2" onClick={onTileClick} isHoverable data-test-id={`card-${devfile.name.replace(/\.| /g, '')}`}>
       <CardTitle>{devfile.displayName}</CardTitle>
       <CardBody className="h-1 overflow-hidden">{devfile.description}</CardBody>
       <CardFooter>

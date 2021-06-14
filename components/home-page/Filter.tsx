@@ -18,10 +18,6 @@ const Filter = ({ tagsData, typesData, setTagsData, setTypesData }: Props): Reac
   const [numTags, setNumTags] = useState(baseNumTags)
 
   useEffect(() => {
-    setTypesData(sortFilterDataArr(typesData))
-  }, [typesData])
-
-  useEffect(() => {
     setTagsData(sortFilterDataArr(tagsData))
   }, [tagsData])
 
@@ -50,6 +46,8 @@ const Filter = ({ tagsData, typesData, setTagsData, setTypesData }: Props): Reac
       return elem.value === value
     })
 
+    console.log(`Tag Filter: ${value}-${state.toString()}`)
+
     const copy: FilterDataElem[] = [...tagsData]
     copy[index].state = state
     setTagsData(copy)
@@ -63,6 +61,8 @@ const Filter = ({ tagsData, typesData, setTagsData, setTypesData }: Props): Reac
     const index: number = typesData.findIndex((elem) => {
       return elem.value === value
     })
+
+    console.log(`Type Filter: ${value}-${state.toString()}`)
 
     const copy: FilterDataElem[] = [...typesData]
     copy[index].state = state
@@ -97,6 +97,7 @@ const Filter = ({ tagsData, typesData, setTagsData, setTypesData }: Props): Reac
               return (
                 <GridItem md={12} sm={3} key={index}>
                   <Checkbox
+                    data-test-id={`type-${type.value.replace(/\.| /g, '')}`}
                     isChecked={type.state}
                     onChange={onCheckboxTypesChange}
                     key={index}
@@ -113,6 +114,7 @@ const Filter = ({ tagsData, typesData, setTagsData, setTypesData }: Props): Reac
           <Grid hasGutter>
             <GridItem span={12}>
               <SearchInput
+                data-test-id="search-bar-tag"
                 placeholder='Find by tag name'
                 value={tagSearch}
                 onChange={onSearchChange}
@@ -124,6 +126,7 @@ const Filter = ({ tagsData, typesData, setTagsData, setTypesData }: Props): Reac
               return (
                 <GridItem md={12} sm={3} key={index}>
                   <Checkbox
+                    data-test-id={`tag-${tag.value.replace(/\.| /g, '')}`}
                     isChecked={tag.state}
                     onChange={onCheckboxTagsChange}
                     key={tag.value}
@@ -135,13 +138,13 @@ const Filter = ({ tagsData, typesData, setTagsData, setTypesData }: Props): Reac
               )
             }) }
             { numTags < tagsData.filter(tagData => tagData.value.toLowerCase().includes(tagSearch.toLowerCase())).length &&
-              <a onClick={onMoreClick}>
+              <a onClick={onMoreClick} data-test-id="more-tags">
                 <TextContent>
                   <Text>More...</Text>
                 </TextContent>
               </a> }
             { numTags > baseNumTags &&
-              <a onClick={onLessClick}>
+              <a onClick={onLessClick} data-test-id="less-tags">
                 <TextContent>
                   <Text>Less...</Text>
                 </TextContent>

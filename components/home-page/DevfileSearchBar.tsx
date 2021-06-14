@@ -13,6 +13,7 @@ const DevfileSearchBar = ({ count, onSearchChange, searchValue }: Props): React.
         <Text component={TextVariants.h2}>Search</Text>
       </TextContent>
       <SearchInput
+        data-test-id="search-bar-devfile"
         className="flex-1"
         placeholder='Find by name, tag, or description'
         value={searchValue}

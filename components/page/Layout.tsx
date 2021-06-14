@@ -18,7 +18,7 @@ const Layout = ({ children }: Props): React.ReactElement => {
       headerTools={
         <PageHeaderTools>
           <Link href='/'>
-            <a>
+            <a data-test-id="go-home-button">
               <TextContent>
                 <Text>Devfile Registry</Text>
               </TextContent>
