@@ -26,8 +26,8 @@ const Meta = ({ title, keywords, description }: MetaProps): React.ReactElement =
 
 Meta.defaultProps = {
   title: 'Devfile Registry',
-  keywords: 'Keywords',
-  description: 'Description'
+  keywords: 'Devfile, Registry, OpenShift, Kubernetes',
+  description: 'UI for the Devfile Registry'
 }
 
 export default Meta
