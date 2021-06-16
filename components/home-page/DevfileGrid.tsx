@@ -12,8 +12,8 @@ interface Props {
 const DevfileGrid = ({ searchDevfiles }: Props): React.ReactElement => {
   return (
     <Gallery className="pt-4">
-      {searchDevfiles.map((devfile: Devfile, index) => {
-        return <Link key={index} href={`/devfiles/${devfile.name}`} passHref><DevfileTile key={index} devfile={devfile}/></Link>
+      {searchDevfiles.map((devfile) => {
+        return <Link key={devfile.name} href={`/devfiles/${devfile.name}`} passHref><DevfileTile devfile={devfile}/></Link>
       })}
     </Gallery>
   )

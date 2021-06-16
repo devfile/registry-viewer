@@ -22,8 +22,8 @@ const DevfileTile = ({ devfile, onClick }: Props, ref: ForwardedRef<HTMLElement>
       <CardTitle>{devfile.displayName}</CardTitle>
       <CardBody className="h-1 overflow-hidden">{devfile.description}</CardBody>
       <CardFooter>
-        {devfile.tags?.slice(0, numTags).map((tag: string, index) => {
-          return <Badge className="m-0.5" key={index}>{tag}</Badge>
+        {devfile.tags?.slice(0, numTags).map((tag) => {
+          return <Badge className="m-0.5" key={tag}>{tag}</Badge>
         })}
         { numTags < devfile.tags?.length && <Badge className="m-0.5" isRead>{devfile.tags?.length - numTags} more</Badge> }
       </CardFooter>

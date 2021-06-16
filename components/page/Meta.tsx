@@ -18,7 +18,7 @@ const Meta = ({ title, keywords, description }: MetaProps): React.ReactElement =
       <meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=5' />
       <meta name="theme-color" content="#317EFB"/>
 
-      <link rel="icon" href="/favicon.ico" />
+      <link rel="icon" href="/images/icons/favicon.ico" />
       <link rel="manifest" href="/manifest.json" />
     </Head>
   )

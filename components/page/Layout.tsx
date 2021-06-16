@@ -3,7 +3,7 @@ import Meta from '@components/page/Meta'
 import Link from 'next/link'
 import { Text, TextContent, Brand, Page, PageHeader, PageHeaderTools, PageSection, PageSectionVariants } from '@patternfly/react-core'
 
-import mainPageLogo from '../../public/mainPageLogo.svg'
+import mainPageLogo from '../../public/images/mainPageLogo.svg'
 
 interface Props {
   children: React.ReactNode

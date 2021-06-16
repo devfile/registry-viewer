@@ -93,14 +93,13 @@ const Filter = ({ tagsData, typesData, setTagsData, setTypesData }: Props): Reac
       <Form isHorizontal>
         <FormGroup fieldId="type-selector" label="Types" hasNoPaddingTop>
           <Grid hasGutter>
-            { typesData.map((type: FilterDataElem, index) => {
+            { typesData.map((type) => {
               return (
-                <GridItem md={12} sm={3} key={index}>
+                <GridItem md={12} sm={3} key={type.value}>
                   <Checkbox
                     data-test-id={`type-${type.value.replace(/\.| /g, '')}`}
                     isChecked={type.state}
                     onChange={onCheckboxTypesChange}
-                    key={index}
                     id={`types-${type.value}`}
                     label={type.value[0].toUpperCase() + type.value.slice(1)} // Label capitalizes first letter
                     name={type.value}
@@ -122,14 +121,13 @@ const Filter = ({ tagsData, typesData, setTagsData, setTypesData }: Props): Reac
                 resultsCount={tagsData.filter(tagData => tagData.value.toLowerCase().includes(tagSearch.toLowerCase())).length}
               />
             </GridItem>
-            { tagsData.filter(tagData => tagData.value.toLowerCase().includes(tagSearch.toLowerCase())).slice(0, numTags).map((tag: FilterDataElem, index) => {
+            { tagsData.filter(tagData => tagData.value.toLowerCase().includes(tagSearch.toLowerCase())).slice(0, numTags).map((tag) => {
               return (
-                <GridItem md={12} sm={3} key={index}>
+                <GridItem md={12} sm={3} key={tag.value}>
                   <Checkbox
                     data-test-id={`tag-${tag.value.replace(/\.| /g, '')}`}
                     isChecked={tag.state}
                     onChange={onCheckboxTagsChange}
-                    key={tag.value}
                     id={`types-${tag.value}`}
                     label={tag.value}
                     name={tag.value}
