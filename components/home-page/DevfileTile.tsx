@@ -1,8 +1,10 @@
 import type { Devfile } from 'custom-types'
 import type { ForwardedRef } from 'react'
 
+import mainPageLogo from '../../public/images/mainPageLogo.svg'
+
 import { forwardRef } from 'react'
-import { Badge, Card, CardTitle, CardBody, CardFooter } from '@patternfly/react-core'
+import { Text, TextContent, TextVariants, Brand, Badge, Card, CardTitle, CardBody, CardFooter, CardHeader, CardHeaderMain } from '@patternfly/react-core'
 
 interface Props extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   devfile: Devfile
@@ -18,9 +20,25 @@ const DevfileTile = ({ devfile, onClick }: Props, ref: ForwardedRef<HTMLElement>
   }
 
   return (
-    <Card className="h-52 m-2" onClick={onTileClick} isHoverable data-test-id={`card-${devfile.name.replace(/\.| /g, '')}`}>
-      <CardTitle>{devfile.displayName}</CardTitle>
-      <CardBody className="h-1 overflow-hidden">{devfile.description}</CardBody>
+    <Card className="h-auto m-2" onClick={onTileClick} isHoverable data-test-id={`card-${devfile.name.replace(/\.| /g, '')}`}>
+      <CardHeader>
+        <CardHeaderMain>
+          <TextContent>
+            <Text className="pb-4" component={TextVariants.p}>{devfile.type[0].toUpperCase() + devfile.type.slice(1)}</Text>
+          </TextContent>
+          <Brand src={mainPageLogo} alt="" className="h-10" />
+        </CardHeaderMain>
+      </CardHeader>
+      <CardTitle>
+        <TextContent>
+          <Text component={TextVariants.h3}>{devfile.displayName}</Text>
+        </TextContent>
+      </CardTitle>
+      <CardBody className="h-20 overflow-hidden">
+        <TextContent>
+          <Text component={TextVariants.p}>{devfile.description}</Text>
+        </TextContent>
+      </CardBody>
       <CardFooter>
         {devfile.tags?.slice(0, numTags).map((tag) => {
           return <Badge className="m-0.5" key={tag}>{tag}</Badge>
