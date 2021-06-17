@@ -39,3 +39,5 @@ yarn-error.log*
 /public/*.js.map
 
 package-lock.json
+
+docs

@@ -5,16 +5,21 @@ import DevfileTile from '@components/home-page/DevfileTile'
 import Link from 'next/link'
 import { Gallery } from '@patternfly/react-core'
 
-interface Props {
-  searchDevfiles: Devfile[]
+export interface DevfileGridProps {
+  devfiles: Devfile[]
 }
 
-const DevfileGrid = ({ searchDevfiles }: Props): React.ReactElement => {
+/**
+ * Renders a {@link DevfileGrid} React component.
+ * Adds a grid containing DevfileTiles
+ * @returns `<DevfileGrid devfiles={devfiles} \>`
+ */
+const DevfileGrid: React.FC<DevfileGridProps> = ({ devfiles }: DevfileGridProps) => {
   return (
     <Gallery className="pt-4">
-      {searchDevfiles.map((devfile) => {
+      { devfiles.map((devfile) => {
         return <Link key={devfile.name} href={`/devfiles/${devfile.name}`} passHref><DevfileTile devfile={devfile}/></Link>
-      })}
+      }) }
     </Gallery>
   )
 }
