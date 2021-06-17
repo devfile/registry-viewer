@@ -1,18 +1,26 @@
 import type { FilterDataElem } from 'custom-types'
 import type { Dispatch, SetStateAction } from 'react'
 
+import { capitalizeFirstLetter } from '@util/index'
+
 import { Grid, GridItem, Checkbox, Form, FormGroup, SearchInput, Text, TextContent, TextVariants } from '@patternfly/react-core'
 import { useState, useEffect } from 'react'
 
-interface Props {
+export interface FilterProps {
   tagsData: FilterDataElem[],
   typesData: FilterDataElem[],
   setTagsData: Dispatch<SetStateAction<FilterDataElem[]>>,
   setTypesData: Dispatch<SetStateAction<FilterDataElem[]>>
 }
 
-const Filter = ({ tagsData, typesData, setTagsData, setTypesData }: Props): React.ReactElement => {
+/**
+ * Renders a {@link Filter} React component.
+ * Adds a type and tag filter for devfiles
+ * @returns `<Filter tagsData={tagsData} typesData={typesData} setTagsData={setTagsData} setTypesData={setTypesData}/>`
+ */
+const Filter: React.FC<FilterProps> = ({ tagsData, typesData, setTagsData, setTypesData }: FilterProps) => {
   const baseNumTags = 10
+  const changeNumTagsBy = 5
 
   const [tagSearch, setTagSearch] = useState('')
   const [numTags, setNumTags] = useState(baseNumTags)
@@ -74,14 +82,14 @@ const Filter = ({ tagsData, typesData, setTagsData, setTypesData }: Props): Reac
   }
 
   const onMoreClick = () => {
-    setNumTags(numTags + 5)
+    setNumTags(numTags + changeNumTagsBy)
   }
 
   const onLessClick = () => {
-    if (numTags - 5 < 10) {
-      setNumTags(10)
+    if (numTags - changeNumTagsBy < baseNumTags) {
+      setNumTags(baseNumTags)
     } else {
-      setNumTags(numTags - 5)
+      setNumTags(numTags - changeNumTagsBy)
     }
   }
 
@@ -101,7 +109,7 @@ const Filter = ({ tagsData, typesData, setTagsData, setTypesData }: Props): Reac
                     isChecked={type.state}
                     onChange={onCheckboxTypesChange}
                     id={`types-${type.value}`}
-                    label={type.value[0].toUpperCase() + type.value.slice(1)} // Label capitalizes first letter
+                    label={capitalizeFirstLetter(type.value)}
                     name={type.value}
                     />
                 </GridItem>

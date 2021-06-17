@@ -1,5 +1,3 @@
 {
-  "cSpell.words": [
-    "selectall"
-  ]
+  "typescript.tsdk": "node_modules\\typescript\\lib"
 }

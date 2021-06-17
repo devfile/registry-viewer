@@ -1,1 +1,5 @@
 next.config.js
+node_modules
+.next
+out
+docs

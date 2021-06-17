@@ -26,7 +26,8 @@
   "plugins": [
     "react",
     "@typescript-eslint",
-    "cypress"
+    "cypress",
+    "eslint-plugin-tsdoc"
   ],
   "globals": {
     "React": "writable"
@@ -40,6 +41,7 @@
     }
   },
   "rules": {
+    "tsdoc/syntax": "warn",
     "cypress/no-assigning-return-values": "error",
     "cypress/no-unnecessary-waiting": "error",
     "cypress/assertion-before-screenshot": "warn",

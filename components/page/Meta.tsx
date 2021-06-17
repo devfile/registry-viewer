@@ -1,12 +1,17 @@
 import Head from 'next/head'
 
-interface MetaProps {
+export interface MetaProps {
   title?: string,
   keywords?: string,
   description?: string
 }
 
-const Meta = ({ title, keywords, description }: MetaProps): React.ReactElement => {
+/**
+ * Renders a {@link Meta} React component.
+ * Can change specific meta values in any pages
+ * @returns `<Meta title={title} keywords={keywords} description={description}/>`
+ */
+const Meta: React.FC<MetaProps> = ({ title, keywords, description }: MetaProps): React.ReactElement => {
   return (
     <Head>
       <title>{title}</title>

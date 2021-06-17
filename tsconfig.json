@@ -7,6 +7,9 @@
       ],
       "@styles/*": [
         "styles/*"
+      ],
+      "@util/*": [
+        "util/*"
       ]
     },
     "target": "es5",
@@ -49,5 +52,9 @@
     "**/node_modules",
     "**/.next",
     "**/out"
-  ]
+  ],
+  "typedocOptions": {
+    "entryPoints": ["pages", "components", "@types", "util"],
+    "out": "docs"
+  }
 }

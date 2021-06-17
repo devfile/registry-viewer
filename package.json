@@ -8,8 +8,10 @@
     "start": "next start",
     "clean": "rm -rf .next/ out/ node_modules/",
     "cypress:standalone": "yarn run cypress open",
-    "cypress:open": "concurrently --names 'CYPRESS,SERVER' --prefix-colors 'yellow,blue' \"yarn cypress:standalone\" \"yarn start\"",
-    "cypress:build": "yarn build & yarn cypress:open"
+    "cypress:start": "concurrently --names 'CYPRESS,SERVER' --prefix-colors 'yellow,blue' \"yarn cypress:standalone\" \"yarn start\"",
+    "cypress:open": "yarn build & yarn cypress:start",
+    "typedoc:build": "node_modules/.bin/typedoc --tsconfig .",
+    "typedoc:start": "npx serve docs"
   },
   "dependencies": {
     "@patternfly/react-core": "^4.121.1",
@@ -43,9 +45,12 @@
     "eslint-plugin-promise": "^5.1.0",
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-tsdoc": "^0.2.14",
     "postcss": "^8.3.0",
     "tailwindcss": "^2.1.4",
-    "typescript": "^4.3.2",
+    "typedoc": "^0.20.36",
+    "typedoc-plugin-merge-modules": "^2.1.1",
+    "typescript": "4.2.x",
     "webpack": "^5.38.1"
   }
 }

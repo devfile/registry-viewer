@@ -1,5 +1,8 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document'
 
+/**
+ * Renders the {@link MyDocument}
+ */
 class MyDocument extends Document {
   render (): React.ReactElement {
     return (

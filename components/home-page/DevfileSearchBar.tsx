@@ -1,12 +1,17 @@
 import { SearchInput, Text, TextContent, TextVariants } from '@patternfly/react-core'
 
-interface Props {
-  count: number,
-  onSearchChange: (value: string) => void,
-  searchValue: string
+export interface DevfileSearchBarProps {
+  devfileCount: number,
+  onSearchBarChange: (value: string) => void,
+  searchBarValue: string
 }
 
-const DevfileSearchBar = ({ count, onSearchChange, searchValue }: Props): React.ReactElement => {
+/**
+ * Renders a {@link DevfileSearchBar} React component.
+ * Adds a search bar for devfiles
+ * @returns `<DevfileSearchBar devfileCount={devfileCount} onSearchBarChange={onSearchBarChange} searchBarValue={searchBarValue} />`
+ */
+const DevfileSearchBar: React.FC<DevfileSearchBarProps> = ({ devfileCount, onSearchBarChange, searchBarValue }: DevfileSearchBarProps) => {
   return (
     <div className="flex">
       <TextContent className="pr-4">
@@ -16,10 +21,10 @@ const DevfileSearchBar = ({ count, onSearchChange, searchValue }: Props): React.
         data-test-id="search-bar-devfile"
         className="flex-1"
         placeholder='Find by name, tag, or description'
-        value={searchValue}
-        onChange={onSearchChange}
-        onClear={() => onSearchChange('')}
-        resultsCount={count}
+        value={searchBarValue}
+        onChange={onSearchBarChange}
+        onClear={() => onSearchBarChange('')}
+        resultsCount={devfileCount}
       />
     </div>
   )

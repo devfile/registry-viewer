@@ -7,7 +7,10 @@ interface Path {
   params: { id: string }
 }
 
-const Home = ({ devfile }: InferGetStaticPropsType<typeof getStaticProps>): React.ReactElement => {
+/**
+ * Renders the {@link DevfilePage}
+ */
+const DevfilePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({ devfile }: InferGetStaticPropsType<GetStaticProps>) => {
   return (
     <>
       <TextContent>
@@ -47,4 +50,4 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }
 }
 
-export default Home
+export default DevfilePage

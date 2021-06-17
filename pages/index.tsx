@@ -7,13 +7,22 @@ import { InferGetStaticPropsType, GetStaticProps } from 'next'
 import { useState, useEffect } from 'react'
 import { Grid, GridItem } from '@patternfly/react-core'
 
-const Home = ({ devfiles, tagsMap, typesMap }: InferGetStaticPropsType<typeof getStaticProps>): React.ReactElement => {
-  const [searchValue, setSearchValue] = useState<string>('')
+/**
+ * Renders the {@link HomePage}
+ */
+const HomePage:React.FC<InferGetStaticPropsType<GetStaticProps>> = ({ devfiles, tagsMap, typesMap }: InferGetStaticPropsType<GetStaticProps>): React.ReactElement => {
+  const [searchBarValue, setSearchBarValue] = useState<string>('')
   const [filteredDevfiles, setFilteredDevfiles] = useState<Devfile[]>(devfiles)
 
   const [tagsData, setTagsData] = useState<FilterDataElem[]>(tagsMap)
   const [typesData, setTypesData] = useState<FilterDataElem[]>(typesMap)
 
+  /**
+   * Test
+   * @param devfiles-devfiles to be filtered upon
+   * @param searchValue-search bar input
+   * @returns Filtered devfiles based on the search bar input
+   */
   const filterDevfilesOnSearch = (devfiles: Devfile[], searchValue: string): Devfile[] => {
     if (searchValue === '') {
       return devfiles
@@ -77,15 +86,15 @@ const Home = ({ devfiles, tagsMap, typesMap }: InferGetStaticPropsType<typeof ge
   }
 
   useEffect(() => {
-    const filteredOnSearchDevfiles = filterDevfilesOnSearch(devfiles, searchValue)
+    const filteredOnSearchDevfiles = filterDevfilesOnSearch(devfiles, searchBarValue)
     const filteredOnTagDevfiles: Devfile[] = filterDevfilesOnTags(filteredOnSearchDevfiles)
     const filteredOnTypeDevfiles: Devfile[] = filterDevfilesOnTypes(filteredOnTagDevfiles)
 
     setFilteredDevfiles(filteredOnTypeDevfiles)
-  }, [tagsData, typesData, searchValue])
+  }, [tagsData, typesData, searchBarValue])
 
-  const onSearchChange = (value: string) => {
-    setSearchValue(value)
+  const onSearchBarChange = (value: string) => {
+    setSearchBarValue(value)
   }
 
   return (
@@ -100,8 +109,8 @@ const Home = ({ devfiles, tagsMap, typesMap }: InferGetStaticPropsType<typeof ge
           />
         </GridItem>
         <GridItem xl2={9} xl={9} lg={8} md={6} sm={12}>
-          <DevfileSearchBar count={filteredDevfiles.length} onSearchChange={onSearchChange} searchValue={searchValue} />
-          <DevfileGrid searchDevfiles={filteredDevfiles} />
+          <DevfileSearchBar devfileCount={filteredDevfiles.length} onSearchBarChange={onSearchBarChange} searchBarValue={searchBarValue} />
+          <DevfileGrid devfiles={filteredDevfiles} />
         </GridItem>
       </Grid>
     </div>
@@ -166,4 +175,4 @@ export const getStaticProps: GetStaticProps = async () => {
   }
 }
 
-export default Home
+export default HomePage
