@@ -5,7 +5,7 @@ import mainPageLogo from '../../public/images/mainPageLogo.svg'
 import { capitalizeFirstLetter } from '@util/index'
 
 import { forwardRef } from 'react'
-import { Text, TextContent, TextVariants, Brand, Badge, Card, CardTitle, CardBody, CardFooter, CardHeader, CardHeaderMain } from '@patternfly/react-core'
+import { Text, TextContent, TextVariants, Brand, Label, LabelGroup, Card, CardTitle, CardBody, CardFooter, CardHeader, CardHeaderMain } from '@patternfly/react-core'
 
 export interface DevfileTileProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   devfile: Devfile
@@ -32,7 +32,11 @@ const DevfileTile: React.ForwardRefRenderFunction<HTMLElement, DevfileTileProps>
           <TextContent>
             <Text className="pb-4" component={TextVariants.p}>{capitalizeFirstLetter(devfile.type)}</Text>
           </TextContent>
-          <Brand src={mainPageLogo} alt="" className="h-10" />
+          <Brand
+            src={devfile.icon || mainPageLogo}
+            alt=""
+            className="h-10"
+          />
         </CardHeaderMain>
       </CardHeader>
       <CardTitle>
@@ -46,10 +50,12 @@ const DevfileTile: React.ForwardRefRenderFunction<HTMLElement, DevfileTileProps>
         </TextContent>
       </CardBody>
       <CardFooter>
-        {devfile.tags?.slice(0, maxTags).map((tag) => {
-          return <Badge className="m-0.5" key={tag}>{tag}</Badge>
-        })}
-        { maxTags < devfile.tags?.length && <Badge className="m-0.5" isRead>{devfile.tags?.length - maxTags} more</Badge> }
+        <LabelGroup>
+          {devfile.tags?.slice(0, maxTags).map((tag) => {
+            return <Label className="m-0.5" key={tag}>{tag}</Label>
+          })}
+        </LabelGroup>
+        { /* maxTags < devfile.tags?.length && <Badge className="m-0.5" isRead>{devfile.tags?.length - maxTags} more</Badge> */ }
       </CardFooter>
     </Card>
   )

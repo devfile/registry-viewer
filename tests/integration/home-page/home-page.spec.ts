@@ -1,9 +1,9 @@
 /// <reference types="cypress" />
 
-import type { Devfile, FilterDataElem } from 'custom-types'
+import type { Devfile, FilterElem } from 'custom-types'
 
-const getStringArrFreq = (arr: string[]): FilterDataElem[] => {
-  const filterDataArr: FilterDataElem[] = []
+const getStringArrFreq = (arr: string[]): FilterElem[] => {
+  const filterDataArr: FilterElem[] = []
   let prev = ''
 
   arr.sort((a, b) => { return a.localeCompare(b, 'en', { sensitivity: 'accent' }) })
@@ -22,22 +22,22 @@ const getStringArrFreq = (arr: string[]): FilterDataElem[] => {
   return filterDataArr
 }
 
-const getSortedTagsAndFreq = (devfiles: Devfile[]): FilterDataElem[] => {
+const getSortedTagsAndFreq = (devfiles: Devfile[]): FilterElem[] => {
   const tags: string[] = devfiles?.map((devfile) => {
     return devfile?.tags
   }).flat()
 
-  const tagsMap: FilterDataElem[] = getStringArrFreq(tags)
+  const tagsMap: FilterElem[] = getStringArrFreq(tags)
 
   return tagsMap
 }
 
-const getSortedTypesAndFreq = (devfiles: Devfile[]): FilterDataElem[] => {
+const getSortedTypesAndFreq = (devfiles: Devfile[]): FilterElem[] => {
   const types: string[] = devfiles?.map((devfile) => {
     return devfile.type
   })
 
-  const typesMap: FilterDataElem[] = getStringArrFreq(types)
+  const typesMap: FilterElem[] = getStringArrFreq(types)
 
   return typesMap
 }
@@ -61,7 +61,7 @@ const filterDevfilesOnSearch = (devfiles: Devfile[], searchValue: string): Devfi
   return filteredOnSearchDevfiles
 }
 
-const filterDevfilesOnTags = (devfiles: Devfile[], filteredTags: FilterDataElem[]): Devfile[] => {
+const filterDevfilesOnTags = (devfiles: Devfile[], filteredTags: FilterElem[]): Devfile[] => {
   const filteredOnTagDevfiles: Devfile[] = devfiles.filter((devfile: Devfile) => {
     let isSelected = false
     devfile.tags?.some((tag) => {
@@ -78,7 +78,7 @@ const filterDevfilesOnTags = (devfiles: Devfile[], filteredTags: FilterDataElem[
   return filteredOnTagDevfiles
 }
 
-const filterDevfilesOnTypes = (devfiles: Devfile[], filteredTypes: FilterDataElem[]): Devfile[] => {
+const filterDevfilesOnTypes = (devfiles: Devfile[], filteredTypes: FilterElem[]): Devfile[] => {
   const filteredOnTypeDevfiles: Devfile[] = devfiles.filter((devfile: Devfile) => {
     let isSelected = false
     filteredTypes.some((filteredType) => {
@@ -134,13 +134,13 @@ describe('Home page tests on desktop', () => {
     cy.request('https://registry.devfile.io/index/all').then((response) => {
       const devfiles: Devfile[] = JSON.parse(response.body) as Devfile[]
 
-      const typesMap: FilterDataElem[] = getSortedTypesAndFreq(devfiles)
+      const typesMap: FilterElem[] = getSortedTypesAndFreq(devfiles)
 
       cy.get('[data-test-id^=type-]').should('have.length', typesMap.length)
 
       for (let numTypesSelected = 1; numTypesSelected <= typesMap.length; numTypesSelected++) {
         for (let i = 0; i + numTypesSelected <= typesMap.length; i++) {
-          const filteredTypes: FilterDataElem[] = typesMap.slice(i, i + numTypesSelected)
+          const filteredTypes: FilterElem[] = typesMap.slice(i, i + numTypesSelected)
           if (numTypesSelected === 1 || i !== 0) {
             cy.get(`[data-test-id=type-${filteredTypes[numTypesSelected - 1].value.replace(/\.| /g, '')}]`).click()
           } else {
@@ -173,7 +173,7 @@ describe('Home page tests on desktop', () => {
     cy.request('https://registry.devfile.io/index/all').then((response) => {
       const devfiles: Devfile[] = JSON.parse(response.body) as Devfile[]
 
-      const tagsMap: FilterDataElem[] = getSortedTagsAndFreq(devfiles)
+      const tagsMap: FilterElem[] = getSortedTagsAndFreq(devfiles)
 
       // Get the number of clicks required for maximum filter size
       const numTagFilterClicks = Math.ceil((tagsMap.length - 10) / 5)
@@ -187,7 +187,7 @@ describe('Home page tests on desktop', () => {
 
       for (let numTagsSelected = 1; numTagsSelected <= tagsMap.length; numTagsSelected++) {
         for (let i = 0; i + numTagsSelected <= tagsMap.length; i++) {
-          const filteredTags: FilterDataElem[] = tagsMap.slice(i, i + numTagsSelected)
+          const filteredTags: FilterElem[] = tagsMap.slice(i, i + numTagsSelected)
 
           if (numTagsSelected === 1 || i !== 0) {
             cy.get(`[data-test-id=tag-${filteredTags[numTagsSelected - 1].value.replace(/\.| /g, '')}]`).click()
@@ -220,7 +220,7 @@ describe('Home page tests on desktop', () => {
     cy.request('https://registry.devfile.io/index/all').then((response) => {
       const devfiles: Devfile[] = JSON.parse(response.body) as Devfile[]
 
-      const tagsMap: FilterDataElem[] = getSortedTagsAndFreq(devfiles)
+      const tagsMap: FilterElem[] = getSortedTagsAndFreq(devfiles)
 
       // Get the number of clicks required for maximum filter size
       const numTagFilterClicks = Math.ceil((tagsMap.length - 10) / 5)

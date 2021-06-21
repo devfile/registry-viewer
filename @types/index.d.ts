@@ -11,6 +11,7 @@ declare module 'custom-types' {
     description?: string,
     type: string,
     tags: string[],
+    icon: string,
     projectType: string,
     language: string,
     links: {
@@ -23,7 +24,7 @@ declare module 'custom-types' {
     }
   }
 
-  export interface FilterDataElem {
+  export interface FilterElem {
     value: string,
     state: boolean,
     freq: number
