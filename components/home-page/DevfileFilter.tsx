@@ -6,7 +6,7 @@ import { capitalizeFirstLetter } from '@util/index'
 import { Grid, GridItem, Checkbox, Form, FormGroup, SearchInput, Text, TextContent, TextVariants } from '@patternfly/react-core'
 import { useState, useEffect } from 'react'
 
-export interface FilterProps {
+export interface DevfileFilterProps {
   tagsStateWithFreq: FilterElem[],
   typesStateWithFreq: FilterElem[],
   setTagsStateWithFreq: Dispatch<SetStateAction<FilterElem[]>>,
@@ -16,9 +16,9 @@ export interface FilterProps {
 /**
  * Renders a {@link Filter} React component.
  * Adds a type and tag filter for devfiles
- * @returns `<Filter tagsData={tagsData} typesData={typesData} setTagsData={setTagsData} setTypesData={setTypesData}/>`
+ * @returns `<DevfileFilter tagsData={tagsData} typesData={typesData} setTagsData={setTagsData} setTypesData={setTypesData}/>`
  */
-const DevfileFilter: React.FC<FilterProps> = ({ tagsStateWithFreq, typesStateWithFreq, setTagsStateWithFreq, setTypesStateWithFreq }: FilterProps) => {
+const DevfileFilter: React.FC<DevfileFilterProps> = ({ tagsStateWithFreq, typesStateWithFreq, setTagsStateWithFreq, setTypesStateWithFreq }: DevfileFilterProps) => {
   const baseNumTags = 10
   const changeNumTagsBy = 5
 
