@@ -46,7 +46,7 @@
     "**/*.ts",
     "**/*.tsx",
     "**/*.json"
-, "tests/plugins/index.js"  ],
+  ],
   "exclude": [
     ".yarn",
     "**/node_modules",
