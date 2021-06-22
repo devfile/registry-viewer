@@ -1,4 +1,4 @@
-import type { Devfile } from 'customTypes'
+import type { Devfile } from 'custom-types'
 
 import { InferGetStaticPropsType, GetStaticProps, GetStaticPaths } from 'next'
 import { Text, TextContent, TextVariants } from '@patternfly/react-core'
@@ -7,8 +7,10 @@ interface Path {
   params: { id: string }
 }
 
-const Home = ({ devfile }: InferGetStaticPropsType<typeof getStaticProps>) => {
-
+/**
+ * Renders the {@link DevfilePage}
+ */
+const DevfilePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({ devfile }: InferGetStaticPropsType<GetStaticProps>) => {
   return (
     <>
       <TextContent>
@@ -20,8 +22,8 @@ const Home = ({ devfile }: InferGetStaticPropsType<typeof getStaticProps>) => {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const res: Response = await fetch('https://registry.devfile.io/index/all')
-  const devfiles: Devfile[] = await res.json()
+  const res: Response = await fetch('https://registry.devfile.io/index/all?icon=base64')
+  const devfiles: Devfile[] = await res.json() as Devfile[]
   const devfile: Devfile = (devfiles.find((devfile: Devfile) => {
     return devfile.name === context.params?.id
   })!)
@@ -35,8 +37,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const res: Response = await fetch('https://registry.devfile.io/index/all')
-  const devfiles: Devfile[] = await res.json()
+  const res: Response = await fetch('https://registry.devfile.io/index/all?icon=base64')
+  const devfiles: Devfile[] = await res.json() as Devfile[]
   const ids: string[] = devfiles.map((devfile) => {
     return devfile.name
   })
@@ -48,4 +50,4 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }
 }
 
-export default Home
+export default DevfilePage

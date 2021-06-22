@@ -17,14 +17,24 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create next
   "dev": "next",
   "build": "next build && next export",
   "start": "next start",
-  "clean": "rm -rf .next/ out/ node_modules/"
+  "start-build": "yarn build & yarn start",
+  "clean": "rm -rf .next/ out/ node_modules/",
+  "cypress:start": "yarn run cypress open",
+  "cypress:start-build": "concurrently --names 'CYPRESS,SERVER' --prefix-colors 'yellow,blue' \"yarn cypress:start\" \"yarn start-build\"",
+  "typedoc:build": "node_modules/.bin/typedoc --tsconfig .",
+  "typedoc:start": "npx serve docs"
 }
 ```
 
 - `dev` - Runs `next dev` which starts Next.js in development mode
-- `build` - Runs `next build && next export` which builds the application for - production usage
+- `build` - Runs `next build && next export` which builds the application for production usage
 - `start` - Runs `next start` which starts a Next.js production server
-- `clean` - Runs `rm -rf .next/ out/ node_modules/` which slims the directory
+- `start-build` - Runs `build` then `start`
+- `clean` - Slims the directory
+- `cypress:start` - Runs cypress as a standalone client
+- `cypress:start-build` - Runs cypress concurrently with a production build
+- `typedoc:build` - Runs typedoc to generate docs
+- `typedoc:start` - Serves the docs
 
 ## Getting Started
 

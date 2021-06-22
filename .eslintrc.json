@@ -2,41 +2,74 @@
   "env": {
     "browser": true,
     "es2021": true,
-    "node": true
+    "node": true,
+    "cypress/globals": true
   },
   "extends": [
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:cypress/recommended",
     "standard"
   ],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"],
+      "parserOptions": {
+        "project": "./tsconfig.json",
+        "tsconfigRootDir": "./",
+        "ecmaFeatures": {
+          "jsx": true
+        },
+        "ecmaVersion": 12,
+        "sourceType": "module"
+      }
+    }
+  ],
   "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "ecmaFeatures": {
-      "jsx": true
-    },
-    "ecmaVersion": 12,
-    "sourceType": "module"
-  },
   "plugins": [
     "react",
-    "@typescript-eslint"
+    "@typescript-eslint",
+    "cypress",
+    "eslint-plugin-tsdoc"
   ],
   "globals": {
     "React": "writable"
   },
   "settings": {
     "import/resolver": {
+      "typescript": {},
       "node": {
         "extensions": [".js", ".jsx", ".ts", ".tsx", ".d.ts"]
       }
     }
   },
   "rules": {
+    "no-restricted-imports": [
+      "error",
+      {
+        "name": "react",
+        "importNames": ["useLayoutEffect"],
+        "message":
+          "`useLayoutEffect` causes a warning in SSR. Use `useEffect`"
+      }
+    ],
+    "tsdoc/syntax": "warn",
+    "cypress/no-assigning-return-values": "error",
+    "cypress/no-unnecessary-waiting": "error",
+    "cypress/assertion-before-screenshot": "warn",
+    "cypress/no-force": "warn",
+    "cypress/no-async-tests": "error",
+    "@typescript-eslint/no-unsafe-member-access": [0],
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "react-hooks/exhaustive-deps": "off",
     "react/react-in-jsx-scope": "off",
-    "import/no-unresolved": [2],
+    "import/no-unresolved": "off",
     "indent": "warn",
     "quotes": "warn",
-    "no-unused-vars": "warn",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "error",
     "keyword-spacing": "warn",
     "space-before-function-paren": "warn",
     "eqeqeq": "warn",

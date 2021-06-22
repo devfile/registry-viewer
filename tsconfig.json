@@ -1,9 +1,16 @@
 {
   "compilerOptions": {
-    "baseUrl": "./",
+    "baseUrl": ".",
     "paths": {
-      "@components/*": ["components/*"],
-      "@styles/*": ["styles/*"]
+      "@components/*": [
+        "components/*"
+      ],
+      "@styles/*": [
+        "styles/*"
+      ],
+      "@util/*": [
+        "util/*"
+      ]
     },
     "target": "es5",
     "lib": [
@@ -12,7 +19,6 @@
       "esnext"
     ],
     "allowJs": true,
-    "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
@@ -24,16 +30,31 @@
     "jsx": "preserve",
     "noImplicitAny": true,
     "typeRoots": [
-      "types/types.d.ts",
+      "@types",
       "node_modules/@types"
     ],
+    "types": [
+      "node",
+      "cypress"
+    ],
+    "skipLibCheck": true,
   },
   "include": [
     "next-env.d.ts",
+    "**.*.js",
+    "**.*.jsx",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    "**/*.json"
   ],
   "exclude": [
-    "node_modules"
-  ]
+    ".yarn",
+    "**/node_modules",
+    "**/.next",
+    "**/out"
+  ],
+  "typedocOptions": {
+    "entryPoints": ["pages", "components", "@types", "util"],
+    "out": "docs"
+  }
 }
