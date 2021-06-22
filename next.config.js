@@ -7,9 +7,6 @@ const withTM = require('next-transpile-modules')([
 ])
 
 module.exports = withPlugins([withTM, withImages, withPWA], {
-  future: {
-    webpack5: true
-  },
   pwa: {
     disable: process.env.NODE_ENV === 'development',
     register: true,

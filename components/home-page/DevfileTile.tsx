@@ -55,7 +55,6 @@ const DevfileTile: React.ForwardRefRenderFunction<HTMLElement, DevfileTileProps>
             return <Label className="m-0.5" key={tag}>{tag}</Label>
           })}
         </LabelGroup>
-        { /* maxTags < devfile.tags?.length && <Badge className="m-0.5" isRead>{devfile.tags?.length - maxTags} more</Badge> */ }
       </CardFooter>
     </Card>
   )

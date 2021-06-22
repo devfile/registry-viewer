@@ -34,7 +34,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create next
 - `cypress:start` - Runs cypress as a standalone client
 - `cypress:start-build` - Runs cypress concurrently with a production build
 - `typedoc:build` - Runs typedoc to generate docs
-- `typedoc:serve` - Serves the docs
+- `typedoc:start` - Serves the docs
 
 ## Getting Started
 

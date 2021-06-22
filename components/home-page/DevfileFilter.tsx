@@ -14,7 +14,7 @@ export interface DevfileFilterProps {
 }
 
 /**
- * Renders a {@link Filter} React component.
+ * Renders a {@link DevfileFilter} React component.
  * Adds a type and tag filter for devfiles
  * @returns `<DevfileFilter tagsData={tagsData} typesData={typesData} setTagsData={setTagsData} setTypesData={setTypesData}/>`
  */
