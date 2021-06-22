@@ -3,5 +3,6 @@
   "fixturesFolder": "tests/fixtures",
   "integrationFolder": "tests/integration",
   "pluginsFile": "tests/plugins/index.js",
-  "supportFile": "tests/support/index.ts"
+  "supportFile": "tests/support/index.ts",
+  "video": false
 }
