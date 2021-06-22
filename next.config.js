@@ -7,6 +7,9 @@ const withTM = require('next-transpile-modules')([
 ])
 
 module.exports = withPlugins([withTM, withImages, withPWA], {
+  images: {
+    disableStaticImages: true
+  },
   pwa: {
     disable: process.env.NODE_ENV === 'development',
     register: true,
