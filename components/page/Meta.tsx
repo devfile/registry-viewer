@@ -1,12 +1,17 @@
 import Head from 'next/head'
 
-interface MetaProps {
+export interface MetaProps {
   title?: string,
   keywords?: string,
   description?: string
 }
 
-const Meta = ({ title, keywords, description }: MetaProps) => {
+/**
+ * Renders a {@link Meta} React component.
+ * Can change specific meta values in any pages
+ * @returns `<Meta title={title} keywords={keywords} description={description}/>`
+ */
+const Meta: React.FC<MetaProps> = ({ title, keywords, description }: MetaProps): React.ReactElement => {
   return (
     <Head>
       <title>{title}</title>
@@ -18,7 +23,7 @@ const Meta = ({ title, keywords, description }: MetaProps) => {
       <meta name='viewport' content='width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=5' />
       <meta name="theme-color" content="#317EFB"/>
 
-      <link rel="icon" href="/favicon.ico" />
+      <link rel="icon" href="/images/icons/favicon.ico" />
       <link rel="manifest" href="/manifest.json" />
     </Head>
   )
@@ -26,8 +31,8 @@ const Meta = ({ title, keywords, description }: MetaProps) => {
 
 Meta.defaultProps = {
   title: 'Devfile Registry',
-  keywords: 'Keywords',
-  description: 'Description'
+  keywords: 'Devfile, Registry, OpenShift, Kubernetes',
+  description: 'UI for the Devfile Registry'
 }
 
 export default Meta

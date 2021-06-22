@@ -1,4 +1,4 @@
-import { Devfile } from 'customTypes'
+import { Devfile } from 'custom-types'
 
 import {
     Badge,

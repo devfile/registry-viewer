@@ -1,170 +1,161 @@
-import type { Devfile, TagElem, TypeElem } from 'customTypes'
-import Filter from '@components/Filter'
-import DevfileSearchBar from '@components/DevfileSearchBar'
-import DevfileGrid from '@components/DevfileGrid'
+import type { Devfile, FilterElem } from 'custom-types'
+import DevfileFilter from '@components/home-page/DevfileFilter'
+import DevfileSearchBar from '@components/home-page/DevfileSearchBar'
+import DevfileGrid from '@components/home-page/DevfileGrid'
 
 import { InferGetStaticPropsType, GetStaticProps } from 'next'
 import { useState, useEffect } from 'react'
 import { Grid, GridItem } from '@patternfly/react-core'
 
-const Home = ({ devfiles, types, tags }: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const [searchValue, setSearchValue] = useState<string>('')
-  const [filterDevfiles, setFilterDevfiles] = useState<Devfile[]>(devfiles)
+/**
+ * Renders the {@link HomePage}
+ */
+const HomePage:React.FC<InferGetStaticPropsType<GetStaticProps>> = ({ devfiles, tags, types }: InferGetStaticPropsType<GetStaticProps>): React.ReactElement => {
+  const [searchBarValue, setSearchBarValue] = useState<string>('')
+  const [filteredDevfiles, setFilteredDevfiles] = useState<Devfile[]>(devfiles)
 
-  const [checkboxTagsValues, setCheckboxTagsValues] = useState<TagElem[]>(tags.map((tag: string) => {
-    return { tag: tag, value: false }
-  }))
-  const [checkboxTypesValues, setCheckboxTypesValues] = useState<TypeElem[]>(types.map((type: string) => {
-    return { type: type, value: false }
-  }))
-
-  const filterDevfilesOnSearch = (devfiles: Devfile[], searchValue: string) => {
-    if (searchValue === '') {
-      return devfiles
-    }
-
-    const filteredOnSearchDevfiles: Devfile[] = devfiles.filter((devfile: Devfile) => {
-      const searchedTags: string[] = devfile.tags?.filter((tag) => {
-        return tag.toLowerCase().includes(searchValue.toLowerCase())
-      })
-
-      return (
-        devfile.displayName.toLowerCase().includes(searchValue.toLowerCase()) || // Check the search value against the display name
-        devfile.description?.toLowerCase().includes(searchValue.toLowerCase()) || // Check the search value against the description
-        (searchedTags?.length > 0) // Check the search value against the tags
-      )
-    })
-    return filteredOnSearchDevfiles
-  }
-
-  const filterDevfilesOnTags = (devfiles: Devfile[]) => {
-    const filteredTags: TagElem[] = checkboxTagsValues.filter(tag => tag.value)
-
-    if (!filteredTags.length) {
-      return devfiles
-    }
-
-    const filteredOnTagDevfiles: Devfile[] = devfiles.filter((devfile: Devfile) => {
-      let isSelected: boolean = false
-      devfile.tags?.some((tag) => {
-        filteredTags.some((filteredTag) => {
-          if (tag === filteredTag.tag)
-            return isSelected = true
-        })
-        return isSelected
-      })
-      return isSelected
-    })
-    return filteredOnTagDevfiles
-  }
-
-  const filterDevfilesOnTypes = (devfiles: Devfile[]) => {
-    const filteredTypes: TypeElem[] = checkboxTypesValues.filter(type => type.value)
-
-    if (!filteredTypes.length) {
-      return devfiles
-    }
-
-    const filteredOnTypeDevfiles: Devfile[] = devfiles.filter((devfile: Devfile) => {
-      let isSelected: boolean = false
-      filteredTypes.some((filteredType) => {
-        if (devfile.type === filteredType.type)
-          return isSelected = true
-      })
-      return isSelected
-    })
-    return filteredOnTypeDevfiles
-  }
+  const [tagsStateWithFreq, setTagsStateWithFreq] = useState<FilterElem[]>(tags)
+  const [typesStateWithFreq, setTypesStateWithFreq] = useState<FilterElem[]>(types)
 
   useEffect(() => {
-    const filteredOnSearchDevfiles = filterDevfilesOnSearch(devfiles, searchValue)
-    const filteredOnTagDevfiles: Devfile[] = filterDevfilesOnTags(filteredOnSearchDevfiles)
-    const filteredOnTypeDevfiles: Devfile[] = filterDevfilesOnTypes(filteredOnTagDevfiles)
+    let filteredDevfiles = filterDevfilesOnSearchBar(devfiles, searchBarValue)
+    filteredDevfiles = filterDevfilesOnTags(filteredDevfiles, tagsStateWithFreq)
+    filteredDevfiles = filterDevfilesOnTypes(filteredDevfiles, typesStateWithFreq)
 
-    setFilterDevfiles(filteredOnTypeDevfiles)
+    setFilteredDevfiles(filteredDevfiles)
+  }, [tagsStateWithFreq, typesStateWithFreq, searchBarValue])
 
-  }, [checkboxTagsValues, checkboxTypesValues, searchValue])
-
-  const onCheckboxTagsChange = (checked: boolean, event: React.FormEvent<HTMLInputElement>) => {
-    const target: EventTarget = event.target
-    const value: boolean = (target as HTMLInputElement).checked
-    const name: string = (target as HTMLInputElement).name
-    const index: number = checkboxTagsValues.findIndex((elem) => {
-      return elem.tag === name
-    })
-    
-    const copy: TagElem[] = [...checkboxTagsValues]
-    copy[index] = { tag: name, value }
-    setCheckboxTagsValues(copy)
-  }
-
-  const onCheckboxTypesChange = (checked: boolean, event: React.FormEvent<HTMLInputElement>) => {
-    const target: EventTarget = event.target
-    const value: boolean = (target as HTMLInputElement).checked
-    const name: string = (target as HTMLInputElement).name
-    const index: number = checkboxTypesValues.findIndex((elem) => {
-      return elem.type === name
-    })
-
-    const copy: TypeElem[] = [...checkboxTypesValues]
-    copy[index] = { type: name, value }
-    setCheckboxTypesValues(copy)
-  }
-
-  const onSearchChange = (value: string) => {
-    setSearchValue(value)
+  const onSearchBarChange = (value: string) => {
+    setSearchBarValue(value)
   }
 
   return (
-    <div style={{ padding: '1rem 4.5rem' }}>
+    <div>
       <Grid hasGutter>
-        <GridItem span={3}>
-          <Filter
-            tags={tags}
-            types={types}
-            checkboxTagsValues={checkboxTagsValues}
-            checkboxTypesValues={checkboxTypesValues}
-            onCheckboxTagsChange={onCheckboxTagsChange}
-            onCheckboxTypesChange={onCheckboxTypesChange}
+        <GridItem xl2={3} xl={3} lg={4} md={6} sm={12}>
+          <DevfileFilter
+            tagsStateWithFreq={tagsStateWithFreq}
+            typesStateWithFreq={typesStateWithFreq}
+            setTagsStateWithFreq={setTagsStateWithFreq}
+            setTypesStateWithFreq={setTypesStateWithFreq}
           />
         </GridItem>
-        <GridItem span={9}>
-          <DevfileSearchBar count={filterDevfiles.length} onSearchChange={onSearchChange} searchValue={searchValue} />
-          <DevfileGrid searchDevfiles={filterDevfiles} />
+        <GridItem xl2={9} xl={9} lg={8} md={6} sm={12}>
+          <DevfileSearchBar devfileCount={filteredDevfiles.length} onSearchBarChange={onSearchBarChange} searchBarValue={searchBarValue} />
+          <DevfileGrid devfiles={filteredDevfiles} />
         </GridItem>
       </Grid>
     </div>
   )
 }
 
+const isSearchBarValueIn = (value: string | undefined, searchBarValue: string) => {
+  return value?.toLowerCase().includes(searchBarValue.toLowerCase())
+}
+
+const isSearchBarValueInTag = (tags: string[] | undefined, searchBarValue: string) => {
+  return tags?.some((tag) => (tag.toLowerCase().includes(searchBarValue.toLowerCase())))
+}
+
+const filterDevfilesOnSearchBar = (devfiles: Devfile[], searchBarValue: string): Devfile[] => {
+  if (searchBarValue === '') {
+    return devfiles
+  }
+
+  const devfilesFilteredOnSearchBar: Devfile[] = devfiles.filter((devfile: Devfile) => {
+    if (isSearchBarValueIn(devfile.displayName, searchBarValue)) {
+      return true
+    }
+
+    if (isSearchBarValueIn(devfile.description, searchBarValue)) {
+      return true
+    }
+
+    return isSearchBarValueInTag(devfile.tags, searchBarValue)
+  })
+  return devfilesFilteredOnSearchBar
+}
+
+const filterDevfilesOnTags = (devfiles: Devfile[], tagsStateWithFreq: FilterElem[]): Devfile[] => {
+  const tagsSelectedByUser: FilterElem[] = tagsStateWithFreq.filter(tag => tag.state)
+
+  if (!tagsSelectedByUser.length) {
+    return devfiles
+  }
+
+  const devfilesFilteredOnTags: Devfile[] = devfiles.filter((devfile: Devfile) => {
+    return devfile.tags?.some((tag) => {
+      return tagsSelectedByUser.some((tagSelectedByUser) => (tag === tagSelectedByUser.value))
+    })
+  })
+  return devfilesFilteredOnTags
+}
+
+const filterDevfilesOnTypes = (devfiles: Devfile[], typesStateWithFreq: FilterElem[]): Devfile[] => {
+  const typesSelectedByUser: FilterElem[] = typesStateWithFreq.filter(type => type.state)
+
+  if (!typesSelectedByUser.length) {
+    return devfiles
+  }
+
+  const devfilesFilteredOnTypes: Devfile[] = devfiles.filter((devfile: Devfile) => {
+    return typesSelectedByUser.some((typeSelectedByUser) => (devfile.type === typeSelectedByUser.value))
+  })
+  return devfilesFilteredOnTypes
+}
+
+const getStateAndStringFreq = (arr: string[]): FilterElem[] => {
+  const filterElemArr: FilterElem[] = []
+  let prev = ''
+
+  arr.sort((a, b) => { return a.localeCompare(b, 'en', { sensitivity: 'accent' }) })
+  for (let i = 0; i < arr.length; i++) {
+    arr[i] = arr[i] ?? null
+    if (arr[i]) {
+      if (arr[i] !== prev) {
+        filterElemArr.push({ value: arr[i], state: false, freq: 1 })
+      } else {
+        filterElemArr[filterElemArr.length - 1].freq++
+      }
+      prev = arr[i]
+    }
+  }
+
+  return filterElemArr
+}
+
+const getTagsStateWithFreq = (devfiles: Devfile[]): FilterElem[] => {
+  const tagValues: string[] = devfiles?.map((devfile) => (devfile?.tags)).flat()
+
+  const tagsStateWithFreq: FilterElem[] = getStateAndStringFreq(tagValues)
+
+  return tagsStateWithFreq
+}
+
+const getTypesStateWithFreq = (devfiles: Devfile[]): FilterElem[] => {
+  const typeValues: string[] = devfiles?.map((devfile) => (devfile.type))
+
+  const tagsStateWithFreq: FilterElem[] = getStateAndStringFreq(typeValues)
+
+  return tagsStateWithFreq
+}
+
 export const getStaticProps: GetStaticProps = async () => {
-  const res: Response = await fetch('https://registry.devfile.io/index/all')
-  const devfiles: Devfile[] = await res.json()
+  const res: Response = await fetch('https://registry.devfile.io/index/all?icon=base64')
+  let devfiles: Devfile[] = await res.json() as Devfile[]
+  devfiles = devfiles.sort((a, b) => { return a.displayName.localeCompare(b.displayName, 'en', { sensitivity: 'accent' }) })
 
-  const types: string[] = devfiles?.map((devfile) => {
-    return devfile.type
-  }).filter((value, index, self) => { // remove duplicate values
-    return self.indexOf(value) === index
-  })
-
-  const tags: string[] = devfiles?.map((devfile) => {
-    return devfile?.tags
-  }).reduce((acc, curVal) => { // flatten the array
-    return acc.concat(curVal ?? null)
-  }, []).filter((value, index, self) => { // remove duplicate values
-    return self.indexOf(value) === index
-  }).filter((tag) => { // remove null value
-    return tag !== null
-  })
+  const tags: FilterElem[] = getTagsStateWithFreq(devfiles)
+  const types: FilterElem[] = getTypesStateWithFreq(devfiles)
 
   return {
     props: {
       devfiles,
-      types,
-      tags
+      tags,
+      types
     },
     revalidate: 21600 // Regenerate page every 6 hours
   }
 }
 
-export default Home
+export default HomePage

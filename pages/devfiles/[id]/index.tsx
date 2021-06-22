@@ -1,7 +1,8 @@
-import type, { Devfile } from 'customTypes'
-import DevPageProjects from '@components/DevPageProjects'
-import DevPageHeader from '@components/DevPageHeader'
-import DevPageYAML from '@components/DevPageYAML'
+import { Devfile } from 'custom-types'
+import DevPageProjects from '@components/page/DevPageProjects'
+import DevPageHeader from '@components/page/DevPageHeader'
+import DevPageYAML from '@components/page/DevPageYAML'
+
 import { InferGetStaticPropsType, GetStaticProps, GetStaticPaths } from 'next'
 
 interface Path {
@@ -9,7 +10,7 @@ interface Path {
 }
 
 /**
- * component that renders the individual devfile page for each type
+ * Renders the {@link DevfilePage}
  * @remarks
  *    stacks have header, starter projects, and yaml
  *    sample has header
@@ -18,7 +19,7 @@ interface Path {
  * @param devfileText - text of devile YAML, null when sample
  * @param devfileJSON -  json representation of devfile YAML, null when sample
  */
-const Home = ({ devfile, devfileText, devfileJSON }: InferGetStaticPropsType<typeof getStaticProps>) => {
+const DevfilePage = ({ devfile, devfileText, devfileJSON }: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
     <div style={{alignContent:"center", minHeight:"100vh"}}>
       {devfile.type==="stack"?(
@@ -35,8 +36,8 @@ const Home = ({ devfile, devfileText, devfileJSON }: InferGetStaticPropsType<typ
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const res: Response = await fetch('https://registry.devfile.io/index/all')
-  const devfiles: Devfile[] = await res.json()
+  const res: Response = await fetch('https://registry.devfile.io/index/all?icon=base64')
+  const devfiles: Devfile[] = await res.json() as Devfile[]
   const devfile: Devfile = (devfiles.find((devfile: Devfile) => {
     return devfile.name === context.params?.id
   })!)
@@ -68,8 +69,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const res: Response = await fetch('https://registry.devfile.io/index/all')
-  const devfiles: Devfile[] = await res.json()
+  const res: Response = await fetch('https://registry.devfile.io/index/all?icon=base64')
+  const devfiles: Devfile[] = await res.json() as Devfile[]
   const ids: string[] = devfiles.map((devfile) => {
     return devfile.name
   })
@@ -80,4 +81,5 @@ export const getStaticPaths: GetStaticPaths = async () => {
     fallback: false
   }
 }
-export default Home
+
+export default DevfilePage

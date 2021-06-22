@@ -1,5 +1,4 @@
-import type { Devfile } from 'customTypes'
-import styles from '@components/devpage.module.css'
+import styles from '@components/page/devpage.module.css'
 
 import {
     Card,
@@ -67,7 +66,6 @@ interface Project {
 interface Props { 
     starterProjects: Project[]
 }
-
 
 /**
  * extract zip url from project git source
@@ -193,5 +191,4 @@ const DevfilePageProjects= ({starterProjects}:Props) => {
         </Card>
   )
 }
-
 export default DevfilePageProjects
