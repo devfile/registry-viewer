@@ -8,11 +8,12 @@
     "start": "next start",
     "start-build": "yarn build & yarn start",
     "clean": "rm -rf .next/ out/ node_modules/",
-    "cypress:start": "yarn run cypress open",
+    "cypress:start": "yarn cypress open",
     "cypress:start-build": "concurrently --names 'CYPRESS,SERVER' --prefix-colors 'yellow,blue' \"yarn cypress:start\" \"yarn start-build\"",
     "typedoc:build": "node_modules/.bin/typedoc --tsconfig .",
     "typedoc:start": "npx serve docs",
-    "test": "jest --watchAll --verbose"
+    "jest:test": "jest --watchAll --verbose",
+    "test": "cypress run"
   },
   "dependencies": {
     "@patternfly/react-core": "^4.121.1",
