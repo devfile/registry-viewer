@@ -7,7 +7,7 @@ const withTM = require('next-transpile-modules')([
 ])
 
 module.exports = withPlugins([withTM, withImages, withPWA], {
-  images: {
+  images: { // Remove once next js is updated
     disableStaticImages: true
   },
   pwa: {
