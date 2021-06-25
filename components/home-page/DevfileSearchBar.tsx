@@ -13,13 +13,13 @@ export interface DevfileSearchBarProps {
  */
 const DevfileSearchBar: React.FC<DevfileSearchBarProps> = ({ devfileCount, onSearchBarChange, searchBarValue }: DevfileSearchBarProps) => {
   return (
-    <div className="flex">
-      <TextContent className="pr-4">
+    <div style={{ display: 'flex' }} >
+      <TextContent style={{ paddingRight: '1rem' }} >
         <Text component={TextVariants.h2}>Search</Text>
       </TextContent>
       <SearchInput
         data-test-id="search-bar-devfile"
-        className="flex-1"
+        style={{ flex: '1 1 0%' }}
         placeholder='Find by name, tag, or description'
         value={searchBarValue}
         onChange={onSearchBarChange}

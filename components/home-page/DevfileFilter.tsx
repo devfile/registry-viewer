@@ -19,11 +19,7 @@ export interface DevfileFilterProps {
  * @returns `<DevfileFilter tagsData={tagsData} typesData={typesData} setTagsData={setTagsData} setTypesData={setTypesData}/>`
  */
 const DevfileFilter: React.FC<DevfileFilterProps> = ({ tagsStateWithFreq, typesStateWithFreq, setTagsStateWithFreq, setTypesStateWithFreq }: DevfileFilterProps) => {
-  const baseNumTags = 10
-  const changeNumTagsBy = 5
-
   const [tagSearchBarValue, setTagSearchBarValue] = useState('')
-  const [numTags, setNumTags] = useState(baseNumTags)
 
   useEffect(() => {
     setTagsStateWithFreq(sortFilterDataArr(tagsStateWithFreq))
@@ -65,18 +61,6 @@ const DevfileFilter: React.FC<DevfileFilterProps> = ({ tagsStateWithFreq, typesS
     setTagSearchBarValue(value)
   }
 
-  const onMoreClick = () => {
-    setNumTags(numTags + changeNumTagsBy)
-  }
-
-  const onLessClick = () => {
-    if (numTags - changeNumTagsBy < baseNumTags) {
-      setNumTags(baseNumTags)
-    } else {
-      setNumTags(numTags - changeNumTagsBy)
-    }
-  }
-
   return (
     <>
       <TextContent>
@@ -113,9 +97,10 @@ const DevfileFilter: React.FC<DevfileFilterProps> = ({ tagsStateWithFreq, typesS
                 resultsCount={getFilterResultCount(tagsStateWithFreq, tagSearchBarValue)}
               />
             </GridItem>
-            { tagsStateWithFreq.filter(tagData => tagData.value.toLowerCase().includes(tagSearchBarValue.toLowerCase())).slice(0, numTags).map((tag) => {
+            <div style={{ height: '20rem', overflow: 'auto' }}>
+            { tagsStateWithFreq.filter(tagData => tagData.value.toLowerCase().includes(tagSearchBarValue.toLowerCase())).map((tag) => {
               return (
-                <GridItem md={12} sm={3} key={tag.value}>
+                <GridItem style={{ padding: '0.25rem' }} md={12} sm={3} key={tag.value}>
                   <Checkbox
                     data-test-id={`tag-${tag.value.replace(/\.| /g, '')}`}
                     isChecked={tag.state}
@@ -127,18 +112,7 @@ const DevfileFilter: React.FC<DevfileFilterProps> = ({ tagsStateWithFreq, typesS
                 </GridItem>
               )
             }) }
-            { numTags < getFilterResultCount(tagsStateWithFreq, tagSearchBarValue) &&
-              <a onClick={onMoreClick} data-test-id="more-tags">
-                <TextContent>
-                  <Text>More...</Text>
-                </TextContent>
-              </a> }
-            { numTags > baseNumTags &&
-              <a onClick={onLessClick} data-test-id="less-tags">
-                <TextContent>
-                  <Text>Less...</Text>
-                </TextContent>
-              </a> }
+            </div>
           </Grid>
         </FormGroup>
       </Form>

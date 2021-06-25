@@ -1,5 +1,4 @@
 import '@patternfly/react-core/dist/styles/base.css' // This import needs to be first or the css will not be imported
-import '../styles/index.css'
 
 import Layout from '@components/page/Layout'
 

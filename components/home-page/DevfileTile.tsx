@@ -1,7 +1,7 @@
 import type { Devfile } from 'custom-types'
 import type { ForwardedRef } from 'react'
 
-import mainPageLogo from '../../public/images/mainPageLogo.svg'
+import devfileLogo from '../../public/images/mainPageLogo.svg'
 import { capitalizeFirstLetter } from '@util/index'
 
 import { forwardRef } from 'react'
@@ -26,16 +26,16 @@ const DevfileTile: React.ForwardRefRenderFunction<HTMLElement, DevfileTileProps>
   }
 
   return (
-    <Card className="h-auto m-2" onClick={onTileClick} isHoverable data-test-id={`card-${devfile.name.replace(/\.| /g, '')}`}>
+    <Card style={{ height: 'auto', margin: '0.5rem' }} onClick={onTileClick} isHoverable data-test-id={`card-${devfile.name.replace(/\.| /g, '')}`}>
       <CardHeader>
         <CardHeaderMain>
           <TextContent>
-            <Text className="pb-4" component={TextVariants.p}>{capitalizeFirstLetter(devfile.type)}</Text>
+            <Text style={{ paddingBottom: '1rem' }} component={TextVariants.p}>{capitalizeFirstLetter(devfile.type)}</Text>
           </TextContent>
           <Brand
-            src={devfile.icon || mainPageLogo}
+            src={devfile.icon || devfileLogo}
             alt=""
-            className="h-10"
+            style={{ height: '2.5rem' }}
           />
         </CardHeaderMain>
       </CardHeader>
@@ -44,7 +44,7 @@ const DevfileTile: React.ForwardRefRenderFunction<HTMLElement, DevfileTileProps>
           <Text component={TextVariants.h3}>{devfile.displayName}</Text>
         </TextContent>
       </CardTitle>
-      <CardBody className="h-20 overflow-hidden">
+      <CardBody style={{ height: '5rem', overflow: 'hidden' }} >
         <TextContent>
           <Text component={TextVariants.p}>{devfile.description}</Text>
         </TextContent>
@@ -52,7 +52,7 @@ const DevfileTile: React.ForwardRefRenderFunction<HTMLElement, DevfileTileProps>
       <CardFooter>
         <LabelGroup>
           {devfile.tags?.slice(0, maxTags).map((tag) => {
-            return <Label className="m-0.5" key={tag}>{tag}</Label>
+            return <Label style={{ margin: '0.125rem' }} key={tag} color="blue">{tag}</Label>
           })}
         </LabelGroup>
       </CardFooter>
