@@ -52,48 +52,21 @@ describe('Home page tests on desktop', () => {
     });
   });
 
-  it('Expandability and collapsibility of tag filter', () => {
-    cy.get('[data-test-id=more-tags]').click();
-
-    cy.get('[data-test-id=less-tags]').click();
-  });
-
   it('Tag filter', () => {
     cy.getDevfiles((devfiles: Devfile[]) => {
       const tagsStateWithFreq: FilterElem[] = getTagsStateWithFreq(devfiles);
-
-      // Get the number of clicks required for maximum filter size
-      const numTagFilterClicks = Math.ceil((tagsStateWithFreq.length - 10) / 5);
-
-      // Expand the tag filter to the maximum size
-      for (let i = 0; i < numTagFilterClicks; i++) {
-        cy.get('[data-test-id=more-tags]').click();
-      }
 
       cy.iterateThroughFilter('tag', tagsStateWithFreq, (selectedTags) => {
         cy.compareCardLength(
           filterDevfilesOnTags(devfiles, selectedTags).length
         );
       });
-
-      // Collapse the tag filter to the minimum size
-      for (let i = 0; i < numTagFilterClicks; i++) {
-        cy.get('[data-test-id=less-tags]').click();
-      }
     });
   });
 
   it('Tag filter search bar', () => {
     cy.getDevfiles((devfiles: Devfile[]) => {
       const tagsStateWithFreq: FilterElem[] = getTagsStateWithFreq(devfiles);
-
-      // Get the number of clicks required for maximum filter size
-      const numTagFilterClicks = Math.ceil((tagsStateWithFreq.length - 10) / 5);
-
-      // Expand the tag filter to the maximum size
-      for (let i = 0; i < numTagFilterClicks; i++) {
-        cy.get('[data-test-id=more-tags]').click();
-      }
 
       const textArr: string[] = ['JavA', 'rhel', 'PYTHON', 'vERT.x'];
 
@@ -108,11 +81,6 @@ describe('Home page tests on desktop', () => {
           ).length
         );
       });
-
-      // Collapse the tag filter to the minimum size
-      for (let i = 0; i < numTagFilterClicks; i++) {
-        cy.get('[data-test-id=less-tags]').click();
-      }
     });
   });
 });
