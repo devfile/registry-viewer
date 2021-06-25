@@ -2,22 +2,12 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@components/*": [
-        "components/*"
-      ],
-      "@styles/*": [
-        "styles/*"
-      ],
-      "@util/*": [
-        "util/*"
-      ]
+      "@components/*": ["components/*"],
+      "@styles/*": ["styles/*"],
+      "@util/*": ["util/*"]
     },
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
@@ -29,15 +19,9 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "noImplicitAny": true,
-    "typeRoots": [
-      "@types",
-      "node_modules/@types"
-    ],
-    "types": [
-      "node",
-      "cypress"
-    ],
-    "skipLibCheck": true,
+    "typeRoots": ["@types", "node_modules/@types"],
+    "types": ["node", "cypress"],
+    "skipLibCheck": true
   },
   "include": [
     "next-env.d.ts",
@@ -48,10 +32,12 @@
     "**/*.json"
   ],
   "exclude": [
-    ".yarn",
-    "**/node_modules",
-    "**/.next",
-    "**/out"
+    ".next",
+    ".nyc_output",
+    "coverage",
+    "docs",
+    "node_modules",
+    "out"
   ],
   "typedocOptions": {
     "entryPoints": ["pages", "components", "@types", "util"],

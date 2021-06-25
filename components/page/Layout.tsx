@@ -1,14 +1,23 @@
-import Meta from '@components/page/Meta'
+import Meta from '@components/page/Meta';
 
-import { server } from '@util/index'
+import { server } from '@util/index';
 
-import Link from 'next/link'
-import { Text, TextContent, Brand, Page, PageHeader, PageHeaderTools, PageSection, PageSectionVariants } from '@patternfly/react-core'
+import Link from 'next/link';
+import {
+  Text,
+  TextContent,
+  Brand,
+  Page,
+  PageHeader,
+  PageHeaderTools,
+  PageSection,
+  PageSectionVariants,
+} from '@patternfly/react-core';
 
-import devfileLogo from '../../public/images/mainPageLogo.svg'
+import devfileLogo from '../../public/images/mainPageLogo.svg';
 
 export interface LayoutProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 /**
@@ -18,18 +27,22 @@ export interface LayoutProps {
  */
 const Layout: React.FC<LayoutProps> = ({ children }: LayoutProps) => {
   const logoProps = {
-    href: server
-  }
+    href: server,
+  };
 
   const Header = (
     <PageHeader
       logo={
-        <Brand src={devfileLogo} alt="Devfile Registry Logo" className="h-full"/>
+        <Brand
+          src={devfileLogo}
+          alt="Devfile Registry Logo"
+          className="h-full"
+        />
       }
       logoProps={logoProps}
       headerTools={
         <PageHeaderTools>
-          <Link href='/'>
+          <Link href="/">
             <a data-test-id="go-home-button">
               <TextContent>
                 <Text>Devfile Registry</Text>
@@ -39,18 +52,16 @@ const Layout: React.FC<LayoutProps> = ({ children }: LayoutProps) => {
         </PageHeaderTools>
       }
     />
-  )
+  );
 
   return (
     <Page header={Header}>
       <Meta />
       <PageSection variant={PageSectionVariants.light}>
-        <main>
-          {children}
-        </main>
+        <main>{children}</main>
       </PageSection>
     </Page>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;

@@ -4,4 +4,6 @@ coverage
 docs
 node_modules
 out
-tests/plugins/index.js
+
+/public/*.js
+/public/*.js.map
