@@ -6,8 +6,7 @@ Fixes #?
 
 **PR acceptance criteria**:
 
-- [ ] Unit Tests 
-  
+- [ ] Unit Tests
 - [ ] E2E Tests
 
 - [ ] Documentation

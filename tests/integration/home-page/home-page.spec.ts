@@ -1,182 +1,185 @@
-/// <reference types="cypress" />
+// / <reference types="cypress" />
 
-import type { Devfile, FilterElem } from 'custom-types'
+import type { Devfile, FilterElem } from 'custom-types';
 
 describe('Pretests', () => {
   it('Verify webpage is running', () => {
-    cy.visit('http://localhost:3000/')
-  })
-})
+    cy.visit('http://localhost:3000/');
+  });
+});
 
 describe('Home page tests on desktop', () => {
   beforeEach(() => {
-    cy.viewport(1920, 1080)
-    cy.visit('http://localhost:3000/')
-  })
+    cy.viewport(1920, 1080);
+    cy.visit('http://localhost:3000/');
+  });
 
   it('Devfile search bar', () => {
     cy.getDevfiles((devfiles: Devfile[]) => {
-      cy.compareCardLength(devfiles.length)
+      cy.compareCardLength(devfiles.length);
 
-      const textArr: string[] = ['JavA', 'rhel', 'PYTHON', 'vERT.x']
+      const textArr: string[] = ['JavA', 'rhel', 'PYTHON', 'vERT.x'];
 
       textArr.forEach((text) => {
-        cy.get('[data-test-id=search-bar-devfile]').type(`{selectall}{backspace}${text}`)
-        cy.compareCardLength(filterDevfilesOnSearchBar(devfiles, text).length)
-      })
-    })
-  })
+        cy.get('[data-test-id=search-bar-devfile]').type(
+          `{selectall}{backspace}${text}`
+        );
+        cy.compareCardLength(filterDevfilesOnSearchBar(devfiles, text).length);
+      });
+    });
+  });
 
   it('Clickability of each devfile', () => {
     cy.getDevfiles((devfiles: Devfile[]) => {
       devfiles.forEach((devfile) => {
-        cy.get(`[data-test-id=card-${devfile.name.replace(/\.| /g, '')}]`).click()
-        cy.get('[data-test-id=go-home-button').click()
-      })
-    })
-  })
+        cy.get(
+          `[data-test-id=card-${devfile.name.replace(/\.| /g, '')}]`
+        ).click();
+        cy.get('[data-test-id=go-home-button').click();
+      });
+    });
+  });
 
   it('Type filter', () => {
     cy.getDevfiles((devfiles: Devfile[]) => {
-      const typesStateWithFreq: FilterElem[] = getTypesStateWithFreq(devfiles)
+      const typesStateWithFreq: FilterElem[] = getTypesStateWithFreq(devfiles);
 
       cy.iterateThroughFilter('type', typesStateWithFreq, (selectedTypes) => {
-        cy.compareCardLength(filterDevfilesOnTypes(devfiles, selectedTypes).length)
-      })
-    })
-  })
-
-  it('Expandability and collapsibility of tag filter', () => {
-    cy.get('[data-test-id=more-tags]').click()
-
-    cy.get('[data-test-id=less-tags]').click()
-  })
+        cy.compareCardLength(
+          filterDevfilesOnTypes(devfiles, selectedTypes).length
+        );
+      });
+    });
+  });
 
   it('Tag filter', () => {
     cy.getDevfiles((devfiles: Devfile[]) => {
-      const tagsStateWithFreq: FilterElem[] = getTagsStateWithFreq(devfiles)
-
-      // Get the number of clicks required for maximum filter size
-      const numTagFilterClicks = Math.ceil((tagsStateWithFreq.length - 10) / 5)
-
-      // Expand the tag filter to the maximum size
-      for (let i = 0; i < numTagFilterClicks; i++) {
-        cy.get('[data-test-id=more-tags]').click()
-      }
+      const tagsStateWithFreq: FilterElem[] = getTagsStateWithFreq(devfiles);
 
       cy.iterateThroughFilter('tag', tagsStateWithFreq, (selectedTags) => {
-        cy.compareCardLength(filterDevfilesOnTags(devfiles, selectedTags).length)
-      })
-
-      // Collapse the tag filter to the minimum size
-      for (let i = 0; i < numTagFilterClicks; i++) {
-        cy.get('[data-test-id=less-tags]').click()
-      }
-    })
-  })
+        cy.compareCardLength(
+          filterDevfilesOnTags(devfiles, selectedTags).length
+        );
+      });
+    });
+  });
 
   it('Tag filter search bar', () => {
     cy.getDevfiles((devfiles: Devfile[]) => {
-      const tagsStateWithFreq: FilterElem[] = getTagsStateWithFreq(devfiles)
+      const tagsStateWithFreq: FilterElem[] = getTagsStateWithFreq(devfiles);
 
-      // Get the number of clicks required for maximum filter size
-      const numTagFilterClicks = Math.ceil((tagsStateWithFreq.length - 10) / 5)
-
-      // Expand the tag filter to the maximum size
-      for (let i = 0; i < numTagFilterClicks; i++) {
-        cy.get('[data-test-id=more-tags]').click()
-      }
-
-      const textArr: string[] = ['JavA', 'rhel', 'PYTHON', 'vERT.x']
+      const textArr: string[] = ['JavA', 'rhel', 'PYTHON', 'vERT.x'];
 
       textArr.forEach((text) => {
-        cy.get('[data-test-id=search-bar-tag]').type(`{selectall}{backspace}${text}`)
-        cy.get('[data-test-id^=tag-]').should('have.length', tagsStateWithFreq.filter(tagData => tagData.value.toLowerCase().includes(text.toLowerCase())).length)
-      })
+        cy.get('[data-test-id=search-bar-tag]').type(
+          `{selectall}{backspace}${text}`
+        );
+        cy.get('[data-test-id^=tag-]').should(
+          'have.length',
+          tagsStateWithFreq.filter((tagData) =>
+            tagData.value.toLowerCase().includes(text.toLowerCase())
+          ).length
+        );
+      });
+    });
+  });
+});
 
-      // Collapse the tag filter to the minimum size
-      for (let i = 0; i < numTagFilterClicks; i++) {
-        cy.get('[data-test-id=less-tags]').click()
-      }
-    })
-  })
-})
+const isSearchBarValueIn = (
+  value: string | undefined,
+  searchBarValue: string
+) => value?.toLowerCase().includes(searchBarValue.toLowerCase());
 
-const isSearchBarValueIn = (value: string | undefined, searchBarValue: string) => {
-  return value?.toLowerCase().includes(searchBarValue.toLowerCase())
-}
+const isSearchBarValueInTag = (
+  tags: string[] | undefined,
+  searchBarValue: string
+) =>
+  tags?.some((tag) => tag.toLowerCase().includes(searchBarValue.toLowerCase()));
 
-const isSearchBarValueInTag = (tags: string[] | undefined, searchBarValue: string) => {
-  return tags?.some((tag) => (tag.toLowerCase().includes(searchBarValue.toLowerCase())))
-}
-
-const filterDevfilesOnSearchBar = (devfiles: Devfile[], searchBarValue: string): Devfile[] => {
+const filterDevfilesOnSearchBar = (
+  devfiles: Devfile[],
+  searchBarValue: string
+): Devfile[] => {
   if (searchBarValue === '') {
-    return devfiles
+    return devfiles;
   }
 
-  const devfilesFilteredOnSearchBar: Devfile[] = devfiles.filter((devfile: Devfile) => {
-    if (isSearchBarValueIn(devfile.displayName, searchBarValue)) {
-      return true
+  const devfilesFilteredOnSearchBar: Devfile[] = devfiles.filter(
+    (devfile: Devfile) => {
+      if (isSearchBarValueIn(devfile.displayName, searchBarValue)) {
+        return true;
+      }
+
+      if (isSearchBarValueIn(devfile.description, searchBarValue)) {
+        return true;
+      }
+
+      return isSearchBarValueInTag(devfile.tags, searchBarValue);
     }
+  );
+  return devfilesFilteredOnSearchBar;
+};
 
-    if (isSearchBarValueIn(devfile.description, searchBarValue)) {
-      return true
-    }
+const filterDevfilesOnTags = (
+  devfiles: Devfile[],
+  tagsStateWithFreq: FilterElem[]
+): Devfile[] => {
+  const devfilesFilteredOnTags: Devfile[] = devfiles.filter(
+    (devfile: Devfile) =>
+      devfile.tags?.some((tag) =>
+        tagsStateWithFreq.some(
+          (tagStateWithFreq) => tag === tagStateWithFreq.value
+        )
+      )
+  );
+  return devfilesFilteredOnTags;
+};
 
-    return isSearchBarValueInTag(devfile.tags, searchBarValue)
-  })
-  return devfilesFilteredOnSearchBar
-}
-
-const filterDevfilesOnTags = (devfiles: Devfile[], tagsStateWithFreq: FilterElem[]): Devfile[] => {
-  const devfilesFilteredOnTags: Devfile[] = devfiles.filter((devfile: Devfile) => {
-    return devfile.tags?.some((tag) => {
-      return tagsStateWithFreq.some((tagStateWithFreq) => (tag === tagStateWithFreq.value))
-    })
-  })
-  return devfilesFilteredOnTags
-}
-
-const filterDevfilesOnTypes = (devfiles: Devfile[], typesStateWithFreq: FilterElem[]): Devfile[] => {
-  const devfilesFilteredOnTypes: Devfile[] = devfiles.filter((devfile: Devfile) => {
-    return typesStateWithFreq.some((typeStateWithFreq) => (devfile.type === typeStateWithFreq.value))
-  })
-  return devfilesFilteredOnTypes
-}
+const filterDevfilesOnTypes = (
+  devfiles: Devfile[],
+  typesStateWithFreq: FilterElem[]
+): Devfile[] => {
+  const devfilesFilteredOnTypes: Devfile[] = devfiles.filter(
+    (devfile: Devfile) =>
+      typesStateWithFreq.some(
+        (typeStateWithFreq) => devfile.type === typeStateWithFreq.value
+      )
+  );
+  return devfilesFilteredOnTypes;
+};
 
 const getStateAndStringFreq = (arr: string[]): FilterElem[] => {
-  const filterElemArr: FilterElem[] = []
-  let prev = ''
+  const filterElemArr: FilterElem[] = [];
+  let prev = '';
 
-  arr.sort((a, b) => { return a.localeCompare(b, 'en', { sensitivity: 'accent' }) })
+  arr.sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'accent' }));
   for (let i = 0; i < arr.length; i++) {
-    arr[i] = arr[i] ?? null
+    arr[i] = arr[i] ?? null;
     if (arr[i]) {
       if (arr[i] !== prev) {
-        filterElemArr.push({ value: arr[i], state: false, freq: 1 })
+        filterElemArr.push({ value: arr[i], state: false, freq: 1 });
       } else {
-        filterElemArr[filterElemArr.length - 1].freq++
+        filterElemArr[filterElemArr.length - 1].freq++;
       }
-      prev = arr[i]
+      prev = arr[i];
     }
   }
 
-  return filterElemArr
-}
+  return filterElemArr;
+};
 
 const getTagsStateWithFreq = (devfiles: Devfile[]): FilterElem[] => {
-  const tagValues: string[] = devfiles?.map((devfile) => (devfile?.tags)).flat()
+  const tagValues: string[] = devfiles?.map((devfile) => devfile?.tags).flat();
 
-  const tagsStateWithFreq: FilterElem[] = getStateAndStringFreq(tagValues)
+  const tagsStateWithFreq: FilterElem[] = getStateAndStringFreq(tagValues);
 
-  return tagsStateWithFreq
-}
+  return tagsStateWithFreq;
+};
 
 const getTypesStateWithFreq = (devfiles: Devfile[]): FilterElem[] => {
-  const typeValues: string[] = devfiles?.map((devfile) => (devfile.type))
+  const typeValues: string[] = devfiles?.map((devfile) => devfile.type);
 
-  const tagsStateWithFreq: FilterElem[] = getStateAndStringFreq(typeValues)
+  const tagsStateWithFreq: FilterElem[] = getStateAndStringFreq(typeValues);
 
-  return tagsStateWithFreq
-}
+  return tagsStateWithFreq;
+};
