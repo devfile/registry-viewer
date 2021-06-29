@@ -1,11 +1,10 @@
 import {
     Card,
     CardBody,
-    CodeBlock,
-    CodeBlockCode,
     CardHeader
   } from '@patternfly/react-core'
-
+  import { LightAsync as SyntaxHighlighter } from 'react-syntax-highlighter'
+  import { github as style } from 'react-syntax-highlighter/dist/cjs/styles/hljs'
 /**
  * props for DevFile YAML component
  * 
@@ -27,19 +26,13 @@ const DevPageYAML = ({devYAML}:Props) => {
         <Card 
             isRounded
             style ={{width:"75%", maxWidth:"1000px", margin:"auto", marginTop:"30px", marginBottom:"30px"}}>
-            <CardHeader style={{padding:"10px", textAlign:"center"}}>
+            <CardHeader style={{padding:"10px"}}>
                 devfile.yaml
-            </CardHeader>            
+            </CardHeader>        
             <CardBody style={{padding:"0"}}>
-            <CodeBlock style={{backgroundColor:"#1F1F20", color:"#FFFFFF"}}> 
-                    {/*codeblock rendered with mapping st each line in the yaml file has a corresponding index that is unselectable by user*/}
-                    <CodeBlockCode id="code-content">{devYAML.split("\n").map((line, index) => <div style={{display:"flex"}}> 
-                                                                                            <div style={{width:"40px", userSelect:"none", color:"#ADABAE"}}>{index+1}</div>
-                                                                                            <p style={{ width:"95%"}}>{line}</p>
-                                                                                        </div>)}
-                    </CodeBlockCode>
-            </CodeBlock>
-                
+                <SyntaxHighlighter language="yaml" showLineNumbers style={style}>
+                    {devYAML}
+                </SyntaxHighlighter>
             </CardBody>
 
         </Card>
