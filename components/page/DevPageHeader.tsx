@@ -1,9 +1,11 @@
 import { Devfile } from 'custom-types'
-
+import mainPageLogo from '../../public/images/mainPageLogo.svg'
+import HeaderTags from "./HeaderTags"
 import {
-    Badge,
+    Brand,
     Card,
-    CardBody
+    CardBody,
+    Label
   } from '@patternfly/react-core'
 
 /**
@@ -15,19 +17,14 @@ interface Props {
     devfile:Devfile,
     metadata?:Record<string, string>
 }
-// fake image must remove and replace with real image import 
-const FakeImage = () =>{
-    return (
-        <div style={{backgroundColor:"#000000",height:"70px", width:"70px"}}></div>
-    )
-}
+
 /**
  * header that displays basic information and metadata information for respective devfile
  * @param devfile - index information for devfie
  * @param metadata - metadata information from devfile yaml
  */
 const DevPageHeader = ({devfile, metadata}:Props) => {
-    const metaInclude = new Set(['projectType', 'version', 'type', 'language' ]) // types to include in metadata from index
+    const metaInclude = new Array('projectType', 'version', 'language' ) // types to include in metadata from index
 
     return (
         <Card 
@@ -37,28 +34,29 @@ const DevPageHeader = ({devfile, metadata}:Props) => {
                 <div style={{display:"flex", width:"100%"}}>
                     <div style={{display:"flex", width:"50%", borderRight:"2px solid #ADABAE"}}>
                         <div style={{margin:"10px"}}>
-                            <FakeImage />
+                        <Brand
+                            src={devfile.icon || mainPageLogo}
+                            alt=""
+                            className="h-10"
+                        />
                             <h3 style={{color: "#ADABAE",marginLeft:"auto",marginRight:"auto"}}>{devfile.type}</h3>
                         </div>
                         <div style={{margin:"10px"}}>
-                            <h1 style={{fontSize:"22px"}}>{devfile.displayName}</h1>
-                            <p>&emsp;{devfile.description}</p>
-                            {(devfile.tags)&&
-                                devfile.tags.map((tag) => 
-                                    <Badge key={tag}>{tag}</Badge>)
-                            }
+                            <h1 style={{fontSize:"22px", margin:"0.5rem"}}>{devfile.displayName}</h1>
+                            <p style={{margin:"0.5rem"}}>&emsp;{devfile.description}</p>
+                            <HeaderTags tags={devfile.tags}/>
                         </div>
                     </div>
                     <div style={{width:"50%", margin:"2%"}}>
-                            {Object.keys(devfile).map(key => { 
-                                    if(metaInclude.has(key)){
+                            {Object.entries(devfile).map(([key,value]) => { 
+                                    if(metaInclude.includes(key)){
                                             const label= key.replace(/([a-z](?=[A-Z]))/g, '$1 ').toLowerCase() //split camel case up 
-                                            return (<p><strong>{label+": "}</strong>{devfile[key]}</p>)
+                                            return (<p><strong>{label+": "}</strong>{value}</p>)
                                     }
                                 })}
                             {(metadata)? //include website if stack; include git if sample
                                 (metadata['website'])&&<p><strong>website: </strong><a href={metadata['website']} target="_blank">{metadata['website']}</a></p>:
-                                (devfile.git)&&<a href={devfile.git.remotes.origin} target="_blank">view git repository</a>
+                                (devfile.git)&&<a href={devfile.git.remotes[Object.keys(devfile.git.remotes)[0]]} target="_blank">view git repository</a>
                             }
                     </div>
                 </div>
