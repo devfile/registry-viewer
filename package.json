@@ -8,10 +8,14 @@
     "start": "next start",
     "start-build": "yarn build & yarn start",
     "clean": "rm -rf .next/ out/ node_modules/",
-    "cypress:start": "yarn run cypress open",
+    "cypress:start": "yarn cypress open",
     "cypress:start-build": "concurrently --names 'CYPRESS,SERVER' --prefix-colors 'yellow,blue' \"yarn cypress:start\" \"yarn start-build\"",
     "typedoc:build": "node_modules/.bin/typedoc --tsconfig .",
-    "typedoc:start": "npx serve docs"
+    "typedoc:start": "npx serve docs",
+    "jest:test": "jest --watchAll --verbose",
+    "test": "cypress run",
+    "lint": "prettier --check .",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@patternfly/react-core": "^4.121.1",
@@ -23,11 +27,11 @@
     "js-yaml": "^4.1.0",
     "js-zip": "^1.0.1",
     "jszip": "^3.6.0",
-    "next": "latest",
+    "next": "^11.0.0",
     "next-compose-plugins": "^2.2.1",
     "next-images": "^1.8.1",
     "next-pwa": "^5.2.21",
-    "next-transpile-modules": "^7.2.0",
+    "next-transpile-modules": "^8.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-syntax-highlighter": "^15.4.3",
@@ -37,31 +41,47 @@
   "devDependencies": {
     "@babel/core": "^7.14.3",
     "@cypress/code-coverage": "^3.9.7",
+    "@types/jest": "^26.0.23",
     "@types/node": "^15.6.1",
     "@types/react": "^17.0.8",
     "@typescript-eslint/eslint-plugin": "^4.26.1",
     "@typescript-eslint/parser": "^4.26.1",
-    "autoprefixer": "^10.2.6",
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.2",
+    "babel-jest": "^27.0.2",
     "babel-plugin-istanbul": "^6.0.0",
     "concurrently": "^6.2.0",
-    "cypress": "^7.5.0",
+    "cypress": "^7.6.0",
     "debug": "^4.3.1",
     "enquirer": "^2.3.6",
+    "enzyme": "^3.11.0",
     "eslint": "^7.27.0",
+    "eslint-config-next": "^11.0.0",
+    "eslint-config-prettier": "^8.3.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-import-resolver-typescript": "^2.4.0",
     "eslint-plugin-cypress": "^2.11.3",
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-patternfly-react": "^4.1.5",
     "eslint-plugin-promise": "^5.1.0",
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-tsdoc": "^0.2.14",
-    "postcss": "^8.3.0",
-    "tailwindcss": "^2.1.4",
+    "husky": "^6.0.0",
+    "jest": "^27.0.4",
+    "jest-enzyme": "^7.1.2",
+    "prettier": "2.3.1",
     "typedoc": "^0.20.36",
     "typedoc-plugin-merge-modules": "^2.1.1",
-    "typescript": "4.2.x",
+    "typescript": "^4.3.4",
     "webpack": "^5.38.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*": "prettier --write"
   }
 }

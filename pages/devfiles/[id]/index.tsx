@@ -6,7 +6,7 @@ import DevPageYAML from '@components/page/DevPageYAML'
 import { InferGetStaticPropsType, GetStaticProps, GetStaticPaths } from 'next'
 
 interface Path {
-  params: { id: string }
+  params: { id: string };
 }
 
 
@@ -39,11 +39,13 @@ const DevfilePage = ({ devfile, devfileText, devfileJSON }: InferGetStaticPropsT
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const indexResponse: Response = await fetch('https://registry.devfile.io/index/all?icon=base64')
+  const indexResponse: Response = await fetch(
+    'https://registry.devfile.io/index/all?icon=base64'
+  );
   const devfiles: Devfile[] = await indexResponse.json() as Devfile[]
-  const devfile: Devfile = (devfiles.find((devfile: Devfile) => {
-    return devfile.name === context.params?.id
-  })!)
+  const devfile: Devfile = devfiles.find(
+    (devfile: Devfile) => devfile.name === context.params?.id
+  )!;
 
   var devfileYAMLResponse: Response
   var devfileText:string|null =null  
@@ -64,24 +66,23 @@ export const getStaticProps: GetStaticProps = async (context) => {
       devfile,
       devfileText,
       devfileJSON
-
     },
-    revalidate: 21600 // Regenerate page every 6 hours
-  }
-}
+    revalidate: 21600, // Regenerate page every 6 hours
+  };
+};
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const res: Response = await fetch('https://registry.devfile.io/index/all?icon=base64')
-  const devfiles: Devfile[] = await res.json() as Devfile[]
-  const ids: string[] = devfiles.map((devfile) => {
-    return devfile.name
-  })
-  const paths: Path[] = ids.map((id) => ({ params: { id: id } }))
+  const res: Response = await fetch(
+    'https://registry.devfile.io/index/all?icon=base64'
+  );
+  const devfiles: Devfile[] = (await res.json()) as Devfile[];
+  const ids: string[] = devfiles.map((devfile) => devfile.name);
+  const paths: Path[] = ids.map((id) => ({ params: { id } }));
 
   return {
     paths,
-    fallback: false
-  }
-}
+    fallback: false,
+  };
+};
 
-export default DevfilePage
+export default DevfilePage;
