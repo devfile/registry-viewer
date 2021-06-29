@@ -9,8 +9,10 @@ interface Path {
   params: { id: string }
 }
 
+
 /**
  * Renders the {@link DevfilePage}
+ * 
  * @remarks
  *    stacks have header, starter projects, and yaml
  *    sample has header
@@ -20,6 +22,7 @@ interface Path {
  * @param devfileJSON -  json representation of devfile YAML, null when sample
  */
 const DevfilePage = ({ devfile, devfileText, devfileJSON }: InferGetStaticPropsType<typeof getStaticProps>) => {
+  
   return (
     <div style={{alignContent:"center", minHeight:"100vh"}}>
       {devfile.type==="stack"?(
@@ -36,26 +39,25 @@ const DevfilePage = ({ devfile, devfileText, devfileJSON }: InferGetStaticPropsT
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const res: Response = await fetch('https://registry.devfile.io/index/all?icon=base64')
-  const devfiles: Devfile[] = await res.json() as Devfile[]
+  const indexResponse: Response = await fetch('https://registry.devfile.io/index/all?icon=base64')
+  const devfiles: Devfile[] = await indexResponse.json() as Devfile[]
   const devfile: Devfile = (devfiles.find((devfile: Devfile) => {
     return devfile.name === context.params?.id
   })!)
 
-  var res2: Response
+  var devfileYAMLResponse: Response
   var devfileText:string|null =null  
   var devfileJSON = null
 
   if(devfile.type==='stack'){
-    res2 =  await fetch('https://registry.devfile.io/devfiles/'+devfile.name,{
+    devfileYAMLResponse =  await fetch('https://registry.devfile.io/devfiles/'+devfile.name,{
                         headers: {'Accept-Type':'text/plain'}})
-    devfileText= await res2.text()
+    devfileText= await devfileYAMLResponse.text()
 
-    //convert yaml to json
+    //convert yaml text to json
     const yaml = require('js-yaml');
     devfileJSON= yaml.load(devfileText);
   }
-  
 
   return {
     props: {
