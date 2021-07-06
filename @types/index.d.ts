@@ -19,8 +19,8 @@ declare module 'custom-types' {
     resources: string[];
     starterProjects: string[];
     git?: {
-      remotes: Remote
-    }
+      remotes: Remote;
+    };
   }
 
   export interface FilterElem {
