@@ -64,7 +64,7 @@ interface Props {
 /**
  * download subdirectory from root folder
  *
- * 
+ *
  * @param url - zip url
  * @param subdirectory - name of subdirectory to extract from zip
  *
