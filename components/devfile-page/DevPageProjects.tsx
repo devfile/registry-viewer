@@ -62,110 +62,6 @@ interface Props {
 }
 
 /**
- * download subdirectory from root folder
- *
- *
- * @param url - zip url
- * @param subdirectory - name of subdirectory to extract from zip
- *
- * @throws Error
- *    thrown if error in download
- */
-async function downloadSubdirectory(url: string, subdirectory: string) {
-  const data = {
-    url,
-    subdirectory,
-  };
-  const response = await fetch('/api/download-subdirectory', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  });
-
-  const status = response.status;
-  if (status !== 200) {
-    const errorJson = await response.json();
-    console.log(errorJson);
-    throw new Error(errorJson);
-  }
-
-  const base64string = await response.text();
-  const zip = await JSZip.loadAsync(base64string, { base64: true });
-
-  await zip.generateAsync({ type: 'blob' }).then(
-    function (blob) {
-      saveAs(blob, subdirectory + '.zip');
-    },
-    function (err) {
-      jQuery('#blob').text(err);
-    }
-  );
-}
-
-/**
- * extract zip url from project git source
- *
- * @param git - git source of project, assumes github url of root directory of project
- *
- * @throws TypeError
- *      thrown if git remotes isn't configured properly or git link isn't supported yet
- */
-function getURLForGit(git: Git) {
-  let url = '';
-  const keys = Object.keys(git.remotes);
-
-  if (keys.length === 1) {
-    url = git.remotes[keys[0]];
-  } else if (git.checkoutFrom && git.checkoutFrom.remote) {
-    // should always be true if keys.length!=1
-    url = git.remotes[git.checkoutFrom.remote];
-  } else {
-    throw new TypeError('Invalid git remotes');
-  }
-
-  if (url.match(new RegExp('[.]git$'))) {
-    url = url.slice(0, url.length - 4);
-  }
-
-  if (url.match(new RegExp('github[.]com'))) {
-    url = url.replace('github.com', 'api.github.com/repos') + '/zipball/'; // remove ".git" from link and convert to api zip link
-  } else {
-    throw new TypeError('Unsupported link type: ' + url);
-  }
-
-  if (git.checkoutFrom && git.checkoutFrom.revision) {
-    url += git.checkoutFrom.revision;
-  }
-  return url;
-}
-
-/**
- * download project as a zip file as specified versioon and subdirectory
- * @param project - project to download
- *
- * @throws TypeError
- *      thrown if no url locations are found
- */
-async function download(project: Project) {
-  let url: string;
-  if (project.git) {
-    // for git
-    url = getURLForGit(project.git);
-  } else if (project.zip && project.zip.location) {
-    // for zip
-    url = project.zip.location;
-  } else {
-    throw new TypeError('Invalid project has no zip/git url');
-  }
-
-  if (project.subDir) {
-    await downloadSubdirectory(url, project.subDir);
-  } else {
-    window.open(url);
-  }
-}
-
-/**
  * component for expandable starter project select with functionality to download
  *
  * @remarks
@@ -293,4 +189,113 @@ const DevPageProjects = ({ starterProjects }: Props) => {
     </Card>
   );
 };
+
+/**
+ * download subdirectory from root folder
+ *
+ *
+ * @param url - zip url
+ * @param subdirectory - name of subdirectory to extract from zip
+ *
+ * @throws Error
+ *    thrown if error in download
+ */
+async function downloadSubdirectory(url: string, subdirectory: string) {
+  const data = {
+    url,
+    subdirectory,
+  };
+  const response = await fetch('/api/download-subdirectory', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+
+  const status = response.status;
+  if (status !== 200) {
+    const errorJson = await response.json();
+    console.log(errorJson);
+    throw new Error(errorJson);
+  }
+
+  const base64string = await response.text();
+  const zip = await JSZip.loadAsync(base64string, { base64: true });
+
+  try {
+    await zip.generateAsync({ type: 'blob' }).then(
+      function (blob) {
+        saveAs(blob, subdirectory + '.zip');
+      },
+      function (err) {
+        throw err;
+      }
+    );
+  } catch (error) {
+    throw Error(error.text);
+  }
+}
+
+/**
+ * extract zip url from project git source
+ *
+ * @param git - git source of project, assumes github url of root directory of project
+ *
+ * @throws TypeError
+ *      thrown if git remotes isn't configured properly or git link isn't supported yet
+ */
+function getURLForGit(git: Git) {
+  let url = '';
+  const keys = Object.keys(git.remotes);
+
+  if (keys.length === 1) {
+    url = git.remotes[keys[0]];
+  } else if (git.checkoutFrom && git.checkoutFrom.remote) {
+    // should always be true if keys.length!=1
+    url = git.remotes[git.checkoutFrom.remote];
+  } else {
+    throw new TypeError('Invalid git remotes');
+  }
+
+  if (url.match(new RegExp('[.]git$'))) {
+    url = url.slice(0, url.length - 4);
+  }
+
+  if (url.match(new RegExp('github[.]com'))) {
+    url = url.replace('github.com', 'api.github.com/repos') + '/zipball/'; // remove ".git" from link and convert to api zip link
+  } else {
+    throw new TypeError('Unsupported link type: ' + url);
+  }
+
+  if (git.checkoutFrom && git.checkoutFrom.revision) {
+    url += git.checkoutFrom.revision;
+  }
+  return url;
+}
+
+/**
+ * download project as a zip file as specified versioon and subdirectory
+ * @param project - project to download
+ *
+ * @throws TypeError
+ *      thrown if no url locations are found
+ */
+async function download(project: Project) {
+  let url: string;
+  if (project.git) {
+    // for git
+    url = getURLForGit(project.git);
+  } else if (project.zip && project.zip.location) {
+    // for zip
+    url = project.zip.location;
+  } else {
+    throw new TypeError('Invalid project has no zip/git url');
+  }
+
+  if (project.subDir) {
+    await downloadSubdirectory(url, project.subDir);
+  } else {
+    window.open(url);
+  }
+}
+
 export default DevPageProjects;

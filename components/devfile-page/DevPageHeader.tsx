@@ -1,7 +1,9 @@
 import { Devfile } from 'custom-types';
-import mainPageLogo from '../../public/images/mainPageLogo.svg';
+import devfileLogo from '../../public/images/devfileLogo.svg';
 import HeaderTags from './HeaderTags';
-import { Brand, Card, CardBody } from '@patternfly/react-core';
+import { Brand, Card, CardBody, Text } from '@patternfly/react-core';
+
+type DevfileMetadata = Record<string, string>;
 
 /**
  * props for devpage metadata header
@@ -10,7 +12,7 @@ import { Brand, Card, CardBody } from '@patternfly/react-core';
  */
 interface Props {
   devfile: Devfile;
-  metadata?: Record<string, string>;
+  devfileMetadata?: DevfileMetadata;
 }
 
 /**
@@ -18,8 +20,8 @@ interface Props {
  * @param devfile - index information for devfie
  * @param metadata - metadata information from devfile yaml
  */
-const DevPageHeader = ({ devfile, metadata }: Props) => {
-  const metaInclude = ['projectType', 'version', 'language']; // types to include in metadata from index
+const DevPageHeader = ({ devfile, devfileMetadata }: Props) => {
+  const devfileMetaInclude = ['projectType', 'version', 'language']; // types to include in metadata from index
 
   return (
     <Card
@@ -43,11 +45,11 @@ const DevPageHeader = ({ devfile, metadata }: Props) => {
           >
             <div style={{ margin: '10px' }}>
               <Brand
-                src={devfile.icon || mainPageLogo}
-                alt=""
-                className="h-10"
+                src={devfile.icon || devfileLogo}
+                alt={devfile.icon ? devfile.name + ' logo' : 'devfile logo'}
+                style={{ width: '60%' }}
               />
-              <h3
+              <Text
                 style={{
                   color: '#ADABAE',
                   marginLeft: 'auto',
@@ -55,39 +57,44 @@ const DevPageHeader = ({ devfile, metadata }: Props) => {
                 }}
               >
                 {devfile.type}
-              </h3>
+              </Text>
             </div>
             <div style={{ margin: '10px' }}>
-              <h1 style={{ fontSize: '22px', margin: '0.5rem' }}>
+              <Text style={{ fontSize: '22px', margin: '0.5rem' }}>
                 {devfile.displayName}
-              </h1>
-              <p style={{ margin: '0.5rem' }}>&emsp;{devfile.description}</p>
+              </Text>
+              <Text style={{ margin: '0.5rem' }}>
+                &emsp;{devfile.description}
+              </Text>
               <HeaderTags tags={devfile.tags} />
             </div>
           </div>
           <div style={{ width: '50%', margin: '2%' }}>
             {Object.entries(devfile).map(([key, value]) => {
-              if (metaInclude.includes(key)) {
-                const label = key
-                  .replace(/([a-z](?=[A-Z]))/g, '$1 ')
-                  .toLowerCase(); // split camel case up
+              if (devfileMetaInclude.includes(key)) {
+                let label = key.replace(/([a-z](?=[A-Z]))/g, '$1 '); // split camel case up
+                label = label[0].toUpperCase() + label.substring(1);
                 return (
-                  <p>
+                  <Text>
                     <strong>{label + ': '}</strong>
                     {value}
-                  </p>
+                  </Text>
                 );
               }
             })}
             {devfile.type === 'stack' // include website if stack; include git if sample
-              ? metadata &&
-                metadata.website && (
-                  <p>
-                    <strong>website: </strong>
-                    <a href={metadata.website} target="_blank" rel="noreferrer">
-                      {metadata.website}
+              ? devfileMetadata &&
+                devfileMetadata.website && (
+                  <Text>
+                    <strong>Website: </strong>
+                    <a
+                      href={devfileMetadata.website}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {devfileMetadata.website}
                     </a>
-                  </p>
+                  </Text>
                 )
               : devfile.git && (
                   <a
@@ -97,7 +104,7 @@ const DevPageHeader = ({ devfile, metadata }: Props) => {
                     target="_blank"
                     rel="noreferrer"
                   >
-                    view git repository
+                    View Git Repository
                   </a>
                 )}
           </div>

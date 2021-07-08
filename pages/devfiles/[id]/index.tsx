@@ -1,7 +1,7 @@
 import { Devfile } from 'custom-types';
-import DevPageProjects from '@components/page/DevPageProjects';
-import DevPageHeader from '@components/page/DevPageHeader';
-import DevPageYAML from '@components/page/DevPageYAML';
+import DevPageProjects from '@components/devfile-page/DevPageProjects';
+import DevPageHeader from '@components/devfile-page/DevPageHeader';
+import DevPageYAML from '@components/devfile-page/DevPageYAML';
 
 import { InferGetStaticPropsType, GetStaticProps, GetStaticPaths } from 'next';
 
@@ -27,7 +27,10 @@ const DevfilePage = ({
   <div style={{ alignContent: 'center', minHeight: '100vh' }}>
     {devfile.type === 'stack' ? (
       <div>
-        <DevPageHeader metadata={devfileJSON.metadata} devfile={devfile} />
+        <DevPageHeader
+          devfileMetadata={devfileJSON.metadata}
+          devfile={devfile}
+        />
         <DevPageProjects starterProjects={devfileJSON.starterProjects} />
         <DevPageYAML devYAML={devfileText} />
       </div>
