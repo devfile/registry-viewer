@@ -1,7 +1,14 @@
 import { Devfile } from 'custom-types';
 import devfileLogo from '../../public/images/devfileLogo.svg';
 import HeaderTags from './HeaderTags';
-import { Brand, Card, CardBody, Text } from '@patternfly/react-core';
+import {
+  Brand,
+  Card,
+  CardBody,
+  Text,
+  TextContent,
+  TextVariants,
+} from '@patternfly/react-core';
 
 type DevfileMetadata = Record<string, string>;
 
@@ -49,64 +56,70 @@ const DevPageHeader = ({ devfile, devfileMetadata }: Props) => {
                 alt={devfile.icon ? devfile.name + ' logo' : 'devfile logo'}
                 style={{ width: '60%' }}
               />
-              <Text
-                style={{
-                  color: '#ADABAE',
-                  marginLeft: 'auto',
-                  marginRight: 'auto',
-                }}
-              >
-                {devfile.type}
-              </Text>
+              <TextContent>
+                <Text
+                  style={{
+                    color: '#ADABAE',
+                    marginLeft: 'auto',
+                    marginRight: 'auto',
+                  }}
+                >
+                  {devfile.type}
+                </Text>
+              </TextContent>
             </div>
             <div style={{ margin: '10px' }}>
-              <Text style={{ fontSize: '22px', margin: '0.5rem' }}>
-                {devfile.displayName}
-              </Text>
-              <Text style={{ margin: '0.5rem' }}>
-                &emsp;{devfile.description}
-              </Text>
+              <TextContent>
+                <Text component={TextVariants.h2} style={{ margin: '0.5rem' }}>
+                  {devfile.displayName}
+                </Text>
+                <Text style={{ margin: '0.5rem' }}>
+                  &emsp;{devfile.description}
+                </Text>
+              </TextContent>
               <HeaderTags tags={devfile.tags} />
             </div>
           </div>
           <div style={{ width: '50%', margin: '2%' }}>
-            {Object.entries(devfile).map(([key, value]) => {
-              if (devfileMetaInclude.includes(key)) {
-                let label = key.replace(/([a-z](?=[A-Z]))/g, '$1 '); // split camel case up
-                label = label[0].toUpperCase() + label.substring(1);
-                return (
-                  <Text>
-                    <strong>{label + ': '}</strong>
-                    {value}
-                  </Text>
-                );
-              }
-            })}
-            {devfile.type === 'stack' // include website if stack; include git if sample
-              ? devfileMetadata &&
-                devfileMetadata.website && (
-                  <Text>
-                    <strong>Website: </strong>
+            <TextContent>
+              {Object.entries(devfile).map(([key, value]) => {
+                if (devfileMetaInclude.includes(key)) {
+                  let label = key.replace(/([a-z](?=[A-Z]))/g, '$1 '); // split camel case up
+                  label = label[0].toUpperCase() + label.substring(1);
+                  return (
+                    <Text>
+                      <strong>{label + ': '}</strong>
+                      {value}
+                    </Text>
+                  );
+                }
+              })}
+              {devfile.type === 'stack' // include website if stack; include git if sample
+                ? devfileMetadata &&
+                  devfileMetadata.website && (
+                    <Text>
+                      <strong>Website: </strong>
+                      <a
+                        href={devfileMetadata.website}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {devfileMetadata.website}
+                      </a>
+                    </Text>
+                  )
+                : devfile.git && (
                     <a
-                      href={devfileMetadata.website}
+                      href={
+                        devfile.git.remotes[Object.keys(devfile.git.remotes)[0]]
+                      }
                       target="_blank"
                       rel="noreferrer"
                     >
-                      {devfileMetadata.website}
+                      View Git Repository
                     </a>
-                  </Text>
-                )
-              : devfile.git && (
-                  <a
-                    href={
-                      devfile.git.remotes[Object.keys(devfile.git.remotes)[0]]
-                    }
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    View Git Repository
-                  </a>
-                )}
+                  )}
+            </TextContent>
           </div>
         </div>
       </CardBody>

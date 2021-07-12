@@ -9,6 +9,8 @@ import {
   CardBody,
   CardExpandableContent,
   Button,
+  Text,
+  TextContent,
 } from '@patternfly/react-core';
 import { useState } from 'react';
 
@@ -159,17 +161,25 @@ const DevPageProjects = ({ starterProjects }: Props) => {
             >
               {!currentlyHoveredProject ? ( // sets displayed project description
                 <div style={{ width: '80%', padding: 'auto', margin: '10px' }}>
-                  <h6>{selectedProject.name}</h6>
-                  <p style={{ color: '#ADABAE' }}>
-                    {selectedProject.description}
-                  </p>
+                  <TextContent>
+                    <Text style={{ margin: '0px' }}>
+                      {selectedProject.name}
+                    </Text>
+                    <Text style={{ color: '#ADABAE' }}>
+                      {selectedProject.description}
+                    </Text>
+                  </TextContent>
                 </div>
               ) : (
                 <div style={{ width: '80%', padding: 'auto', margin: '10px' }}>
-                  <h6>{currentlyHoveredProject.name}</h6>
-                  <p style={{ color: '#ADABAE' }}>
-                    {currentlyHoveredProject.description}
-                  </p>
+                  <TextContent>
+                    <Text style={{ margin: '0px' }}>
+                      {currentlyHoveredProject.name}
+                    </Text>
+                    <Text style={{ color: '#ADABAE' }}>
+                      {currentlyHoveredProject.description}
+                    </Text>
+                  </TextContent>
                 </div>
               )}
               <div style={{ display: 'flex', alignContent: 'center' }}>
@@ -179,7 +189,7 @@ const DevPageProjects = ({ starterProjects }: Props) => {
                   onClick={() => triggerDownload(selectedProject)}
                   variant="tertiary"
                 >
-                  download
+                  Download
                 </Button>
               </div>
             </div>
