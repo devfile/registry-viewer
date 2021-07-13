@@ -1,4 +1,4 @@
-import Meta from '@components/page/Meta';
+import Meta from '@components/Meta';
 
 import { server } from '@util/index';
 
@@ -14,7 +14,7 @@ import {
   PageSectionVariants,
 } from '@patternfly/react-core';
 
-import devfileLogo from '../../public/images/mainPageLogo.svg';
+import devfileLogo from '../public/images/devfileLogo.svg';
 
 export interface LayoutProps {
   children: React.ReactNode;
@@ -36,7 +36,7 @@ const Layout: React.FC<LayoutProps> = ({ children }: LayoutProps) => {
         <Brand
           src={devfileLogo}
           alt="Devfile Registry Logo"
-          className="h-full"
+          style={{ height: '100%' }}
         />
       }
       logoProps={logoProps}
