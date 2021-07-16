@@ -15,22 +15,19 @@ interface Path {
  *    stacks have header, starter projects, and yaml
  *    sample has header
  *
- * @param devfile - index information for devile
- * @param devfileText - text of devile YAML, null when sample
+ * @param devfile - index information for devfile
+ * @param devfileText - text of devfile YAML, null when sample
  * @param devfileJSON -  json representation of devfile YAML, null when sample
  */
 const DevfilePage = ({
   devfile,
   devfileText,
-  devfileJSON,
+  devfileJSON
 }: InferGetStaticPropsType<typeof getStaticProps>) => (
   <div style={{ alignContent: 'center', minHeight: '100vh' }}>
     {devfile.type === 'stack' ? (
       <div>
-        <DevPageHeader
-          devfileMetadata={devfileJSON.metadata}
-          devfile={devfile}
-        />
+        <DevPageHeader devfileMetadata={devfileJSON.metadata} devfile={devfile} />
         <DevPageProjects starterProjects={devfileJSON.starterProjects} />
         <DevPageYAML devYAML={devfileText} />
       </div>
@@ -41,9 +38,7 @@ const DevfilePage = ({
 );
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const indexResponse: Response = await fetch(
-    'https://registry.devfile.io/index/all?icon=base64'
-  );
+  const indexResponse: Response = await fetch('https://registry.devfile.io/index/all?icon=base64');
   const devfiles: Devfile[] = (await indexResponse.json()) as Devfile[];
   const devfile: Devfile = devfiles.find(
     (devfile: Devfile) => devfile.name === context.params?.id
@@ -54,12 +49,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
   let devfileJSON = null;
 
   if (devfile.type === 'stack') {
-    devfileYAMLResponse = await fetch(
-      'https://registry.devfile.io/devfiles/' + devfile.name,
-      {
-        headers: { 'Accept-Type': 'text/plain' },
-      }
-    );
+    devfileYAMLResponse = await fetch('https://registry.devfile.io/devfiles/' + devfile.name, {
+      headers: { 'Accept-Type': 'text/plain' }
+    });
     devfileText = await devfileYAMLResponse.text();
 
     // convert yaml text to json
@@ -71,23 +63,21 @@ export const getStaticProps: GetStaticProps = async (context) => {
     props: {
       devfile,
       devfileText,
-      devfileJSON,
+      devfileJSON
     },
-    revalidate: 21600, // Regenerate page every 6 hours
+    revalidate: 21600 // Regenerate page every 6 hours
   };
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const res: Response = await fetch(
-    'https://registry.devfile.io/index/all?icon=base64'
-  );
+  const res: Response = await fetch('https://registry.devfile.io/index/all?icon=base64');
   const devfiles: Devfile[] = (await res.json()) as Devfile[];
   const ids: string[] = devfiles.map((devfile) => devfile.name);
   const paths: Path[] = ids.map((id) => ({ params: { id } }));
 
   return {
     paths,
-    fallback: false,
+    fallback: false
   };
 };
 

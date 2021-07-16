@@ -31,21 +31,14 @@ export const iterateThroughFilter = (
   filterElemsStateWithFreq: FilterElem[],
   callback: FilterElemsCallback
 ): void => {
-  cy.get(`[data-test-id^=${filterType}-]`).should(
-    'have.length',
-    filterElemsStateWithFreq.length
-  );
+  cy.get(`[data-test-id^=${filterType}-]`).should('have.length', filterElemsStateWithFreq.length);
 
   for (
     let numFilterElemsSelected = 1;
     numFilterElemsSelected <= filterElemsStateWithFreq.length;
     numFilterElemsSelected++
   ) {
-    for (
-      let i = 0;
-      i + numFilterElemsSelected <= filterElemsStateWithFreq.length;
-      i++
-    ) {
+    for (let i = 0; i + numFilterElemsSelected <= filterElemsStateWithFreq.length; i++) {
       const selectedFilterElems: FilterElem[] = filterElemsStateWithFreq.slice(
         i,
         i + numFilterElemsSelected
@@ -59,12 +52,7 @@ export const iterateThroughFilter = (
         ).click();
       } else {
         selectedFilterElems.forEach((filterElem) => {
-          cy.get(
-            `[data-test-id=${filterType}-${filterElem.value.replace(
-              /\.| /g,
-              ''
-            )}]`
-          ).click();
+          cy.get(`[data-test-id=${filterType}-${filterElem.value.replace(/\.| /g, '')}]`).click();
         });
       }
 
@@ -75,19 +63,11 @@ export const iterateThroughFilter = (
         i + numFilterElemsSelected !== filterElemsStateWithFreq.length
       ) {
         cy.get(
-          `[data-test-id=${filterType}-${selectedFilterElems[0].value.replace(
-            /\.| /g,
-            ''
-          )}]`
+          `[data-test-id=${filterType}-${selectedFilterElems[0].value.replace(/\.| /g, '')}]`
         ).click();
       } else {
         selectedFilterElems.forEach((filterElem) => {
-          cy.get(
-            `[data-test-id=${filterType}-${filterElem.value.replace(
-              /\.| /g,
-              ''
-            )}]`
-          ).click();
+          cy.get(`[data-test-id=${filterType}-${filterElem.value.replace(/\.| /g, '')}]`).click();
         });
       }
     }

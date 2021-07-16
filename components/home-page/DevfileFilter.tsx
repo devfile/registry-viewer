@@ -12,7 +12,7 @@ import {
   SearchInput,
   Text,
   TextContent,
-  TextVariants,
+  TextVariants
 } from '@patternfly/react-core';
 import { useState, useEffect } from 'react';
 
@@ -32,7 +32,7 @@ const DevfileFilter: React.FC<DevfileFilterProps> = ({
   tagsStateWithFreq,
   typesStateWithFreq,
   setTagsStateWithFreq,
-  setTypesStateWithFreq,
+  setTypesStateWithFreq
 }: DevfileFilterProps) => {
   const [tagSearchBarValue, setTagSearchBarValue] = useState('');
 
@@ -40,38 +40,24 @@ const DevfileFilter: React.FC<DevfileFilterProps> = ({
     setTagsStateWithFreq(sortFilterDataArr(tagsStateWithFreq));
   }, [tagsStateWithFreq]);
 
-  const onCheckboxTagsChange = (
-    checked: boolean,
-    event: React.FormEvent<HTMLInputElement>
-  ) => {
+  const onCheckboxTagsChange = (checked: boolean, event: React.FormEvent<HTMLInputElement>) => {
     const target: EventTarget = event.target;
     const state: boolean = (target as HTMLInputElement).checked;
     const value: string = (target as HTMLInputElement).name;
 
-    const index: number = tagsStateWithFreq.findIndex(
-      (elem) => elem.value === value
-    );
-
-    console.log(`Tag Filter: ${value}-${state.toString()}`);
+    const index: number = tagsStateWithFreq.findIndex((elem) => elem.value === value);
 
     const copy: FilterElem[] = [...tagsStateWithFreq];
     copy[index].state = state;
     setTagsStateWithFreq(copy);
   };
 
-  const onCheckboxTypesChange = (
-    checked: boolean,
-    event: React.FormEvent<HTMLInputElement>
-  ) => {
+  const onCheckboxTypesChange = (checked: boolean, event: React.FormEvent<HTMLInputElement>) => {
     const target: EventTarget = event.target;
     const state: boolean = (target as HTMLInputElement).checked;
     const value: string = (target as HTMLInputElement).name;
 
-    const index: number = typesStateWithFreq.findIndex(
-      (elem) => elem.value === value
-    );
-
-    console.log(`Type Filter: ${value}-${state.toString()}`);
+    const index: number = typesStateWithFreq.findIndex((elem) => elem.value === value);
 
     const copy: FilterElem[] = [...typesStateWithFreq];
     copy[index].state = state;
@@ -89,9 +75,9 @@ const DevfileFilter: React.FC<DevfileFilterProps> = ({
       </TextContent>
       <Form isHorizontal>
         <FormGroup fieldId="type-selector" label="Types" hasNoPaddingTop>
-          <Grid hasGutter>
+          <Grid>
             {typesStateWithFreq.map((type) => (
-              <GridItem md={12} sm={3} key={type.value}>
+              <GridItem md={12} sm={6} span={6} key={type.value} style={{ padding: '1rem 0rem' }}>
                 <Checkbox
                   data-test-id={`type-${type.value.replace(/\.| /g, '')}`}
                   isChecked={type.state}
@@ -105,45 +91,31 @@ const DevfileFilter: React.FC<DevfileFilterProps> = ({
           </Grid>
         </FormGroup>
         <FormGroup fieldId="tag-selector" label="Tags" hasNoPaddingTop>
-          <Grid hasGutter>
-            <GridItem span={12}>
-              <SearchInput
-                data-test-id="search-bar-tag"
-                placeholder="Find by tag name"
-                value={tagSearchBarValue}
-                onChange={onSearchChange}
-                onClear={() => onSearchChange('')}
-                resultsCount={getFilterResultCount(
-                  tagsStateWithFreq,
-                  tagSearchBarValue
-                )}
-              />
-            </GridItem>
-            <div style={{ height: '20rem', overflow: 'auto' }}>
-              {tagsStateWithFreq
-                .filter((tagData) =>
-                  tagData.value
-                    .toLowerCase()
-                    .includes(tagSearchBarValue.toLowerCase())
-                )
-                .map((tag) => (
-                  <GridItem
-                    style={{ padding: '0.25rem' }}
-                    md={12}
-                    sm={3}
-                    key={tag.value}
-                  >
-                    <Checkbox
-                      data-test-id={`tag-${tag.value.replace(/\.| /g, '')}`}
-                      isChecked={tag.state}
-                      onChange={onCheckboxTagsChange}
-                      id={`types-${tag.value}`}
-                      label={tag.value}
-                      name={tag.value}
-                    />
-                  </GridItem>
-                ))}
-            </div>
+          <SearchInput
+            data-test-id="search-bar-tag"
+            placeholder="Find by tag name"
+            value={tagSearchBarValue}
+            onChange={onSearchChange}
+            onClear={() => onSearchChange('')}
+            resultsCount={getFilterResultCount(tagsStateWithFreq, tagSearchBarValue)}
+          />
+          <Grid style={{ height: '20rem', overflow: 'auto' }}>
+            {tagsStateWithFreq
+              .filter((tagData) =>
+                tagData.value.toLowerCase().includes(tagSearchBarValue.toLowerCase())
+              )
+              .map((tag) => (
+                <GridItem md={12} sm={6} span={6} key={tag.value} style={{ padding: '1rem 0rem' }}>
+                  <Checkbox
+                    data-test-id={`tag-${tag.value.replace(/\.| /g, '')}`}
+                    isChecked={tag.state}
+                    onChange={onCheckboxTagsChange}
+                    id={`types-${tag.value}`}
+                    label={tag.value}
+                    name={tag.value}
+                  />
+                </GridItem>
+              ))}
           </Grid>
         </FormGroup>
       </Form>
@@ -167,10 +139,7 @@ const sortFilterDataArr = (tagsStateWithFreq: FilterElem[]): FilterElem[] => {
   return copy;
 };
 
-const getFilterResultCount = (
-  filterElemArr: FilterElem[],
-  searchBarValue: string
-) =>
+const getFilterResultCount = (filterElemArr: FilterElem[], searchBarValue: string) =>
   filterElemArr.filter((filterElem) =>
     filterElem.value.toLowerCase().includes(searchBarValue.toLowerCase())
   ).length;

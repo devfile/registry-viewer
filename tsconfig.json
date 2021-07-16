@@ -23,22 +23,8 @@
     "types": ["node", "cypress"],
     "skipLibCheck": true
   },
-  "include": [
-    "next-env.d.ts",
-    "**.*.js",
-    "**.*.jsx",
-    "**/*.ts",
-    "**/*.tsx",
-    "**/*.json"
-  ],
-  "exclude": [
-    ".next",
-    ".nyc_output",
-    "coverage",
-    "docs",
-    "node_modules",
-    "out"
-  ],
+  "include": ["next-env.d.ts", "**.*.js", "**.*.jsx", "**/*.ts", "**/*.tsx", "**/*.json"],
+  "exclude": [".next", ".nyc_output", "coverage", "docs", "node_modules", "out"],
   "typedocOptions": {
     "entryPoints": ["pages", "components", "@types", "util"],
     "out": "docs"

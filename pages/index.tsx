@@ -13,26 +13,18 @@ import { Grid, GridItem } from '@patternfly/react-core';
 const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
   devfiles,
   tags,
-  types,
+  types
 }: InferGetStaticPropsType<GetStaticProps>): React.ReactElement => {
   const [searchBarValue, setSearchBarValue] = useState<string>('');
   const [filteredDevfiles, setFilteredDevfiles] = useState<Devfile[]>(devfiles);
 
-  const [tagsStateWithFreq, setTagsStateWithFreq] =
-    useState<FilterElem[]>(tags);
-  const [typesStateWithFreq, setTypesStateWithFreq] =
-    useState<FilterElem[]>(types);
+  const [tagsStateWithFreq, setTagsStateWithFreq] = useState<FilterElem[]>(tags);
+  const [typesStateWithFreq, setTypesStateWithFreq] = useState<FilterElem[]>(types);
 
   useEffect(() => {
     let filteredDevfiles = filterDevfilesOnSearchBar(devfiles, searchBarValue);
-    filteredDevfiles = filterDevfilesOnTags(
-      filteredDevfiles,
-      tagsStateWithFreq
-    );
-    filteredDevfiles = filterDevfilesOnTypes(
-      filteredDevfiles,
-      typesStateWithFreq
-    );
+    filteredDevfiles = filterDevfilesOnTags(filteredDevfiles, tagsStateWithFreq);
+    filteredDevfiles = filterDevfilesOnTypes(filteredDevfiles, typesStateWithFreq);
 
     setFilteredDevfiles(filteredDevfiles);
   }, [tagsStateWithFreq, typesStateWithFreq, searchBarValue]);
@@ -44,7 +36,7 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
   return (
     <div>
       <Grid hasGutter>
-        <GridItem xl2={3} xl={3} lg={4} md={6} sm={12}>
+        <GridItem xl2={3} xl={4} lg={5} md={6} sm={12} span={12}>
           <DevfileFilter
             tagsStateWithFreq={tagsStateWithFreq}
             typesStateWithFreq={typesStateWithFreq}
@@ -52,7 +44,7 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
             setTypesStateWithFreq={setTypesStateWithFreq}
           />
         </GridItem>
-        <GridItem xl2={9} xl={9} lg={8} md={6} sm={12}>
+        <GridItem xl2={9} xl={8} lg={7} md={6} sm={12} span={12}>
           <DevfileSearchBar
             devfileCount={filteredDevfiles.length}
             onSearchBarChange={onSearchBarChange}
@@ -65,60 +57,42 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
   );
 };
 
-const isSearchBarValueIn = (
-  value: string | undefined,
-  searchBarValue: string
-) => value?.toLowerCase().includes(searchBarValue.toLowerCase());
+const isSearchBarValueIn = (value: string | undefined, searchBarValue: string) =>
+  value?.toLowerCase().includes(searchBarValue.toLowerCase());
 
-const isSearchBarValueInTag = (
-  tags: string[] | undefined,
-  searchBarValue: string
-) =>
+const isSearchBarValueInTag = (tags: string[] | undefined, searchBarValue: string) =>
   tags?.some((tag) => tag.toLowerCase().includes(searchBarValue.toLowerCase()));
 
-const filterDevfilesOnSearchBar = (
-  devfiles: Devfile[],
-  searchBarValue: string
-): Devfile[] => {
+const filterDevfilesOnSearchBar = (devfiles: Devfile[], searchBarValue: string): Devfile[] => {
   if (searchBarValue === '') {
     return devfiles;
   }
 
-  const devfilesFilteredOnSearchBar: Devfile[] = devfiles.filter(
-    (devfile: Devfile) => {
-      if (isSearchBarValueIn(devfile.displayName, searchBarValue)) {
-        return true;
-      }
-
-      if (isSearchBarValueIn(devfile.description, searchBarValue)) {
-        return true;
-      }
-
-      return isSearchBarValueInTag(devfile.tags, searchBarValue);
+  const devfilesFilteredOnSearchBar: Devfile[] = devfiles.filter((devfile: Devfile) => {
+    if (isSearchBarValueIn(devfile.displayName, searchBarValue)) {
+      return true;
     }
-  );
+
+    if (isSearchBarValueIn(devfile.description, searchBarValue)) {
+      return true;
+    }
+
+    return isSearchBarValueInTag(devfile.tags, searchBarValue);
+  });
   return devfilesFilteredOnSearchBar;
 };
 
-const filterDevfilesOnTags = (
-  devfiles: Devfile[],
-  tagsStateWithFreq: FilterElem[]
-): Devfile[] => {
-  const tagsSelectedByUser: FilterElem[] = tagsStateWithFreq.filter(
-    (tag) => tag.state
-  );
+const filterDevfilesOnTags = (devfiles: Devfile[], tagsStateWithFreq: FilterElem[]): Devfile[] => {
+  const tagsSelectedByUser: FilterElem[] = tagsStateWithFreq.filter((tag) => tag.state);
 
   if (!tagsSelectedByUser.length) {
     return devfiles;
   }
 
-  const devfilesFilteredOnTags: Devfile[] = devfiles.filter(
-    (devfile: Devfile) =>
-      devfile.tags?.some((tag) =>
-        tagsSelectedByUser.some(
-          (tagSelectedByUser) => tag === tagSelectedByUser.value
-        )
-      )
+  const devfilesFilteredOnTags: Devfile[] = devfiles.filter((devfile: Devfile) =>
+    devfile.tags?.some((tag) =>
+      tagsSelectedByUser.some((tagSelectedByUser) => tag === tagSelectedByUser.value)
+    )
   );
   return devfilesFilteredOnTags;
 };
@@ -127,19 +101,14 @@ const filterDevfilesOnTypes = (
   devfiles: Devfile[],
   typesStateWithFreq: FilterElem[]
 ): Devfile[] => {
-  const typesSelectedByUser: FilterElem[] = typesStateWithFreq.filter(
-    (type) => type.state
-  );
+  const typesSelectedByUser: FilterElem[] = typesStateWithFreq.filter((type) => type.state);
 
   if (!typesSelectedByUser.length) {
     return devfiles;
   }
 
-  const devfilesFilteredOnTypes: Devfile[] = devfiles.filter(
-    (devfile: Devfile) =>
-      typesSelectedByUser.some(
-        (typeSelectedByUser) => devfile.type === typeSelectedByUser.value
-      )
+  const devfilesFilteredOnTypes: Devfile[] = devfiles.filter((devfile: Devfile) =>
+    typesSelectedByUser.some((typeSelectedByUser) => devfile.type === typeSelectedByUser.value)
   );
   return devfilesFilteredOnTypes;
 };
@@ -181,13 +150,11 @@ const getTypesStateWithFreq = (devfiles: Devfile[]): FilterElem[] => {
 };
 
 export const getStaticProps: GetStaticProps = async () => {
-  const res: Response = await fetch(
-    'https://registry.devfile.io/index/all?icon=base64'
-  );
+  const res: Response = await fetch('https://registry.devfile.io/index/all?icon=base64');
   let devfiles: Devfile[] = (await res.json()) as Devfile[];
   devfiles = devfiles.sort((a, b) =>
     a.displayName.localeCompare(b.displayName, 'en', {
-      sensitivity: 'accent',
+      sensitivity: 'accent'
     })
   );
 
@@ -198,9 +165,9 @@ export const getStaticProps: GetStaticProps = async () => {
     props: {
       devfiles,
       tags,
-      types,
+      types
     },
-    revalidate: 21600, // Regenerate page every 6 hours
+    revalidate: 21600 // Regenerate page every 6 hours
   };
 };
 

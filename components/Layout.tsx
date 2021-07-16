@@ -1,7 +1,5 @@
 import Meta from '@components/Meta';
 
-import { server } from '@util/index';
-
 import Link from 'next/link';
 import {
   Text,
@@ -11,7 +9,7 @@ import {
   PageHeader,
   PageHeaderTools,
   PageSection,
-  PageSectionVariants,
+  PageSectionVariants
 } from '@patternfly/react-core';
 
 import devfileLogo from '../public/images/devfileLogo.svg';
@@ -27,18 +25,12 @@ export interface LayoutProps {
  */
 const Layout: React.FC<LayoutProps> = ({ children }: LayoutProps) => {
   const logoProps = {
-    href: server,
+    href: '/'
   };
 
   const Header = (
     <PageHeader
-      logo={
-        <Brand
-          src={devfileLogo}
-          alt="Devfile Registry Logo"
-          style={{ height: '100%' }}
-        />
-      }
+      logo={<Brand src={devfileLogo} alt="Devfile Registry Logo" style={{ height: '100%' }} />}
       logoProps={logoProps}
       headerTools={
         <PageHeaderTools>

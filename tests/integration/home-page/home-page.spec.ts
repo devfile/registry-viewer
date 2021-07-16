@@ -21,9 +21,7 @@ describe('Home page tests on desktop', () => {
       const textArr: string[] = ['JavA', 'rhel', 'PYTHON', 'vERT.x'];
 
       textArr.forEach((text) => {
-        cy.get('[data-test-id=search-bar-devfile]').type(
-          `{selectall}{backspace}${text}`
-        );
+        cy.get('[data-test-id=search-bar-devfile]').type(`{selectall}{backspace}${text}`);
         cy.compareCardLength(filterDevfilesOnSearchBar(devfiles, text).length);
       });
     });
@@ -32,9 +30,7 @@ describe('Home page tests on desktop', () => {
   it('Clickability of each devfile', () => {
     cy.getDevfiles((devfiles: Devfile[]) => {
       devfiles.forEach((devfile) => {
-        cy.get(
-          `[data-test-id=card-${devfile.name.replace(/\.| /g, '')}]`
-        ).click();
+        cy.get(`[data-test-id=card-${devfile.name.replace(/\.| /g, '')}]`).click();
         cy.get('[data-test-id=go-home-button').click();
       });
     });
@@ -45,9 +41,7 @@ describe('Home page tests on desktop', () => {
       const typesStateWithFreq: FilterElem[] = getTypesStateWithFreq(devfiles);
 
       cy.iterateThroughFilter('type', typesStateWithFreq, (selectedTypes) => {
-        cy.compareCardLength(
-          filterDevfilesOnTypes(devfiles, selectedTypes).length
-        );
+        cy.compareCardLength(filterDevfilesOnTypes(devfiles, selectedTypes).length);
       });
     });
   });
@@ -57,9 +51,7 @@ describe('Home page tests on desktop', () => {
       const tagsStateWithFreq: FilterElem[] = getTagsStateWithFreq(devfiles);
 
       cy.iterateThroughFilter('tag', tagsStateWithFreq, (selectedTags) => {
-        cy.compareCardLength(
-          filterDevfilesOnTags(devfiles, selectedTags).length
-        );
+        cy.compareCardLength(filterDevfilesOnTags(devfiles, selectedTags).length);
       });
     });
   });
@@ -71,9 +63,7 @@ describe('Home page tests on desktop', () => {
       const textArr: string[] = ['JavA', 'rhel', 'PYTHON', 'vERT.x'];
 
       textArr.forEach((text) => {
-        cy.get('[data-test-id=search-bar-tag]').type(
-          `{selectall}{backspace}${text}`
-        );
+        cy.get('[data-test-id=search-bar-tag]').type(`{selectall}{backspace}${text}`);
         cy.get('[data-test-id^=tag-]').should(
           'have.length',
           tagsStateWithFreq.filter((tagData) =>
@@ -85,52 +75,36 @@ describe('Home page tests on desktop', () => {
   });
 });
 
-const isSearchBarValueIn = (
-  value: string | undefined,
-  searchBarValue: string
-) => value?.toLowerCase().includes(searchBarValue.toLowerCase());
+const isSearchBarValueIn = (value: string | undefined, searchBarValue: string) =>
+  value?.toLowerCase().includes(searchBarValue.toLowerCase());
 
-const isSearchBarValueInTag = (
-  tags: string[] | undefined,
-  searchBarValue: string
-) =>
+const isSearchBarValueInTag = (tags: string[] | undefined, searchBarValue: string) =>
   tags?.some((tag) => tag.toLowerCase().includes(searchBarValue.toLowerCase()));
 
-const filterDevfilesOnSearchBar = (
-  devfiles: Devfile[],
-  searchBarValue: string
-): Devfile[] => {
+const filterDevfilesOnSearchBar = (devfiles: Devfile[], searchBarValue: string): Devfile[] => {
   if (searchBarValue === '') {
     return devfiles;
   }
 
-  const devfilesFilteredOnSearchBar: Devfile[] = devfiles.filter(
-    (devfile: Devfile) => {
-      if (isSearchBarValueIn(devfile.displayName, searchBarValue)) {
-        return true;
-      }
-
-      if (isSearchBarValueIn(devfile.description, searchBarValue)) {
-        return true;
-      }
-
-      return isSearchBarValueInTag(devfile.tags, searchBarValue);
+  const devfilesFilteredOnSearchBar: Devfile[] = devfiles.filter((devfile: Devfile) => {
+    if (isSearchBarValueIn(devfile.displayName, searchBarValue)) {
+      return true;
     }
-  );
+
+    if (isSearchBarValueIn(devfile.description, searchBarValue)) {
+      return true;
+    }
+
+    return isSearchBarValueInTag(devfile.tags, searchBarValue);
+  });
   return devfilesFilteredOnSearchBar;
 };
 
-const filterDevfilesOnTags = (
-  devfiles: Devfile[],
-  tagsStateWithFreq: FilterElem[]
-): Devfile[] => {
-  const devfilesFilteredOnTags: Devfile[] = devfiles.filter(
-    (devfile: Devfile) =>
-      devfile.tags?.some((tag) =>
-        tagsStateWithFreq.some(
-          (tagStateWithFreq) => tag === tagStateWithFreq.value
-        )
-      )
+const filterDevfilesOnTags = (devfiles: Devfile[], tagsStateWithFreq: FilterElem[]): Devfile[] => {
+  const devfilesFilteredOnTags: Devfile[] = devfiles.filter((devfile: Devfile) =>
+    devfile.tags?.some((tag) =>
+      tagsStateWithFreq.some((tagStateWithFreq) => tag === tagStateWithFreq.value)
+    )
   );
   return devfilesFilteredOnTags;
 };
@@ -139,11 +113,8 @@ const filterDevfilesOnTypes = (
   devfiles: Devfile[],
   typesStateWithFreq: FilterElem[]
 ): Devfile[] => {
-  const devfilesFilteredOnTypes: Devfile[] = devfiles.filter(
-    (devfile: Devfile) =>
-      typesStateWithFreq.some(
-        (typeStateWithFreq) => devfile.type === typeStateWithFreq.value
-      )
+  const devfilesFilteredOnTypes: Devfile[] = devfiles.filter((devfile: Devfile) =>
+    typesStateWithFreq.some((typeStateWithFreq) => devfile.type === typeStateWithFreq.value)
   );
   return devfilesFilteredOnTypes;
 };

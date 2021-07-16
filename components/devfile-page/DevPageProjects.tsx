@@ -1,4 +1,4 @@
-import styles from './devpage.module.css';
+import styles from './devPage.module.css';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 
@@ -10,7 +10,7 @@ import {
   CardExpandableContent,
   Button,
   Text,
-  TextContent,
+  TextContent
 } from '@patternfly/react-core';
 import { useState } from 'react';
 
@@ -78,11 +78,8 @@ const DevPageProjects = ({ starterProjects }: Props) => {
   const [expanded, setExpanded] = useState<boolean>(false);
   const [downloading, setDownloading] = useState<boolean>(false);
 
-  const [selectedProject, setSelectedProject] = useState<Project>(
-    starterProjects[0]
-  );
-  const [currentlyHoveredProject, setCurrentlyHoveredProject] =
-    useState<Project | null>(null); // null when not hovering over project list
+  const [selectedProject, setSelectedProject] = useState<Project>(starterProjects[0]);
+  const [currentlyHoveredProject, setCurrentlyHoveredProject] = useState<Project | null>(null); // null when not hovering over project list
 
   async function triggerDownload(project: Project) {
     setDownloading(true);
@@ -100,7 +97,7 @@ const DevPageProjects = ({ starterProjects }: Props) => {
         maxWidth: '1000px',
         margin: 'auto',
         marginTop: '30px',
-        marginBottom: '30px',
+        marginBottom: '30px'
       }}
     >
       <CardHeader
@@ -110,7 +107,7 @@ const DevPageProjects = ({ starterProjects }: Props) => {
           id: 'toggle-button',
           'aria-label': 'Details',
           'aria-labelledby': 'titleId toggle-button',
-          'aria-expanded': expanded,
+          'aria-expanded': expanded
         }}
       >
         <CardTitle id="titleId">Starter Projects</CardTitle>
@@ -125,7 +122,7 @@ const DevPageProjects = ({ starterProjects }: Props) => {
                 alignItems: 'center',
                 height: '10rem',
                 overflowY: 'scroll',
-                order: 0,
+                order: 0
               }}
               onMouseLeave={() => setCurrentlyHoveredProject(null)}
             >
@@ -139,9 +136,7 @@ const DevPageProjects = ({ starterProjects }: Props) => {
                     onMouseDown={() => setSelectedProject(project)}
                     onMouseEnter={() => setCurrentlyHoveredProject(project)}
                     className={
-                      selectedProject.name === project.name
-                        ? styles.selected
-                        : styles.project
+                      selectedProject.name === project.name ? styles.selected : styles.project
                     }
                   >
                     {project.name}
@@ -156,29 +151,21 @@ const DevPageProjects = ({ starterProjects }: Props) => {
                 alignItems: 'center',
                 marginLeft: 'auto',
                 marginRight: 'auto',
-                order: 0,
+                order: 0
               }}
             >
               {!currentlyHoveredProject ? ( // sets displayed project description
                 <div style={{ width: '80%', padding: 'auto', margin: '10px' }}>
                   <TextContent>
-                    <Text style={{ margin: '0px' }}>
-                      {selectedProject.name}
-                    </Text>
-                    <Text style={{ color: '#ADABAE' }}>
-                      {selectedProject.description}
-                    </Text>
+                    <Text style={{ margin: '0px' }}>{selectedProject.name}</Text>
+                    <Text style={{ color: '#ADABAE' }}>{selectedProject.description}</Text>
                   </TextContent>
                 </div>
               ) : (
                 <div style={{ width: '80%', padding: 'auto', margin: '10px' }}>
                   <TextContent>
-                    <Text style={{ margin: '0px' }}>
-                      {currentlyHoveredProject.name}
-                    </Text>
-                    <Text style={{ color: '#ADABAE' }}>
-                      {currentlyHoveredProject.description}
-                    </Text>
+                    <Text style={{ margin: '0px' }}>{currentlyHoveredProject.name}</Text>
+                    <Text style={{ color: '#ADABAE' }}>{currentlyHoveredProject.description}</Text>
                   </TextContent>
                 </div>
               )}
@@ -213,18 +200,17 @@ const DevPageProjects = ({ starterProjects }: Props) => {
 async function downloadSubdirectory(url: string, subdirectory: string) {
   const data = {
     url,
-    subdirectory,
+    subdirectory
   };
   const response = await fetch('/api/download-subdirectory', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
+    body: JSON.stringify(data)
   });
 
   const status = response.status;
   if (status !== 200) {
     const errorJson = await response.json();
-    console.log(errorJson);
     throw new Error(errorJson);
   }
 
@@ -283,7 +269,7 @@ function getURLForGit(git: Git) {
 }
 
 /**
- * download project as a zip file as specified versioon and subdirectory
+ * download project as a zip file as specified version and subdirectory
  * @param project - project to download
  *
  * @throws TypeError

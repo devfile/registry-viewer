@@ -1,19 +1,12 @@
 import { Devfile } from 'custom-types';
 import devfileLogo from '../../public/images/devfileLogo.svg';
 import HeaderTags from './HeaderTags';
-import {
-  Brand,
-  Card,
-  CardBody,
-  Text,
-  TextContent,
-  TextVariants,
-} from '@patternfly/react-core';
+import { Brand, Card, CardBody, Text, TextContent, TextVariants } from '@patternfly/react-core';
 
 type DevfileMetadata = Record<string, string>;
 
 /**
- * props for devpage metadata header
+ * props for devPage metadata header
  * @param devfile - devfile index information
  * @param metadata - metadata from
  */
@@ -24,7 +17,7 @@ interface Props {
 
 /**
  * header that displays basic information and metadata information for respective devfile
- * @param devfile - index information for devfie
+ * @param devfile - index information for devfile
  * @param metadata - metadata information from devfile yaml
  */
 const DevPageHeader = ({ devfile, devfileMetadata }: Props) => {
@@ -38,7 +31,7 @@ const DevPageHeader = ({ devfile, devfileMetadata }: Props) => {
         maxWidth: '1000px',
         margin: 'auto',
         marginTop: '30px',
-        marginBottom: '30px',
+        marginBottom: '30px'
       }}
     >
       <CardBody style={{ width: '100%' }}>
@@ -47,7 +40,7 @@ const DevPageHeader = ({ devfile, devfileMetadata }: Props) => {
             style={{
               display: 'flex',
               width: '50%',
-              borderRight: '2px solid #ADABAE',
+              borderRight: '2px solid #ADABAE'
             }}
           >
             <div style={{ margin: '10px' }}>
@@ -61,7 +54,7 @@ const DevPageHeader = ({ devfile, devfileMetadata }: Props) => {
                   style={{
                     color: '#ADABAE',
                     marginLeft: 'auto',
-                    marginRight: 'auto',
+                    marginRight: 'auto'
                   }}
                 >
                   {devfile.type}
@@ -73,9 +66,7 @@ const DevPageHeader = ({ devfile, devfileMetadata }: Props) => {
                 <Text component={TextVariants.h2} style={{ margin: '0.5rem' }}>
                   {devfile.displayName}
                 </Text>
-                <Text style={{ margin: '0.5rem' }}>
-                  &emsp;{devfile.description}
-                </Text>
+                <Text style={{ margin: '0.5rem' }}>&emsp;{devfile.description}</Text>
               </TextContent>
               <HeaderTags tags={devfile.tags} />
             </div>
@@ -99,20 +90,14 @@ const DevPageHeader = ({ devfile, devfileMetadata }: Props) => {
                   devfileMetadata.website && (
                     <Text>
                       <strong>Website: </strong>
-                      <a
-                        href={devfileMetadata.website}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
+                      <a href={devfileMetadata.website} target="_blank" rel="noreferrer">
                         {devfileMetadata.website}
                       </a>
                     </Text>
                   )
                 : devfile.git && (
                     <a
-                      href={
-                        devfile.git.remotes[Object.keys(devfile.git.remotes)[0]]
-                      }
+                      href={devfile.git.remotes[Object.keys(devfile.git.remotes)[0]]}
                       target="_blank"
                       rel="noreferrer"
                     >

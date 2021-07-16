@@ -37,11 +37,7 @@ const HeaderTags = ({ tags }: Props) => {
               {tags.map(
                 (tag, index) =>
                   index >= numOfVisibleTags && (
-                    <Label
-                      color="blue"
-                      style={{ margin: '0.125rem' }}
-                      key={tag}
-                    >
+                    <Label color="blue" style={{ margin: '0.125rem' }} key={tag}>
                       {tag}
                     </Label>
                   )

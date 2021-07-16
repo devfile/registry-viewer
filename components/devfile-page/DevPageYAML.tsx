@@ -25,7 +25,7 @@ const DevPageYAML = ({ devYAML }: Props) => (
       maxWidth: '1000px',
       margin: 'auto',
       marginTop: '30px',
-      marginBottom: '30px',
+      marginBottom: '30px'
     }}
   >
     <CardHeader style={{ padding: '10px' }}>devfile.yaml</CardHeader>

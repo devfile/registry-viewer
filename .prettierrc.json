@@ -1,3 +1,7 @@
 {
-  "singleQuote": true
+  "arrowParens": "always",
+  "printWidth": 100,
+  "singleQuote": true,
+  "trailingComma": "none",
+  "endOfLine": "crlf"
 }
