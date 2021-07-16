@@ -1,7 +1,7 @@
 import type { Devfile, FilterElem } from 'custom-types';
-import DevfileFilter from '@components/home-page/DevfileFilter';
-import DevfileSearchBar from '@components/home-page/DevfileSearchBar';
-import DevfileGrid from '@components/home-page/DevfileGrid';
+import DevfileFilter from '@components/home-page/Filter';
+import DevfileSearchBar from '@components/home-page/SearchBar';
+import DevfileGrid from '@components/home-page/Grid';
 
 import { InferGetStaticPropsType, GetStaticProps } from 'next';
 import { useState, useEffect } from 'react';

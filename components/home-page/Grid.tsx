@@ -1,6 +1,6 @@
 import type { Devfile } from 'custom-types';
 
-import DevfileTile from '@components/home-page/DevfileTile';
+import DevfileTile from '@components/home-page/Tile';
 
 import Link from 'next/link';
 import { Gallery } from '@patternfly/react-core';

@@ -1,7 +1,7 @@
 import { Devfile } from 'custom-types';
-import DevPageProjects from '@components/devfile-page/DevPageProjects';
-import DevPageHeader from '@components/devfile-page/DevPageHeader';
-import DevPageYAML from '@components/devfile-page/DevPageYAML';
+import DevPageProjects from '@components/devfile-page/Projects';
+import DevPageHeader from '@components/devfile-page/Header';
+import DevPageYAML from '@components/devfile-page/YAML';
 
 import { InferGetStaticPropsType, GetStaticProps, GetStaticPaths } from 'next';
 

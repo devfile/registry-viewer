@@ -1,8 +1,4 @@
 declare module 'custom-types' {
-  export interface Remote {
-    [key: string]: string;
-  }
-
   export interface Devfile {
     name: string;
     version: string;
@@ -19,7 +15,7 @@ declare module 'custom-types' {
     resources: string[];
     starterProjects: string[];
     git?: {
-      remotes: Remote;
+      remotes: Record<string, string>;
     };
   }
 

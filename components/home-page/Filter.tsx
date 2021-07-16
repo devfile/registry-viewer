@@ -77,7 +77,7 @@ const DevfileFilter: React.FC<DevfileFilterProps> = ({
         <FormGroup fieldId="type-selector" label="Types" hasNoPaddingTop>
           <Grid>
             {typesStateWithFreq.map((type) => (
-              <GridItem md={12} sm={6} span={6} key={type.value} style={{ padding: '1rem 0rem' }}>
+              <GridItem md={12} sm={6} span={6} key={type.value} style={{ padding: '0.5rem 0rem' }}>
                 <Checkbox
                   data-test-id={`type-${type.value.replace(/\.| /g, '')}`}
                   isChecked={type.state}

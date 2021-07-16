@@ -1,4 +1,4 @@
-import styles from './devPage.module.css';
+import styles from '@components/devfile-page/Projects.module.css';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 
