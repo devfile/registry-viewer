@@ -31,7 +31,8 @@
     "next-transpile-modules": "^8.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-syntax-highlighter": "^15.4.3"
+    "react-syntax-highlighter": "^15.4.3",
+    "tslib": "^2.3.0"
   },
   "license": "EPL-2.0",
   "devDependencies": {
