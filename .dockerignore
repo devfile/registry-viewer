@@ -42,3 +42,15 @@ yarn-error.log*
 package-lock.json
 
 docs
+
+#specifically dockerignore
+tests
+.vscode
+.github
+cypress
+cypress.json
+jest.config.js
+jest.setup.js
+LICENSE
+OWNERSHIP
+README.md

@@ -1,3 +1,5 @@
+// / <reference types="cypress" />
+
 /* eslint-disable @typescript-eslint/no-namespace */
 import type { Devfile, FilterElem } from 'custom-types';
 

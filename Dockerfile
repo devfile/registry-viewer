@@ -4,7 +4,7 @@ USER root
 WORKDIR /app
 RUN npm install -g yarn
 COPY package.json yarn.lock ./
-RUN $(npm get prefix)/bin/yarn install --frozen-lockfile
+RUN $(npm get prefix)/bin/yarn install --frozen-lockfile --ignore-optional
 
 # Rebuild the source code only when needed
 FROM registry.access.redhat.com/ubi8/nodejs-14-minimal AS builder
@@ -13,7 +13,7 @@ WORKDIR /app
 RUN npm install -g yarn
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
-RUN $(npm get prefix)/bin/yarn format && $(npm get prefix)/bin/yarn build && $(npm get prefix)/bin/yarn install --production --ignore-scripts --prefer-offline
+RUN $(npm get prefix)/bin/yarn format && $(npm get prefix)/bin/yarn build && $(npm get prefix)/bin/yarn install --production --ignore-scripts --prefer-offline --ignore-optional
 
 # Production image, copy all the files and run next
 FROM registry.access.redhat.com/ubi8/nodejs-14-minimal AS runner
@@ -33,7 +33,6 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 
-RUN chown -R nextjs:nodejs /app
 USER nextjs
 
 EXPOSE 3000

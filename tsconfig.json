@@ -21,11 +21,11 @@
     "jsx": "preserve",
     "noImplicitAny": true,
     "typeRoots": ["@types", "node_modules/@types"],
-    "types": ["node", "cypress"],
+    "types": ["node"],
     "skipLibCheck": true
   },
   "include": ["next-env.d.ts", "**.*.js", "**.*.jsx", "**/*.ts", "**/*.tsx", "**/*.json"],
-  "exclude": [".next", ".nyc_output", "coverage", "docs", "node_modules", "out"],
+  "exclude": [".next", ".nyc_output", "coverage", "docs", "node_modules", "out", "tests"],
   "typedocOptions": {
     "entryPoints": ["pages", "components", "@types", "util"],
     "out": "docs"
