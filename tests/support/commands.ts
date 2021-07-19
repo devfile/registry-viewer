@@ -1,6 +1,7 @@
-// / <reference types="cypress" />
-
 /* eslint-disable @typescript-eslint/no-namespace */
+// eslint-disable-next-line spaced-comment
+/// <reference types="cypress" />
+
 import type { Devfile, FilterElem } from 'custom-types';
 
 declare global {
