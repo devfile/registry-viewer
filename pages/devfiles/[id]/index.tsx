@@ -65,7 +65,10 @@ export const getStaticProps: GetStaticProps = async (context) => {
       devfileText,
       devfileJSON
     },
-    revalidate: 21600 // Regenerate page every 6 hours
+    // Next.js will attempt to re-generate the page:
+    // - When a request comes in
+    // - At most once every 30 seconds
+    revalidate: 30
   };
 };
 

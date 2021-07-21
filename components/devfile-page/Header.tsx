@@ -3,8 +3,6 @@ import devfileLogo from '../../public/images/devfileLogo.svg';
 import HeaderTags from './HeaderTags';
 import { Brand, Card, CardBody, Text, TextContent, TextVariants } from '@patternfly/react-core';
 
-type DevfileMetadata = Record<string, string>;
-
 /**
  * props for devPage metadata header
  * @param devfile - devfile index information
@@ -12,7 +10,9 @@ type DevfileMetadata = Record<string, string>;
  */
 interface Props {
   devfile: Devfile;
-  devfileMetadata?: DevfileMetadata;
+  devfileMetadata?: {
+    [key: string]: string;
+  };
 }
 
 /**

@@ -1,19 +1,13 @@
-# Install dependencies only when needed
-FROM registry.access.redhat.com/ubi8/nodejs-14-minimal AS deps
-USER root
-WORKDIR /app
-RUN npm install -g yarn
-COPY package.json yarn.lock ./
-RUN $(npm get prefix)/bin/yarn install --frozen-lockfile --ignore-optional
-
 # Rebuild the source code only when needed
 FROM registry.access.redhat.com/ubi8/nodejs-14-minimal AS builder
 USER root
 WORKDIR /app
 RUN npm install -g yarn
 COPY . .
-COPY --from=deps /app/node_modules ./node_modules
-RUN $(npm get prefix)/bin/yarn format && $(npm get prefix)/bin/yarn build && $(npm get prefix)/bin/yarn install --production --ignore-scripts --prefer-offline --ignore-optional
+RUN $(npm get prefix)/bin/yarn install --frozen-lockfile --ignore-optional
+RUN $(npm get prefix)/bin/yarn format
+RUN $(npm get prefix)/bin/yarn build
+RUN $(npm get prefix)/bin/yarn install --production --ignore-scripts --prefer-offline --ignore-optional
 
 # Production image, copy all the files and run next
 FROM registry.access.redhat.com/ubi8/nodejs-14-minimal AS runner
