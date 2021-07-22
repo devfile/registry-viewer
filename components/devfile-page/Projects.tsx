@@ -202,19 +202,19 @@ async function downloadSubdirectory(url: string, subdirectory: string) {
     url,
     subdirectory
   };
-  const response = await fetch('/api/download-subdirectory', {
+  const res = await fetch('/api/download-subdirectory', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)
   });
 
-  const status = response.status;
+  const status = res.status;
   if (status !== 200) {
-    const errorJson = await response.json();
+    const errorJson = await res.json();
     throw new Error(errorJson);
   }
 
-  const base64string = await response.text();
+  const base64string = await res.text();
   const zip = await JSZip.loadAsync(base64string, { base64: true });
 
   try {

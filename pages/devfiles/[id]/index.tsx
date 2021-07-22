@@ -1,7 +1,8 @@
 import { Devfile } from 'custom-types';
-import DevPageProjects from '@components/devfile-page/Projects';
-import DevPageHeader from '@components/devfile-page/Header';
-import DevPageYAML from '@components/devfile-page/YAML';
+import { getDevfilesJSON, getDevfileYAML } from '@util/server';
+import DevfilePageProjects from '@components/devfile-page/Projects';
+import DevfilePageHeader from '@components/devfile-page/Header';
+import DevfilePageYAML from '@components/devfile-page/YAML';
 
 import { InferGetStaticPropsType, GetStaticProps, GetStaticPaths } from 'next';
 
@@ -21,48 +22,37 @@ interface Path {
  */
 const DevfilePage = ({
   devfile,
-  devfileText,
+  devfileYAML,
   devfileJSON
 }: InferGetStaticPropsType<typeof getStaticProps>) => (
   <div style={{ alignContent: 'center', minHeight: '100vh' }}>
     {devfile.type === 'stack' ? (
       <div>
-        <DevPageHeader devfileMetadata={devfileJSON.metadata} devfile={devfile} />
-        <DevPageProjects starterProjects={devfileJSON.starterProjects} />
-        <DevPageYAML devYAML={devfileText} />
+        <DevfilePageHeader devfileMetadata={devfileJSON.metadata} devfile={devfile} />
+        <DevfilePageProjects starterProjects={devfileJSON.starterProjects} />
+        <DevfilePageYAML devfileYAML={devfileYAML} />
       </div>
     ) : (
-      <DevPageHeader devfile={devfile} />
+      <DevfilePageHeader devfile={devfile} />
     )}
   </div>
 );
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const indexResponse: Response = await fetch('https://registry.devfile.io/index/all?icon=base64');
-  const devfiles: Devfile[] = (await indexResponse.json()) as Devfile[];
+  const devfiles: Devfile[] = await getDevfilesJSON();
+
   const devfile: Devfile = devfiles.find(
     (devfile: Devfile) => devfile.name === context.params?.id
   )!;
 
-  let devfileYAMLResponse: Response;
-  let devfileText: string | null = null;
-  let devfileJSON = null;
-
-  if (devfile.type === 'stack') {
-    devfileYAMLResponse = await fetch('https://registry.devfile.io/devfiles/' + devfile.name, {
-      headers: { 'Accept-Type': 'text/plain' }
-    });
-    devfileText = await devfileYAMLResponse.text();
-
-    // convert yaml text to json
-    const yaml = require('js-yaml');
-    devfileJSON = yaml.load(devfileText);
-  }
+  const res = await getDevfileYAML(devfile);
+  const devfileYAML = res?.devfileYAML;
+  const devfileJSON = res?.devfileJSON;
 
   return {
     props: {
       devfile,
-      devfileText,
+      devfileYAML,
       devfileJSON
     },
     // Next.js will attempt to re-generate the page:
@@ -73,8 +63,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const res: Response = await fetch('https://registry.devfile.io/index/all?icon=base64');
-  const devfiles: Devfile[] = (await res.json()) as Devfile[];
+  const devfiles: Devfile[] = await getDevfilesJSON();
   const ids: string[] = devfiles.map((devfile) => devfile.name);
   const paths: Path[] = ids.map((id) => ({ params: { id } }));
 

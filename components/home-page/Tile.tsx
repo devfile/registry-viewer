@@ -2,7 +2,7 @@ import type { Devfile } from 'custom-types';
 import type { ForwardedRef } from 'react';
 
 import devfileLogo from '../../public/images/devfileLogo.svg';
-import { capitalizeFirstLetter } from '@util/index';
+import { capitalizeFirstLetter } from '@util/client';
 
 import { forwardRef } from 'react';
 import {

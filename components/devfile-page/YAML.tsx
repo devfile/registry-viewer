@@ -7,7 +7,7 @@ import { github as style } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
  * @param devYAML - yaml text
  */
 interface Props {
-  devYAML: string;
+  devfileYAML: string;
 }
 /**
  * component  for displaying DevFile YAML
@@ -17,7 +17,7 @@ interface Props {
  *
  * @param props - yaml text
  */
-const DevPageYAML = ({ devYAML }: Props) => (
+const DevPageYAML = ({ devfileYAML }: Props) => (
   <Card
     isRounded
     style={{
@@ -31,7 +31,7 @@ const DevPageYAML = ({ devYAML }: Props) => (
     <CardHeader style={{ padding: '10px' }}>devfile.yaml</CardHeader>
     <CardBody style={{ padding: '0' }}>
       <SyntaxHighlighter language="yaml" showLineNumbers style={style}>
-        {devYAML}
+        {devfileYAML}
       </SyntaxHighlighter>
     </CardBody>
   </Card>

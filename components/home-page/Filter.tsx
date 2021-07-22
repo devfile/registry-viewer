@@ -1,11 +1,9 @@
 import type { FilterElem } from 'custom-types';
 import type { Dispatch, SetStateAction } from 'react';
 
-import { capitalizeFirstLetter } from '@util/index';
+import { capitalizeFirstLetter } from '@util/client';
 
 import {
-  Grid,
-  GridItem,
   Checkbox,
   Form,
   FormGroup,
@@ -75,20 +73,18 @@ const DevfileFilter: React.FC<DevfileFilterProps> = ({
       </TextContent>
       <Form isHorizontal>
         <FormGroup fieldId="type-selector" label="Types" hasNoPaddingTop>
-          <Grid>
-            {typesStateWithFreq.map((type) => (
-              <GridItem md={12} sm={6} span={6} key={type.value} style={{ padding: '0.5rem 0rem' }}>
-                <Checkbox
-                  data-test-id={`type-${type.value.replace(/\.| /g, '')}`}
-                  isChecked={type.state}
-                  onChange={onCheckboxTypesChange}
-                  id={`types-${type.value}`}
-                  label={capitalizeFirstLetter(type.value)}
-                  name={type.value}
-                />
-              </GridItem>
-            ))}
-          </Grid>
+          {typesStateWithFreq.map((type) => (
+            <div key={type.value} style={{ margin: '0.5rem 0rem' }}>
+              <Checkbox
+                data-test-id={`type-${type.value.replace(/\.| /g, '')}`}
+                isChecked={type.state}
+                onChange={onCheckboxTypesChange}
+                id={`types-${type.value}`}
+                label={capitalizeFirstLetter(type.value)}
+                name={type.value}
+              />
+            </div>
+          ))}
         </FormGroup>
         <FormGroup fieldId="tag-selector" label="Tags" hasNoPaddingTop>
           <SearchInput
@@ -99,13 +95,13 @@ const DevfileFilter: React.FC<DevfileFilterProps> = ({
             onClear={() => onSearchChange('')}
             resultsCount={getFilterResultCount(tagsStateWithFreq, tagSearchBarValue)}
           />
-          <Grid style={{ height: '20rem', overflow: 'auto' }}>
+          <div style={{ height: '20rem', overflow: 'auto' }}>
             {tagsStateWithFreq
               .filter((tagData) =>
                 tagData.value.toLowerCase().includes(tagSearchBarValue.toLowerCase())
               )
               .map((tag) => (
-                <GridItem md={12} sm={6} span={6} key={tag.value} style={{ padding: '1rem 0rem' }}>
+                <div key={tag.value} style={{ margin: '0.5rem 0rem' }}>
                   <Checkbox
                     data-test-id={`tag-${tag.value.replace(/\.| /g, '')}`}
                     isChecked={tag.state}
@@ -114,9 +110,9 @@ const DevfileFilter: React.FC<DevfileFilterProps> = ({
                     label={tag.value}
                     name={tag.value}
                   />
-                </GridItem>
+                </div>
               ))}
-          </Grid>
+          </div>
         </FormGroup>
       </Form>
     </>

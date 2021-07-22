@@ -18,24 +18,30 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create next
   "dev": "next",
   "build": "next build && next export",
   "start": "next start",
-  "start-build": "yarn build & yarn start",
   "clean": "rm -rf .next/ out/ node_modules/",
-  "cypress:start": "yarn run cypress open",
-  "cypress:start-build": "concurrently --names 'CYPRESS,SERVER' --prefix-colors 'yellow,blue' \"yarn cypress:start\" \"yarn start-build\"",
+  "cypress:start": "concurrently --names 'CYPRESS,SERVER' --prefix-colors 'yellow,blue' \"yarn cypress open\" \"yarn build && yarn start\"",
   "typedoc:build": "node_modules/.bin/typedoc --tsconfig .",
-  "typedoc:start": "npx serve docs"
+  "typedoc:start": "npx serve docs",
+  "jest:test": "jest --watchAll --verbose",
+  "test": "cypress run",
+  "lint": "prettier --check .",
+  "format": "prettier --write .",
+  "prepare": "husky install"
 }
 ```
 
 - `dev` - Runs `next dev` which starts Next.js in development mode
 - `build` - Runs `next build && next export` which builds the application for production usage
 - `start` - Runs `next start` which starts a Next.js production server
-- `start-build` - Runs `build` then `start`
 - `clean` - Slims the directory
-- `cypress:start` - Runs cypress as a standalone client
-- `cypress:start-build` - Runs cypress concurrently with a production build
+- `cypress:start` - Runs cypress concurrently with a production build
 - `typedoc:build` - Runs typedoc to generate docs
 - `typedoc:start` - Serves the docs
+- `jest:test` - Runs all jest tests
+- `test` - Runs all cypress and jest tests
+- `lint` - Checks the formatting of all files
+- `format` - Formats all files
+- `prepare` - System script for auto formatting before committing
 
 ## Getting Started
 
@@ -54,6 +60,114 @@ You can start editing the page by modifying `pages/index.js`. The page auto-upda
 [API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
 
 The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+
+## Adding remote repositories
+
+Configure the registry viewer through environment variables.
+
+- `DEVFILE_SOURCE_REPOS` - Source repository(ies) name
+- `DEVFILE_ENDPOINTS` - Endpoint(s) that serves the devfile JSON
+- `DEVFILE_DIRECTORIES` - Endpoint(s) that serves the devfile
+
+Notes about environment variables:
+
+- The environment variables DEVFILE_SOURCE_REPOS, DEVFILE_ENDPOINTS, and DEVFILE_DIRECTORIES must be the same array length and in order.
+- Multiple sources should be split by ",".
+
+```
+DEVFILE_SOURCE_REPOS="Official"
+DEVFILE_ENDPOINTS="https://registry.devfile.io/index/all?icon=base64"
+DEVFILE_DIRECTORIES="https://registry.devfile.io/devfiles/"
+```
+
+Configure the registry viewer through config file.
+
+- `/config/devfile-endpoints.json` - Endpoint(s) that serves the devfile JSON
+- `/config/devfile-directories.json` - Endpoint(s) that serves the devfile
+
+`/config/devfile-endpoints.json`
+
+```json
+{
+  "Official": "https://registry.devfile.io/index/all?icon=base64"
+}
+```
+
+`/config/devfile-directories.json`
+
+```json
+{
+  "Official": "https://registry.devfile.io/devfiles/"
+}
+```
+
+Notes about config file:
+
+- `/config/devfile-endpoints.json` and `/config/devfile-directories.json` must have matching keys for the corresponding source repository
+
+Notes:
+
+- For devfile endpoints (environment variable or config file) specify a remote url or a local JSON file that follows the `devfile/api` spec.
+
+```json
+{
+  "Official": "/config/examples.json"
+}
+```
+
+`/config/examples.json`
+
+```json
+[
+  {
+    "name": "java-maven",
+    "version": "1.1.0",
+    "displayName": "Maven Java",
+    "description": "Upstream Maven and OpenJDK 11",
+    "type": "stack",
+    "tags": ["Java", "Maven"],
+    "projectType": "maven",
+    "language": "java",
+    "links": {
+      "self": "devfile-catalog/java-maven:latest"
+    },
+    "resources": ["devfile.yaml"],
+    "starterProjects": ["springbootproject"]
+  },
+  {
+    "name": "java-openliberty",
+    "version": "0.5.0",
+    "displayName": "Open Liberty",
+    "description": "Java application stack using Open Liberty runtime",
+    "type": "stack",
+    "projectType": "docker",
+    "language": "java",
+    "links": {
+      "self": "devfile-catalog/java-openliberty:latest"
+    },
+    "resources": ["devfile.yaml"],
+    "starterProjects": ["user-app"]
+  }
+]
+```
+
+- For devfile directories (environment variable or config file) specify a remote url or a local stacks folder that follows the `devfile/api` spec.
+
+```json
+{
+  "Official": "/stacks"
+}
+```
+
+`/stacks`
+
+```
++-- stacks
+|   +-- java-maven
+|       +-- devfile.yaml
+|   +-- java-openliberty
+|       +-- devfile.yaml
+```
 
 ## Creating a Non-Production Build
 

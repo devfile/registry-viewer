@@ -1,10 +1,9 @@
-import type { Devfile, FilterElem, Remote } from 'custom-types';
+import type { Devfile, FilterElem } from 'custom-types';
+import { getDevfilesJSON } from '@util/server';
 import DevfileFilter from '@components/home-page/Filter';
 import DevfileSearchBar from '@components/home-page/SearchBar';
 import DevfileGrid from '@components/home-page/Grid';
 
-import { promises as fs } from 'fs';
-import path from 'path';
 import { InferGetStaticPropsType, GetStaticProps } from 'next';
 import { useState, useEffect } from 'react';
 import { Grid, GridItem } from '@patternfly/react-core';
@@ -16,7 +15,7 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
   devfiles,
   tags,
   types
-}: InferGetStaticPropsType<GetStaticProps>): React.ReactElement => {
+}: InferGetStaticPropsType<GetStaticProps>) => {
   const [searchBarValue, setSearchBarValue] = useState<string>('');
   const [filteredDevfiles, setFilteredDevfiles] = useState<Devfile[]>(devfiles);
 
@@ -152,26 +151,7 @@ const getTypesStateWithFreq = (devfiles: Devfile[]): FilterElem[] => {
 };
 
 export const getStaticProps: GetStaticProps = async () => {
-  const endpointsPath = path.join(process.cwd(), 'config', 'endpoints.json');
-  const endpointsUnparsed = await fs.readFile(endpointsPath, 'utf8');
-  const endpoints = JSON.parse(endpointsUnparsed) as Remote;
-  let devfiles: Devfile[] = [];
-  await Promise.all(
-    Object.entries(endpoints).map(async ([endpointName, endpointUrl]) => {
-      const res = await fetch(endpointUrl);
-      const resBody = await res.json();
-      const devfilesWithSource = resBody.map((df: Devfile) => {
-        df.sourceRepo = endpointName;
-        return df;
-      });
-      devfiles.push(devfilesWithSource);
-    })
-  );
-
-  devfiles = devfiles.flat(1);
-
-  // const res: Response = await fetch('https://registry.devfile.io/index/all?icon=base64');
-  // // let devfiles: Devfile[] = (await res.json()) as Devfile[];
+  let devfiles: Devfile[] = await getDevfilesJSON();
   devfiles = devfiles.sort((a, b) =>
     a.displayName.localeCompare(b.displayName, 'en', {
       sensitivity: 'accent'
