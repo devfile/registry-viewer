@@ -36,5 +36,9 @@ export const getDevfileURLs = (): string => {
 
   const urls = Object.values(hosts).map((host) => host.url as string);
 
+  if (!urls.length) {
+    urls.push('https://registry.devfile.io/index/all');
+  }
+
   return urls[0];
 };

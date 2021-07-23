@@ -89,6 +89,14 @@ export const getDevfilesJSON = async (): Promise<Devfile[]> => {
   let hosts: Host = await getConfigFileHosts('/config/devfile-registry-hosts.json');
   hosts = { ...hosts, ...getENVHosts() };
 
+  if (!Object.keys(hosts).length) {
+    hosts = {
+      'devfile.io': {
+        url: 'https://registry.devfile.io'
+      }
+    };
+  }
+
   let devfiles: Devfile[] = [];
   await Promise.all(
     Object.entries(hosts).map(async ([hostName, hostLocation]) => {
@@ -119,6 +127,14 @@ export const getDevfileYAML = async (devfile: Devfile): Promise<getDevfileYAMLRe
 
   let hosts: Host = await getConfigFileHosts('/config/devfile-registry-hosts.json');
   hosts = { ...hosts, ...getENVHosts() };
+
+  if (!Object.keys(hosts).length) {
+    hosts = {
+      'devfile.io': {
+        url: 'https://registry.devfile.io'
+      }
+    };
+  }
 
   for (const [hostName, hostLocation] of Object.entries(hosts)) {
     if (hostName === devfile.sourceRepo) {
