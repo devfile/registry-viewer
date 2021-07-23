@@ -13,7 +13,7 @@ import {
 type DevfileMetadata = Record<string, string>;
 
 /**
- * props for devpage metadata header
+ * props for dev page metadata header
  * @param devfile - devfile index information
  * @param metadata - metadata from
  */
@@ -52,12 +52,16 @@ const DevPageHeader = ({ devfile, devfileMetadata }: Props) => {
           >
             <div style={{ margin: '10px' }}>
               <Brand
+                id="icon"
                 src={devfile.icon || devfileLogo}
-                alt={devfile.icon ? devfile.name + ' logo' : 'devfile logo'}
+                alt={
+                  devfile.icon ? devfile.displayName + ' logo' : 'devfile logo'
+                }
                 style={{ width: '60%' }}
               />
               <TextContent>
                 <Text
+                  id="type"
                   style={{
                     color: '#ADABAE',
                     marginLeft: 'auto',
@@ -70,24 +74,30 @@ const DevPageHeader = ({ devfile, devfileMetadata }: Props) => {
             </div>
             <div style={{ margin: '10px' }}>
               <TextContent>
-                <Text component={TextVariants.h2} style={{ margin: '0.5rem' }}>
+                <Text
+                  id="displayName"
+                  component={TextVariants.h2}
+                  style={{ margin: '0.5rem' }}
+                >
                   {devfile.displayName}
                 </Text>
-                <Text style={{ margin: '0.5rem' }}>
-                  &emsp;{devfile.description}
-                </Text>
+                {devfile.description && (
+                  <Text id="description" style={{ margin: '0.5rem' }}>
+                    &emsp;{devfile.description}
+                  </Text>
+                )}
               </TextContent>
               <HeaderTags tags={devfile.tags} />
             </div>
           </div>
           <div style={{ width: '50%', margin: '2%' }}>
-            <TextContent>
+            <TextContent id="devfile-metadata">
               {Object.entries(devfile).map(([key, value]) => {
                 if (devfileMetaInclude.includes(key)) {
                   let label = key.replace(/([a-z](?=[A-Z]))/g, '$1 '); // split camel case up
                   label = label[0].toUpperCase() + label.substring(1);
                   return (
-                    <Text>
+                    <Text id={key} key={key}>
                       <strong>{label + ': '}</strong>
                       {value}
                     </Text>
@@ -97,7 +107,7 @@ const DevPageHeader = ({ devfile, devfileMetadata }: Props) => {
               {devfile.type === 'stack' // include website if stack; include git if sample
                 ? devfileMetadata &&
                   devfileMetadata.website && (
-                    <Text>
+                    <Text id="website">
                       <strong>Website: </strong>
                       <a
                         href={devfileMetadata.website}
@@ -109,15 +119,19 @@ const DevPageHeader = ({ devfile, devfileMetadata }: Props) => {
                     </Text>
                   )
                 : devfile.git && (
-                    <a
-                      href={
-                        devfile.git.remotes[Object.keys(devfile.git.remotes)[0]]
-                      }
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      View Git Repository
-                    </a>
+                    <Text id="git-remotes">
+                      <a
+                        href={
+                          devfile.git.remotes[
+                            Object.keys(devfile.git.remotes)[0]
+                          ]
+                        }
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        View Git Repository
+                      </a>
+                    </Text>
                   )}
             </TextContent>
           </div>

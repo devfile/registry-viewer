@@ -27,7 +27,11 @@ export default async function handler(
     res.send(base64send);
     res.end();
   } catch (error) {
-    res.json(error);
-    res.status(405).end();
+    res.json({ error: error.toString() });
+    if (error.text.contains('subdirectory does not exist')) {
+      res.status(404).end();
+    } else {
+      res.status(500).end();
+    }
   }
 }

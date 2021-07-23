@@ -13,16 +13,21 @@ interface Props {
  */
 const HeaderTags = ({ tags }: Props) => {
   const numOfVisibleTags = 8;
-  if (!tags) {
+  if (!tags || tags.length === 0) {
     return null;
   }
 
   return (
-    <div>
+    <div id="header-tags">
       {tags.map(
         (tag, index) =>
           index < numOfVisibleTags && (
-            <Label color="blue" style={{ margin: '0.125rem' }} key={tag}>
+            <Label
+              id="tag"
+              color="blue"
+              style={{ margin: '0.125rem' }}
+              key={tag}
+            >
               {tag}
             </Label>
           )
@@ -30,7 +35,8 @@ const HeaderTags = ({ tags }: Props) => {
 
       {tags.length > numOfVisibleTags && (
         <Popover
-          aria-label="extra tags popover"
+          id="extra-tags-popover"
+          aria-label="close"
           position="bottom"
           bodyContent={
             <div>
@@ -38,6 +44,7 @@ const HeaderTags = ({ tags }: Props) => {
                 (tag, index) =>
                   index >= numOfVisibleTags && (
                     <Label
+                      id="tag"
                       color="blue"
                       style={{ margin: '0.125rem' }}
                       key={tag}
@@ -49,7 +56,12 @@ const HeaderTags = ({ tags }: Props) => {
             </div>
           }
         >
-          <Label>{tags.length - numOfVisibleTags} more</Label>
+          <Label
+            id="extra-tag"
+            key={'popover-label-' + (tags.length - numOfVisibleTags)}
+          >
+            {tags.length - numOfVisibleTags} more
+          </Label>
         </Popover>
       )}
     </div>
