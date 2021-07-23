@@ -34,7 +34,7 @@ export const getDevfileURLs = (): string => {
     throw Error('The cypress tests can only accept 1 url');
   }
 
-  const urls = Object.values(hosts).map((host) => host.url as string);
+  const urls = Object.values(hosts).map((host) => `${host.url}/index/all` as string);
 
   if (!urls.length) {
     urls.push('https://registry.devfile.io/index/all');
