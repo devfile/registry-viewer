@@ -25,7 +25,16 @@
     "skipLibCheck": true
   },
   "include": ["next-env.d.ts", "**.*.js", "**.*.jsx", "**/*.ts", "**/*.tsx", "**/*.json"],
-  "exclude": [".next", ".nyc_output", "coverage", "docs", "node_modules", "out", "util/server"],
+  "exclude": [
+    ".github",
+    ".next",
+    ".nyc_output",
+    "coverage",
+    "docs",
+    "node_modules",
+    "out",
+    "util/server"
+  ],
   "typedocOptions": {
     "entryPoints": ["pages", "components", "@types", "util"],
     "out": "docs"
