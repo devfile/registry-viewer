@@ -5,7 +5,6 @@ WORKDIR /app
 RUN npm install -g yarn
 COPY . .
 RUN $(npm get prefix)/bin/yarn install --frozen-lockfile --ignore-optional
-RUN $(npm get prefix)/bin/yarn format
 RUN $(npm get prefix)/bin/yarn build
 RUN $(npm get prefix)/bin/yarn install --production --ignore-scripts --prefer-offline --ignore-optional
 
