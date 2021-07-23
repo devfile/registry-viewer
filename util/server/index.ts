@@ -1,6 +1,4 @@
-/* eslint-disable no-console */
-
-import type { Devfile, Remote } from 'custom-types';
+import type { Devfile, Host } from 'custom-types';
 import { promises as fs } from 'fs';
 import path from 'path';
 // @ts-expect-error js-yaml has no type definitions
@@ -15,132 +13,96 @@ interface getDevfileYAMLReturnType {
   devfileJSON: Object | string | number | null | undefined;
 }
 
-const getLocalFile = async (fileRelPath: string): Promise<Remote> => {
+const getLocalFile = async (fileRelPath: string): Promise<Host> => {
   const splitRelFilePath = fileRelPath.split('/');
   const absFilePath = path.join(process.cwd(), ...splitRelFilePath);
   const fileUnparsed = await fs.readFile(absFilePath, 'utf8');
-  const file = JSON.parse(fileUnparsed) as Remote;
+  const file = JSON.parse(fileUnparsed) as Host;
   return file;
 };
 
-const getRemoteEndpoint = async (
-  endpointName: string,
-  endpointLocation: string
-): Promise<Devfile[]> => {
-  const res = await fetch(endpointLocation);
+const getRemoteJSON = async (hostName: string, jsonLocation: string): Promise<Devfile[]> => {
+  const res = await fetch(`${jsonLocation}/index/all?icon=base64`);
   const devfilesWithoutSource = (await res.json()) as Devfile[];
   const devfilesWithSource = devfilesWithoutSource.map((devfile: Devfile) => {
-    devfile.sourceRepo = endpointName;
+    devfile.sourceRepo = hostName;
     return devfile;
   });
   return devfilesWithSource;
 };
 
-const getLocalEndpoint = async (
-  endpointName: string,
-  endpointLocation: string
-): Promise<Devfile[]> => {
-  const devfileRelPath = endpointLocation.split('/');
-  const devfileAbsPath = path.join(process.cwd(), ...devfileRelPath);
+const getLocalJSON = async (hostName: string, jsonLocation: string): Promise<Devfile[]> => {
+  const devfileRelPath = jsonLocation.split('/');
+  const devfileAbsPath = path.join(process.cwd(), ...devfileRelPath, 'index.json');
   const devfilesUnparsed = await fs.readFile(devfileAbsPath, 'utf8');
   const devfilesWithoutSource = JSON.parse(devfilesUnparsed) as Devfile[];
   const devfilesWithSource = devfilesWithoutSource.map((devfile: Devfile) => {
-    devfile.sourceRepo = endpointName;
+    devfile.sourceRepo = hostName;
     return devfile;
   });
   return devfilesWithSource;
 };
 
-const getRemoteYAML = async (value: string, devfileName: string): Promise<string> => {
-  const res = await fetch(`${value}${devfileName}`, {
+const getRemoteYAML = async (devfileName: string, yamlLocation: string): Promise<string> => {
+  const res = await fetch(`${yamlLocation}/devfiles/${devfileName}`, {
     headers: { 'Accept-Type': 'text/plain' }
   });
   const devfileYAML = (await res.text()) as string;
   return devfileYAML;
 };
 
-const getLocalYAML = async (value: string, devfileName: string): Promise<string> => {
-  const devfileYAMLRelPath = `${value}/${devfileName}/devfile.yaml`.split('/');
+const getLocalYAML = async (devfileName: string, yamlLocation: string): Promise<string> => {
+  const devfileYAMLRelPath = `${yamlLocation}/${devfileName}/devfile.yaml`.split('/');
   const devfileYAMLAbsPath = path.join(process.cwd(), ...devfileYAMLRelPath);
   const devfileYAML = (await fs.readFile(devfileYAMLAbsPath, 'utf8')) as string;
   return devfileYAML;
 };
 
-const checkENVFile = () => {
-  const sourceRepos = process.env.DEVFILE_SOURCE_REPOS?.split(',').filter(
-    (sourceRepo) => sourceRepo !== ''
-  );
-  const devfileEndpoints = process.env.DEVFILE_ENDPOINTS?.split(',').filter(
-    (endpoint) => endpoint !== ''
-  );
-  const devfileDirectories = process.env.DEVFILE_DIRECTORIES?.split(',').filter(
-    (directory) => directory !== ''
-  );
+const getENVHosts = () => {
+  const envHosts = process.env.DEVFILE_REGISTRY_HOSTS?.split(',').filter((host) => host !== '');
 
-  if (
-    sourceRepos?.length !== devfileEndpoints?.length ||
-    sourceRepos?.length !== devfileDirectories?.length
-  ) {
-    throw Error(
-      'The environment variables DEVFILE_SOURCE_REPOS, DEVFILE_ENDPOINTS, and DEVFILE_DIRECTORIES must be the same array length and in order. Note: Multiple sources should be split by ",".'
-    );
+  let hosts: Host = {};
+
+  if (envHosts?.length) {
+    envHosts.forEach((envHost) => {
+      const [hostName, type, hostLocation] = envHost.split('>');
+      hosts = {
+        ...hosts,
+        [hostName]: {
+          [type]: hostLocation
+        }
+      };
+    });
   }
+
+  return hosts;
 };
 
-const getENVEndpoints = () => {
-  const sourceRepos = process.env.DEVFILE_SOURCE_REPOS?.split(',').filter(
-    (sourceRepo) => sourceRepo !== ''
-  );
-  const devfileEndpoints = process.env.DEVFILE_ENDPOINTS?.split(',').filter(
-    (endpoint) => endpoint !== ''
-  );
+export const getDevfileSources = async (): Promise<string[]> => {
+  let hosts: Host = await getLocalFile('/config/devfile-registry-hosts.json');
+  hosts = { ...hosts, ...getENVHosts() };
 
-  let endpoints: Remote = {};
+  const sources = Object.keys(hosts);
 
-  if (sourceRepos?.length) {
-    sourceRepos.forEach(
-      (sourceRepo, index) => (endpoints = { ...endpoints, [sourceRepo]: devfileEndpoints![index] })
-    );
-  }
+  // eslint-disable-next-line no-console
+  console.log(sources);
 
-  return endpoints;
-};
-
-const getENVDirectories = () => {
-  const sourceRepos = process.env.DEVFILE_SOURCE_REPOS?.split(',').filter(
-    (sourceRepo) => sourceRepo !== ''
-  );
-  const devfileDirectories = process.env.DEVFILE_DIRECTORIES?.split(',').filter(
-    (endpoint) => endpoint !== ''
-  );
-
-  let directories: Remote = {};
-
-  if (sourceRepos?.length) {
-    sourceRepos.forEach(
-      (sourceRepo, index) =>
-        (directories = { ...directories, [sourceRepo]: devfileDirectories![index] })
-    );
-  }
-
-  return directories;
+  return sources;
 };
 
 export const getDevfilesJSON = async (): Promise<Devfile[]> => {
-  checkENVFile();
-
-  let devfileEndpoints: Remote = await getLocalFile('/config/devfile-endpoints.json');
-  devfileEndpoints = { ...devfileEndpoints, ...getENVEndpoints() };
+  let hosts: Host = await getLocalFile('/config/devfile-registry-hosts.json');
+  hosts = { ...hosts, ...getENVHosts() };
 
   let devfiles: Devfile[] = [];
   await Promise.all(
-    Object.entries(devfileEndpoints).map(async ([endpointName, endpointLocation]) => {
+    Object.entries(hosts).map(async ([hostName, hostLocation]) => {
       let extractedDevfiles: Devfile[] = [];
-      if (endpointLocation.includes('http://') || endpointLocation.includes('https://')) {
-        extractedDevfiles = await getRemoteEndpoint(endpointName, endpointLocation);
+      if (hostLocation.url) {
+        extractedDevfiles = await getRemoteJSON(hostName, hostLocation.url);
       }
-      if (endpointLocation.includes('.json')) {
-        extractedDevfiles = await getLocalEndpoint(endpointName, endpointLocation);
+      if (hostLocation.stacks) {
+        extractedDevfiles = await getLocalJSON(hostName, hostLocation.stacks);
       }
 
       if (extractedDevfiles.length) {
@@ -153,8 +115,6 @@ export const getDevfilesJSON = async (): Promise<Devfile[]> => {
 };
 
 export const getDevfileYAML = async (devfile: Devfile): Promise<getDevfileYAMLReturnType> => {
-  checkENVFile();
-
   let devfileYAML = null;
   let devfileJSON = null;
 
@@ -162,15 +122,16 @@ export const getDevfileYAML = async (devfile: Devfile): Promise<getDevfileYAMLRe
     return { devfileYAML, devfileJSON };
   }
 
-  let devfileDirectories: Remote = await getLocalFile('/config/devfile-directories.json');
-  devfileDirectories = { ...devfileDirectories, ...getENVDirectories() };
+  let hosts: Host = await getLocalFile('/config/devfile-registry-hosts.json');
+  hosts = { ...hosts, ...getENVHosts() };
 
-  for (const [key, value] of Object.entries(devfileDirectories)) {
-    if (key === devfile.sourceRepo) {
-      if (value.includes('http://') || value.includes('https://')) {
-        devfileYAML = await getRemoteYAML(value, devfile.name);
-      } else {
-        devfileYAML = await getLocalYAML(value, devfile.name);
+  for (const [hostName, hostLocation] of Object.entries(hosts)) {
+    if (hostName === devfile.sourceRepo) {
+      if (hostLocation.url) {
+        devfileYAML = await getRemoteYAML(devfile.name, hostLocation.url);
+      }
+      if (hostLocation.stacks) {
+        devfileYAML = await getLocalYAML(devfile.name, hostLocation.stacks);
       }
     }
   }

@@ -17,7 +17,14 @@ export interface DevfileGridProps {
 const DevfileGrid: React.FC<DevfileGridProps> = ({ devfiles }: DevfileGridProps) => (
   <Gallery style={{ paddingTop: '1rem' }}>
     {devfiles.map((devfile) => (
-      <Link key={devfile.name} href={`/devfiles/${devfile.name}`} passHref>
+      <Link
+        key={`${devfile.sourceRepo}+${devfile.name}`}
+        href={`/devfiles/${devfile.sourceRepo.replace(/\+/g, '')}+${devfile.name.replace(
+          /\+/g,
+          ''
+        )}`}
+        passHref
+      >
         <DevfileTile devfile={devfile} />
       </Link>
     ))}

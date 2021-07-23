@@ -17,6 +17,8 @@ jobs:
       # and run all Cypress tests
       - name: Cypress run
         uses: cypress-io/github-action@v2
+        env:
+          DEVFILE_REGISTRY_HOSTS: 'devfile.io>url>https://registry.devfile.io'
         with:
           build: yarn build
           start: yarn start

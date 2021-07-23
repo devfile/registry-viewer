@@ -29,4 +29,11 @@ declare module 'custom-types' {
     state: boolean;
     freq: number;
   }
+
+  export interface Host {
+    [key: string]: {
+      url?: string;
+      stacks?: string;
+    };
+  }
 }

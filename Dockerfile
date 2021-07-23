@@ -20,7 +20,6 @@ ENV NODE_ENV production
 RUN groupadd -g 1001 nodejs
 RUN useradd nextjs -u 1001
 
-COPY --from=builder /app/out ./out
 COPY --from=builder /app/next.config.js ./
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next

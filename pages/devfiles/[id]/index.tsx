@@ -41,9 +41,11 @@ const DevfilePage = ({
 export const getStaticProps: GetStaticProps = async (context) => {
   const devfiles: Devfile[] = await getDevfilesJSON();
 
-  const devfile: Devfile = devfiles.find(
-    (devfile: Devfile) => devfile.name === context.params?.id
-  )!;
+  const devfile: Devfile = devfiles.find((devfile: Devfile) => {
+    const id = context.params?.id as string;
+    const [source, name] = id.split('+');
+    return devfile.sourceRepo === source && devfile.name === name;
+  })!;
 
   const res = await getDevfileYAML(devfile);
   const devfileYAML = res?.devfileYAML;
@@ -64,12 +66,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const devfiles: Devfile[] = await getDevfilesJSON();
-  const ids: string[] = devfiles.map((devfile) => devfile.name);
-  const paths: Path[] = ids.map((id) => ({ params: { id } }));
+  const sourceWithNames: string[] = devfiles.map(
+    (devfile) => `${devfile.sourceRepo.replace(/\+/g, '')}+${devfile.name.replace(/\+/g, '')}`
+  );
+  const paths: Path[] = sourceWithNames.map((id) => ({ params: { id } }));
 
   return {
     paths,
-    fallback: false
+    fallback: 'blocking'
   };
 };
 
