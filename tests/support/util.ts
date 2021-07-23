@@ -1,21 +1,4 @@
 import type { Host } from 'custom-types';
-import fs from 'fs';
-import path from 'path';
-
-const getConfigFileHosts = (fileRelPath: string): Host => {
-  const splitRelFilePath = fileRelPath.split('/');
-  const absFilePath = path.join(process.cwd(), ...splitRelFilePath);
-  const hostsUnparsed = fs.readFileSync(absFilePath, 'utf8');
-  const hosts = JSON.parse(hostsUnparsed) as Host;
-
-  Object.values(hosts).forEach((host) => {
-    if (host.stacks) {
-      throw Error('The config file can only accept "url" for cypress tests');
-    }
-  });
-
-  return hosts;
-};
 
 const getENVHosts = () => {
   const envHosts = process.env.DEVFILE_REGISTRY_HOSTS?.split(',').filter((host) => host !== '');
@@ -45,8 +28,7 @@ const getENVHosts = () => {
 };
 
 export const getDevfileURLs = (): string => {
-  let hosts: Host = getConfigFileHosts('/config/devfile-registry-hosts.json');
-  hosts = { ...hosts, ...getENVHosts() };
+  const hosts: Host = getENVHosts();
 
   if (hosts.length > 1) {
     throw Error('The cypress tests can only accept 1 url');
