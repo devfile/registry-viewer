@@ -4,10 +4,6 @@ import path from 'path';
 // @ts-expect-error js-yaml has no type definitions
 import { load as yamlToJSON } from 'js-yaml';
 
-if (process.env.NODE_ENV === 'development') {
-  require('dotenv').config({ path: '.env.config' });
-}
-
 interface getDevfileYAMLReturnType {
   devfileYAML: string | null;
   devfileJSON: Object | string | number | null | undefined;
