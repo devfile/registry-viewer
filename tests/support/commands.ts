@@ -4,6 +4,8 @@
 
 import type { Devfile, FilterElem } from 'custom-types';
 
+import { getDevfileURLs } from './util';
+
 declare global {
   namespace Cypress {
     interface Chainable {
@@ -18,7 +20,8 @@ type FilterElemsCallback = (selectedFilterElems: FilterElem[]) => void;
 type DevfileCallback = (devfiles: Devfile[]) => void;
 
 export const getDevfiles = (callback: DevfileCallback): void => {
-  cy.request('https://registry.devfile.io/index/all').then((response) => {
+  const url = getDevfileURLs();
+  cy.request(url).then((response) => {
     const devfiles: Devfile[] = JSON.parse(response.body) as Devfile[];
 
     callback(devfiles);

@@ -8,7 +8,6 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create next
 
 - [`next build`](https://nextjs.org/docs/api-reference/cli#build) creates an optimized production build of your application. The output displays information about each route.
 - [`next dev`](https://nextjs.org/docs/api-reference/cli#development) starts the application in development mode with hot-code reloading, error reporting, and more.
-- [`next export`](https://nextjs.org/docs/advanced-features/static-html-export) allows you to export your app to static HTML, which can be run standalone without the need of a Node.js server.
 - [`next start`](https://nextjs.org/docs/api-reference/cli#production) starts the application in production mode. The application should be compiled with next build first.
 
 ## Scripts
@@ -16,7 +15,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create next
 ```json
 "scripts": {
   "dev": "next",
-  "build": "next build && next export",
+  "build": "next build",
   "start": "next start",
   "clean": "rm -rf .next/ out/ node_modules/",
   "cypress:start": "concurrently --names 'CYPRESS,SERVER' --prefix-colors 'yellow,blue' \"yarn cypress open\" \"yarn build && yarn start\"",
@@ -31,7 +30,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create next
 ```
 
 - `dev` - Runs `next dev` which starts Next.js in development mode
-- `build` - Runs `next build && next export` which builds the application for production usage
+- `build` - Runs `next build` which builds the application for production usage
 - `start` - Runs `next start` which starts a Next.js production server
 - `clean` - Slims the directory
 - `cypress:start` - Runs cypress concurrently with a production build
@@ -63,59 +62,26 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 
 ## Adding remote repositories
 
-Configure the registry viewer through environment variables.
-
-- `DEVFILE_SOURCE_REPOS` - Source repository(ies) name
-- `DEVFILE_ENDPOINTS` - Endpoint(s) that serves the devfile JSON
-- `DEVFILE_DIRECTORIES` - Endpoint(s) that serves the devfile
-
-Notes about environment variables:
-
-- The environment variables DEVFILE_SOURCE_REPOS, DEVFILE_ENDPOINTS, and DEVFILE_DIRECTORIES must be the same array length and in order.
-- Multiple sources should be split by ",".
-
-```
-DEVFILE_SOURCE_REPOS="Official"
-DEVFILE_ENDPOINTS="https://registry.devfile.io/index/all?icon=base64"
-DEVFILE_DIRECTORIES="https://registry.devfile.io/devfiles/"
-```
-
-Configure the registry viewer through config file.
-
-- `/config/devfile-endpoints.json` - Endpoint(s) that serves the devfile JSON
-- `/config/devfile-directories.json` - Endpoint(s) that serves the devfile
-
-`/config/devfile-endpoints.json`
-
-```json
-{
-  "Official": "https://registry.devfile.io/index/all?icon=base64"
-}
-```
-
-`/config/devfile-directories.json`
-
-```json
-{
-  "Official": "https://registry.devfile.io/devfiles/"
-}
-```
-
-Notes about config file:
-
-- `/config/devfile-endpoints.json` and `/config/devfile-directories.json` must have matching keys for the corresponding source repository
-
 Notes:
 
-- For devfile endpoints (environment variable or config file) specify a remote url or a local JSON file that follows the `devfile/api` spec.
+- For devfile hosts (environment variable or config file) specify a remote url or a local folder structure and `index.json` that follows the `devfile/api` spec.
+- You can have infinitely many sources as long as the name for the source repository is different.
+- There are two types of source types, url and stacks.
+  - url is for specifying a remote hosts.
+  - stacks is for specifying a local hosts. NOTE: Stacks MUST have `index.json` under the root path specified, an example is below.
 
-```json
-{
-  "Official": "/config/examples.json"
-}
+`/stacks`
+
+```
++-- stacks
+|   +-- java-maven
+|       +-- devfile.yaml
+|   +-- java-openliberty
+|       +-- devfile.yaml
+|   +-- index.json
 ```
 
-`/config/examples.json`
+`/config/index.json`
 
 ```json
 [
@@ -151,22 +117,32 @@ Notes:
 ]
 ```
 
-- For devfile directories (environment variable or config file) specify a remote url or a local stacks folder that follows the `devfile/api` spec.
+Configure the registry viewer through environment the variable.
+
+`DEVFILE_REGISTRY_HOSTS`
+
+Notes about environment variables:
+
+- Each source MUST contain a name for the source repository, a source type (url or stacks), and a location and is split by ">". i.e. `name>type>location`
+- Multiple sources are be split by "|". i.e. `name>type>location|name>type>location`
+
+```
+DEVFILE_REGISTRY_HOSTS="example1>url>https://registry.devfile.io|example2>stacks>/stacks"
+```
+
+Configure the registry viewer through config file.
+
+`/config/devfile-registry-hosts.json`
 
 ```json
 {
-  "Official": "/stacks"
+  "Example1": {
+    "url": "https://registry.devfile.io"
+  },
+  "Example2": {
+    "stacks": "/stacks"
+  }
 }
-```
-
-`/stacks`
-
-```
-+-- stacks
-|   +-- java-maven
-|       +-- devfile.yaml
-|   +-- java-openliberty
-|       +-- devfile.yaml
 ```
 
 ## Creating a Non-Production Build

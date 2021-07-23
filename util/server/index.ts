@@ -13,12 +13,12 @@ interface getDevfileYAMLReturnType {
   devfileJSON: Object | string | number | null | undefined;
 }
 
-const getLocalFile = async (fileRelPath: string): Promise<Host> => {
+const getConfigFileHosts = async (fileRelPath: string): Promise<Host> => {
   const splitRelFilePath = fileRelPath.split('/');
   const absFilePath = path.join(process.cwd(), ...splitRelFilePath);
-  const fileUnparsed = await fs.readFile(absFilePath, 'utf8');
-  const file = JSON.parse(fileUnparsed) as Host;
-  return file;
+  const hostsUnparsed = await fs.readFile(absFilePath, 'utf8');
+  const hosts = JSON.parse(hostsUnparsed) as Host;
+  return hosts;
 };
 
 const getRemoteJSON = async (hostName: string, jsonLocation: string): Promise<Devfile[]> => {
@@ -59,17 +59,24 @@ const getLocalYAML = async (devfileName: string, yamlLocation: string): Promise<
 };
 
 const getENVHosts = () => {
-  const envHosts = process.env.DEVFILE_REGISTRY_HOSTS?.split(',').filter((host) => host !== '');
+  const envHosts = process.env.DEVFILE_REGISTRY_HOSTS?.split('|').filter((host) => host !== '');
 
   let hosts: Host = {};
 
   if (envHosts?.length) {
     envHosts.forEach((envHost) => {
-      const [hostName, type, hostLocation] = envHost.split('>');
+      const [hostName, sourceType, hostLocation] = envHost.split('>');
+
+      if (!(sourceType === 'url' || sourceType === 'stacks')) {
+        throw Error(
+          'The environment variable DEVFILE_REGISTRY_HOSTS can only accept "url" or "stacks"'
+        );
+      }
+
       hosts = {
         ...hosts,
         [hostName]: {
-          [type]: hostLocation
+          [sourceType]: hostLocation
         }
       };
     });
@@ -78,20 +85,8 @@ const getENVHosts = () => {
   return hosts;
 };
 
-export const getDevfileSources = async (): Promise<string[]> => {
-  let hosts: Host = await getLocalFile('/config/devfile-registry-hosts.json');
-  hosts = { ...hosts, ...getENVHosts() };
-
-  const sources = Object.keys(hosts);
-
-  // eslint-disable-next-line no-console
-  console.log(sources);
-
-  return sources;
-};
-
 export const getDevfilesJSON = async (): Promise<Devfile[]> => {
-  let hosts: Host = await getLocalFile('/config/devfile-registry-hosts.json');
+  let hosts: Host = await getConfigFileHosts('/config/devfile-registry-hosts.json');
   hosts = { ...hosts, ...getENVHosts() };
 
   let devfiles: Devfile[] = [];
@@ -122,7 +117,7 @@ export const getDevfileYAML = async (devfile: Devfile): Promise<getDevfileYAMLRe
     return { devfileYAML, devfileJSON };
   }
 
-  let hosts: Host = await getLocalFile('/config/devfile-registry-hosts.json');
+  let hosts: Host = await getConfigFileHosts('/config/devfile-registry-hosts.json');
   hosts = { ...hosts, ...getENVHosts() };
 
   for (const [hostName, hostLocation] of Object.entries(hosts)) {
