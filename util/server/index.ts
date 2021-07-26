@@ -87,7 +87,7 @@ export const getDevfilesJSON = async (): Promise<Devfile[]> => {
 
   if (!Object.keys(hosts).length) {
     hosts = {
-      'devfile.io': {
+      Community: {
         url: 'https://registry.devfile.io'
       }
     };
@@ -126,7 +126,7 @@ export const getDevfileYAML = async (devfile: Devfile): Promise<getDevfileYAMLRe
 
   if (!Object.keys(hosts).length) {
     hosts = {
-      'devfile.io': {
+      Community: {
         url: 'https://registry.devfile.io'
       }
     };

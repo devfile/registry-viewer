@@ -12,13 +12,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const array = await response.arrayBuffer();
 
     const zip = await JSZip.loadAsync(array, {});
-    const rootname = Object.keys(zip.files)[0];
-    const subdirZip = zip.folder(rootname)?.folder(data.subdirectory);
+    const rootName = Object.keys(zip.files)[0];
+    const subDirZip = zip.folder(rootName)?.folder(data.subdirectory);
 
-    if (subdirZip === null || subdirZip === undefined) {
+    if (subDirZip === null || subDirZip === undefined) {
       throw TypeError('subdirectory does not exist');
     }
-    const base64send = await subdirZip.generateAsync({ type: 'base64' });
+    const base64send = await subDirZip.generateAsync({ type: 'base64' });
 
     res.status(200);
     res.send(base64send);
