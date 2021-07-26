@@ -50,9 +50,9 @@ const DevfileTile: React.ForwardRefRenderFunction<HTMLElement, DevfileTileProps>
       <CardHeader>
         <CardHeaderMain>
           <TextContent>
-            <Text style={{ paddingBottom: '1rem' }} component={TextVariants.p}>
-              {capitalizeFirstLetter(devfile.type)}
-            </Text>
+            <Text style={{ marginBottom: '1rem' }} component={TextVariants.p}>{`${
+              devfile.sourceRepo
+            } - ${capitalizeFirstLetter(devfile.type)}`}</Text>
           </TextContent>
           <Brand src={devfile.icon || devfileLogo} alt="" style={{ height: '2.5rem' }} />
         </CardHeaderMain>

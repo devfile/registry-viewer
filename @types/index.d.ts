@@ -5,19 +5,19 @@ declare module 'custom-types' {
 
   export interface Devfile {
     name: string;
-    version: string;
+    version?: string;
     displayName: string;
     description?: string;
     type: string;
-    tags: string[];
-    icon: string;
+    tags?: string[];
+    icon?: string;
     projectType: string;
     language: string;
-    links: {
+    links?: {
       self: string;
     };
-    resources: string[];
-    starterProjects: string[];
+    resources?: string[];
+    starterProjects?: string[];
     git?: {
       remotes: Remote;
     };
@@ -30,10 +30,19 @@ declare module 'custom-types' {
     freq: number;
   }
 
-  export interface Host {
-    [key: string]: {
-      url?: string;
-      stacks?: string;
-    };
+  interface HostBase {}
+
+  export interface HostStack extends HostBase {
+    stacks: string;
+  }
+
+  export interface HostURL extends HostBase {
+    url: string;
+  }
+
+  type Host = HostStack | HostURL | HostBase;
+
+  export interface HostList {
+    [key: string]: Host;
   }
 }

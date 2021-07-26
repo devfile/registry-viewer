@@ -1,19 +1,14 @@
-import type { Host } from 'custom-types';
+import type { HostList, HostURL } from 'custom-types';
+import { is } from 'typescript-is';
 
 const getENVHosts = () => {
   const envHosts = process.env.DEVFILE_REGISTRY_HOSTS?.split(',').filter((host) => host !== '');
 
-  let hosts: Host = {};
+  let hosts: HostList = {};
 
   if (envHosts?.length) {
     envHosts.forEach((envHost) => {
       const [hostName, sourceType, hostLocation] = envHost.split('>');
-
-      if (sourceType !== 'url') {
-        throw Error(
-          'The environment variable DEVFILE_REGISTRY_HOSTS can only accept "url" for cypress tests'
-        );
-      }
 
       hosts = {
         ...hosts,
@@ -24,17 +19,27 @@ const getENVHosts = () => {
     });
   }
 
+  Object.keys(hosts).forEach((host) => {
+    if (!is<HostURL>(host)) {
+      throw Error(`The ${location} can only accept "url" or "stacks"`);
+    }
+  });
+
   return hosts;
 };
 
 export const getDevfileURLs = (): string => {
-  const hosts: Host = getENVHosts();
+  const hosts: HostList = getENVHosts();
 
-  if (hosts.length > 1) {
+  if (Object.values(hosts).length > 1) {
     throw Error('The cypress tests can only accept 1 url');
   }
 
-  const urls = Object.values(hosts).map((host) => `${host.url}/index/all` as string);
+  const urls = Object.values(hosts).map((host) => {
+    if (is<HostURL>(host)) {
+      return `${host.url}/index/all`;
+    }
+  }) as string[];
 
   if (!urls.length) {
     urls.push('https://registry.devfile.io/index/all');

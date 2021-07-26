@@ -68,7 +68,7 @@ const DevPageHeader = ({ devfile, devfileMetadata }: Props) => {
                 </Text>
                 <Text style={{ margin: '0.5rem' }}>&emsp;{devfile.description}</Text>
               </TextContent>
-              <HeaderTags tags={devfile.tags} />
+              {devfile.tags?.length && <HeaderTags tags={devfile.tags} />}
             </div>
           </div>
           <div style={{ width: '50%', margin: '2%' }}>

@@ -1,19 +1,31 @@
-import type { Devfile, Host } from 'custom-types';
+import type { Devfile, HostList, HostStack, HostURL } from 'custom-types';
 import { promises as fs } from 'fs';
 import path from 'path';
 // @ts-expect-error js-yaml has no type definitions
 import { load as yamlToJSON } from 'js-yaml';
+import { is } from 'typescript-is';
+
+const defaultHost = {
+  Community: {
+    url: 'https://registry.stage.devfile.io/'
+  }
+};
 
 interface getDevfileYAMLReturnType {
   devfileYAML: string | null;
   devfileJSON: Object | string | number | null | undefined;
 }
 
-const getConfigFileHosts = async (fileRelPath: string): Promise<Host> => {
+const getConfigFileHosts = async (fileRelPath: string): Promise<HostList> => {
   const splitRelFilePath = fileRelPath.split('/');
   const absFilePath = path.join(process.cwd(), ...splitRelFilePath);
   const hostsUnparsed = await fs.readFile(absFilePath, 'utf8');
-  const hosts = JSON.parse(hostsUnparsed) as Host;
+  const hosts = JSON.parse(hostsUnparsed) as HostList;
+
+  if (!is<HostList>(hosts)) {
+    throw Error('The config file can only accept "url" or "stacks"');
+  }
+
   return hosts;
 };
 
@@ -57,17 +69,11 @@ const getLocalYAML = async (devfileName: string, yamlLocation: string): Promise<
 const getENVHosts = () => {
   const envHosts = process.env.DEVFILE_REGISTRY_HOSTS?.split('|').filter((host) => host !== '');
 
-  let hosts: Host = {};
+  let hosts: HostList = {};
 
   if (envHosts?.length) {
     envHosts.forEach((envHost) => {
       const [hostName, sourceType, hostLocation] = envHost.split('>');
-
-      if (!(sourceType === 'url' || sourceType === 'stacks')) {
-        throw Error(
-          'The environment variable DEVFILE_REGISTRY_HOSTS can only accept "url" or "stacks"'
-        );
-      }
 
       hosts = {
         ...hosts,
@@ -78,30 +84,38 @@ const getENVHosts = () => {
     });
   }
 
+  if (!is<HostList>(hosts)) {
+    throw Error(
+      'The environment variable DEVFILE_REGISTRY_HOSTS can only accept "url" or "stacks"'
+    );
+  }
+
   return hosts;
 };
 
-export const getDevfilesJSON = async (): Promise<Devfile[]> => {
-  let hosts: Host = await getConfigFileHosts('/config/devfile-registry-hosts.json');
+export const getDevfilesMetadata = async (): Promise<Devfile[]> => {
+  let hosts: HostList = await getConfigFileHosts('/config/devfile-registry-hosts.json');
   hosts = { ...hosts, ...getENVHosts() };
 
   if (!Object.keys(hosts).length) {
-    hosts = {
-      Community: {
-        url: 'https://registry.devfile.io'
-      }
-    };
+    hosts = defaultHost;
   }
 
   let devfiles: Devfile[] = [];
   await Promise.all(
     Object.entries(hosts).map(async ([hostName, hostLocation]) => {
       let extractedDevfiles: Devfile[] = [];
-      if (hostLocation.url) {
+      if (is<HostURL>(hostLocation)) {
         extractedDevfiles = await getRemoteJSON(hostName, hostLocation.url);
       }
-      if (hostLocation.stacks) {
+      if (is<HostStack>(hostLocation)) {
         extractedDevfiles = await getLocalJSON(hostName, hostLocation.stacks);
+      }
+
+      if (!is<Devfile[]>(extractedDevfiles)) {
+        throw Error(
+          `${hostName} cannot be assigned to type Devfile[]. (A devfile is most likely missing a required parameter)`
+        );
       }
 
       if (extractedDevfiles.length) {
@@ -121,23 +135,19 @@ export const getDevfileYAML = async (devfile: Devfile): Promise<getDevfileYAMLRe
     return { devfileYAML, devfileJSON };
   }
 
-  let hosts: Host = await getConfigFileHosts('/config/devfile-registry-hosts.json');
+  let hosts: HostList = await getConfigFileHosts('/config/devfile-registry-hosts.json');
   hosts = { ...hosts, ...getENVHosts() };
 
   if (!Object.keys(hosts).length) {
-    hosts = {
-      Community: {
-        url: 'https://registry.devfile.io'
-      }
-    };
+    hosts = defaultHost;
   }
 
   for (const [hostName, hostLocation] of Object.entries(hosts)) {
     if (hostName === devfile.sourceRepo) {
-      if (hostLocation.url) {
+      if (is<HostURL>(hostLocation)) {
         devfileYAML = await getRemoteYAML(devfile.name, hostLocation.url);
       }
-      if (hostLocation.stacks) {
+      if (is<HostStack>(hostLocation)) {
         devfileYAML = await getLocalYAML(devfile.name, hostLocation.stacks);
       }
     }

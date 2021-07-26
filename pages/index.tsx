@@ -1,5 +1,5 @@
 import type { Devfile, FilterElem } from 'custom-types';
-import { getDevfilesJSON } from '@util/server';
+import { getDevfilesMetadata } from '@util/server';
 import DevfileFilter from '@components/home-page/Filter';
 import DevfileSearchBar from '@components/home-page/SearchBar';
 import DevfileGrid from '@components/home-page/Grid';
@@ -7,6 +7,8 @@ import DevfileGrid from '@components/home-page/Grid';
 import { InferGetStaticPropsType, GetStaticProps } from 'next';
 import { useState, useEffect } from 'react';
 import { Grid, GridItem } from '@patternfly/react-core';
+
+let firstPageLoad = true;
 
 /**
  * Renders the {@link HomePage}
@@ -135,7 +137,7 @@ const getStateAndStringFreq = (arr: string[]): FilterElem[] => {
 };
 
 const getTagsStateWithFreq = (devfiles: Devfile[]): FilterElem[] => {
-  const tagValues: string[] = devfiles?.map((devfile) => devfile?.tags).flat();
+  const tagValues: string[] = devfiles?.map((devfile) => devfile?.tags).flat() as string[];
 
   const tagsStateWithFreq: FilterElem[] = getStateAndStringFreq(tagValues);
 
@@ -151,7 +153,7 @@ const getTypesStateWithFreq = (devfiles: Devfile[]): FilterElem[] => {
 };
 
 export const getStaticProps: GetStaticProps = async () => {
-  let devfiles: Devfile[] = await getDevfilesJSON();
+  let devfiles: Devfile[] = await getDevfilesMetadata();
   devfiles = devfiles.sort((a, b) =>
     a.displayName.localeCompare(b.displayName, 'en', {
       sensitivity: 'accent'
@@ -160,6 +162,12 @@ export const getStaticProps: GetStaticProps = async () => {
 
   const tags: FilterElem[] = getTagsStateWithFreq(devfiles);
   const types: FilterElem[] = getTypesStateWithFreq(devfiles);
+
+  let revalidateSeconds = 30;
+  if (firstPageLoad) {
+    revalidateSeconds = 1;
+    firstPageLoad = false;
+  }
 
   return {
     props: {
@@ -170,7 +178,7 @@ export const getStaticProps: GetStaticProps = async () => {
     // Next.js will attempt to re-generate the page:
     // - When a request comes in
     // - At most once every 30 seconds
-    revalidate: 30
+    revalidate: revalidateSeconds
   };
 };
 

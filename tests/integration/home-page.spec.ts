@@ -141,7 +141,7 @@ const getStateAndStringFreq = (arr: string[]): FilterElem[] => {
 };
 
 const getTagsStateWithFreq = (devfiles: Devfile[]): FilterElem[] => {
-  const tagValues: string[] = devfiles?.map((devfile) => devfile?.tags).flat();
+  const tagValues: string[] = devfiles?.map((devfile) => devfile?.tags).flat() as string[];
 
   const tagsStateWithFreq: FilterElem[] = getStateAndStringFreq(tagValues);
 

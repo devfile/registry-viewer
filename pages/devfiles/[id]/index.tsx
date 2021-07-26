@@ -1,10 +1,12 @@
 import { Devfile } from 'custom-types';
-import { getDevfilesJSON, getDevfileYAML } from '@util/server';
+import { getDevfilesMetadata, getDevfileYAML } from '@util/server';
 import DevfilePageProjects from '@components/devfile-page/Projects';
 import DevfilePageHeader from '@components/devfile-page/Header';
 import DevfilePageYAML from '@components/devfile-page/YAML';
 
 import { InferGetStaticPropsType, GetStaticProps, GetStaticPaths } from 'next';
+
+let firstPageLoad = true;
 
 interface Path {
   params: { id: string };
@@ -39,7 +41,7 @@ const DevfilePage = ({
 );
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const devfiles: Devfile[] = await getDevfilesJSON();
+  const devfiles: Devfile[] = await getDevfilesMetadata();
 
   const devfile: Devfile = devfiles.find((devfile: Devfile) => {
     const id = context.params?.id as string;
@@ -51,6 +53,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const devfileYAML = res?.devfileYAML;
   const devfileJSON = res?.devfileJSON;
 
+  let revalidateSeconds = 30;
+  if (firstPageLoad) {
+    revalidateSeconds = 1;
+    firstPageLoad = false;
+  }
+
   return {
     props: {
       devfile,
@@ -60,12 +68,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
     // Next.js will attempt to re-generate the page:
     // - When a request comes in
     // - At most once every 30 seconds
-    revalidate: 30
+    revalidate: revalidateSeconds
   };
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const devfiles: Devfile[] = await getDevfilesJSON();
+  const devfiles: Devfile[] = await getDevfilesMetadata();
   const sourceWithNames: string[] = devfiles.map(
     (devfile) => `${devfile.sourceRepo.replace(/\+/g, '')}+${devfile.name.replace(/\+/g, '')}`
   );
