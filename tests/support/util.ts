@@ -42,7 +42,7 @@ export const getDevfileURLs = (): string => {
   }) as string[];
 
   if (!urls.length) {
-    urls.push('https://registry.devfile.io/index/all');
+    urls.push('https://registry.stage.devfile.io/index/all');
   }
 
   return urls[0];
