@@ -126,6 +126,7 @@ const getHosts = async (): Promise<[HostList, (Error | null)[]]> => {
 
   if (!process.env.DEVFILE_COMMUNITY_HOST) {
     hosts = {
+      ...hosts,
       Community: {
         url: 'https://registry.stage.devfile.io'
       }
