@@ -145,9 +145,11 @@ Configure the registry viewer through config file.
 }
 ```
 
-## Change the registry viewer base path
+## Environment Variables
 
-The environment variable `DEVFILE_VIEWER_ROOT` controls the registry viewer's base path and defaults to `/`.
+The environment variable `DEVFILE_VIEWER_ROOT` controls the registry viewer's base path. Note: Defaults to `/`.
+
+The environment variable `DEVFILE_COMMUNITY_HOST` controls whether the registry viewer uses the community registry. Note: Defaults to `true` and any value assigned will be `false`.
 
 ## Creating a Non-Production Build
 

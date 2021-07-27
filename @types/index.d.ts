@@ -40,9 +40,17 @@ declare module 'custom-types' {
     url: string;
   }
 
-  type Host = HostStack | HostURL | HostBase;
+  export type Host = HostStack | HostURL | HostBase;
 
   export interface HostList {
     [key: string]: Host;
   }
+
+  export type TryCatch<T> = [T, Error | null];
+
+  export type devfileYAML = string | null;
+  export type devfileJSON = Object | string | number | null | undefined;
+  export type GetDevfileYAML = [devfileYAML, devfileJSON, string[]];
+
+  export type GetMetadataOfDevfiles = [Devfile[], string[]];
 }

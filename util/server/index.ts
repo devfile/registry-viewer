@@ -1,20 +1,41 @@
-import type { Devfile, HostList, HostStack, HostURL } from 'custom-types';
+import type {
+  Devfile,
+  HostList,
+  HostStack,
+  HostURL,
+  TryCatch,
+  GetDevfileYAML,
+  GetMetadataOfDevfiles
+} from 'custom-types';
 import { promises as fs } from 'fs';
 import path from 'path';
 // @ts-expect-error js-yaml has no type definitions
 import { load as yamlToJSON } from 'js-yaml';
 import { is } from 'typescript-is';
 
-const defaultHost = {
-  Community: {
-    url: 'https://registry.stage.devfile.io/'
+export const tryCatch = (func: Function): TryCatch<any> => {
+  try {
+    const data = func() || null;
+    return [data, null];
+  } catch (err) {
+    // Warning for server-side
+    // eslint-disable-next-line no-console
+    console.error(err);
+    return [null, err];
   }
 };
 
-interface getDevfileYAMLReturnType {
-  devfileYAML: string | null;
-  devfileJSON: Object | string | number | null | undefined;
-}
+export const asyncTryCatch = async (func: Function): Promise<TryCatch<any>> => {
+  try {
+    const data = (await func()) || null;
+    return [data, null];
+  } catch (err) {
+    // Warning for server-side
+    // eslint-disable-next-line no-console
+    console.error(err);
+    return [null, err];
+  }
+};
 
 const getConfigFileHosts = async (fileRelPath: string): Promise<HostList> => {
   const splitRelFilePath = fileRelPath.split('/');
@@ -93,54 +114,73 @@ const getENVHosts = () => {
   return hosts;
 };
 
-export const getDevfilesMetadata = async (): Promise<Devfile[]> => {
-  let hosts: HostList = await getConfigFileHosts('/config/devfile-registry-hosts.json');
-  hosts = { ...hosts, ...getENVHosts() };
-
-  if (!Object.keys(hosts).length) {
-    hosts = defaultHost;
-  }
-
-  let devfiles: Devfile[] = [];
-  await Promise.all(
-    Object.entries(hosts).map(async ([hostName, hostLocation]) => {
-      let extractedDevfiles: Devfile[] = [];
-      if (is<HostURL>(hostLocation)) {
-        extractedDevfiles = await getRemoteJSON(hostName, hostLocation.url);
-      }
-      if (is<HostStack>(hostLocation)) {
-        extractedDevfiles = await getLocalJSON(hostName, hostLocation.stacks);
-      }
-
-      if (!is<Devfile[]>(extractedDevfiles)) {
-        throw Error(
-          `${hostName} cannot be assigned to type Devfile[]. (A devfile is most likely missing a required parameter)`
-        );
-      }
-
-      if (extractedDevfiles.length) {
-        devfiles = devfiles.concat(extractedDevfiles);
-      }
-    })
+const getHosts = async (): Promise<[HostList, (Error | null)[]]> => {
+  const [configHosts, configError]: TryCatch<HostList> = await asyncTryCatch(
+    async () => await getConfigFileHosts('/config/devfile-registry-hosts.json')
+  );
+  const [envHosts, envError]: TryCatch<HostList> = await asyncTryCatch(
+    async () => await getENVHosts()
   );
 
-  return devfiles;
+  let hosts = { ...configHosts, ...envHosts };
+
+  if (!process.env.DEVFILE_COMMUNITY_HOST) {
+    hosts = {
+      Community: {
+        url: 'https://registry.stage.devfile.io'
+      }
+    };
+  }
+
+  const errors = [configError, envError];
+
+  return [hosts, errors];
 };
 
-export const getDevfileYAML = async (devfile: Devfile): Promise<getDevfileYAMLReturnType> => {
+export const getMetadataOfDevfiles = async (): Promise<GetMetadataOfDevfiles> => {
+  const [hosts, hostErrors]: [HostList, (Error | null)[]] = await getHosts();
+
+  const [devfiles, devfileError]: TryCatch<Devfile[]> = await asyncTryCatch(async () => {
+    let devfiles: Devfile[] = [];
+    await Promise.all(
+      Object.entries(hosts).map(async ([hostName, hostLocation]) => {
+        let extractedDevfiles: Devfile[] = [];
+        if (is<HostURL>(hostLocation)) {
+          extractedDevfiles = await getRemoteJSON(hostName, hostLocation.url);
+        }
+        if (is<HostStack>(hostLocation)) {
+          extractedDevfiles = await getLocalJSON(hostName, hostLocation.stacks);
+        }
+
+        if (is<Devfile[]>(extractedDevfiles)) {
+          devfiles = devfiles.concat(extractedDevfiles);
+        } else {
+          throw Error(
+            `${hostName} cannot be assigned to type Devfile[]. (A devfile is most likely missing a required parameter)`
+          );
+        }
+      })
+    );
+
+    return devfiles;
+  });
+
+  const errors = [...hostErrors, devfileError];
+
+  const errorMessages = errors.map((error) => error?.message || '');
+
+  return [devfiles || [], errorMessages];
+};
+
+export const getDevfileYAML = async (devfile: Devfile): Promise<GetDevfileYAML> => {
   let devfileYAML = null;
   let devfileJSON = null;
 
   if (devfile.type !== 'stack') {
-    return { devfileYAML, devfileJSON };
+    return [devfileYAML, devfileJSON, []];
   }
 
-  let hosts: HostList = await getConfigFileHosts('/config/devfile-registry-hosts.json');
-  hosts = { ...hosts, ...getENVHosts() };
-
-  if (!Object.keys(hosts).length) {
-    hosts = defaultHost;
-  }
+  const [hosts, hostErrors]: [HostList, (Error | null)[]] = await getHosts();
 
   for (const [hostName, hostLocation] of Object.entries(hosts)) {
     if (hostName === devfile.sourceRepo) {
@@ -155,5 +195,7 @@ export const getDevfileYAML = async (devfile: Devfile): Promise<getDevfileYAMLRe
 
   devfileJSON = yamlToJSON(devfileYAML);
 
-  return { devfileYAML, devfileJSON };
+  const errorMessages = hostErrors.map((error) => error?.message || '');
+
+  return [devfileYAML, devfileJSON, errorMessages];
 };

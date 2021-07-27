@@ -1,14 +1,13 @@
-import type { Devfile, FilterElem } from 'custom-types';
-import { getDevfilesMetadata } from '@util/server';
+import type { Devfile, FilterElem, GetMetadataOfDevfiles } from 'custom-types';
+import { getMetadataOfDevfiles } from '@util/server';
 import DevfileFilter from '@components/home-page/Filter';
 import DevfileSearchBar from '@components/home-page/SearchBar';
 import DevfileGrid from '@components/home-page/Grid';
+import ErrorBanner from '@components/ErrorBanner';
 
 import { InferGetStaticPropsType, GetStaticProps } from 'next';
 import { useState, useEffect } from 'react';
 import { Grid, GridItem } from '@patternfly/react-core';
-
-let firstPageLoad = true;
 
 /**
  * Renders the {@link HomePage}
@@ -16,7 +15,8 @@ let firstPageLoad = true;
 const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
   devfiles,
   tags,
-  types
+  types,
+  errors
 }: InferGetStaticPropsType<GetStaticProps>) => {
   const [searchBarValue, setSearchBarValue] = useState<string>('');
   const [filteredDevfiles, setFilteredDevfiles] = useState<Devfile[]>(devfiles);
@@ -37,7 +37,8 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
   };
 
   return (
-    <div>
+    <>
+      <ErrorBanner errors={errors} />
       <Grid hasGutter>
         <GridItem xl2={3} xl={4} lg={5} md={6} sm={12} span={12}>
           <DevfileFilter
@@ -56,7 +57,7 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
           <DevfileGrid devfiles={filteredDevfiles} />
         </GridItem>
       </Grid>
-    </div>
+    </>
   );
 };
 
@@ -116,20 +117,20 @@ const filterDevfilesOnTypes = (
   return devfilesFilteredOnTypes;
 };
 
-const getStateAndStringFreq = (arr: string[]): FilterElem[] => {
-  const filterElemArr: FilterElem[] = [];
-  let prev = '';
+const getStateAndStringFreq = (array: string[]): FilterElem[] => {
+  array.sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'accent' }));
 
-  arr.sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'accent' }));
-  for (let i = 0; i < arr.length; i++) {
-    arr[i] = arr[i] ?? null;
-    if (arr[i]) {
-      if (arr[i] !== prev) {
-        filterElemArr.push({ value: arr[i], state: false, freq: 1 });
+  const filterElemArr: FilterElem[] = [];
+  let prevElem = '';
+
+  for (const currentElem of array) {
+    if (currentElem) {
+      if (currentElem !== prevElem) {
+        filterElemArr.push({ value: currentElem, state: false, freq: 1 });
       } else {
         filterElemArr[filterElemArr.length - 1].freq++;
       }
-      prev = arr[i];
+      prevElem = currentElem;
     }
   }
 
@@ -153,8 +154,9 @@ const getTypesStateWithFreq = (devfiles: Devfile[]): FilterElem[] => {
 };
 
 export const getStaticProps: GetStaticProps = async () => {
-  let devfiles: Devfile[] = await getDevfilesMetadata();
-  devfiles = devfiles.sort((a, b) =>
+  const [unsortedDevfiles, errors]: GetMetadataOfDevfiles = await getMetadataOfDevfiles();
+
+  const devfiles = unsortedDevfiles.sort((a, b) =>
     a.displayName.localeCompare(b.displayName, 'en', {
       sensitivity: 'accent'
     })
@@ -163,22 +165,17 @@ export const getStaticProps: GetStaticProps = async () => {
   const tags: FilterElem[] = getTagsStateWithFreq(devfiles);
   const types: FilterElem[] = getTypesStateWithFreq(devfiles);
 
-  let revalidateSeconds = 30;
-  if (firstPageLoad) {
-    revalidateSeconds = 1;
-    firstPageLoad = false;
-  }
-
   return {
     props: {
       devfiles,
       tags,
-      types
+      types,
+      errors
     },
     // Next.js will attempt to re-generate the page:
     // - When a request comes in
     // - At most once every 30 seconds
-    revalidate: revalidateSeconds
+    revalidate: 15
   };
 };
 

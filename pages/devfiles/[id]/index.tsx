@@ -1,12 +1,11 @@
-import { Devfile } from 'custom-types';
-import { getDevfilesMetadata, getDevfileYAML } from '@util/server';
+import { Devfile, GetMetadataOfDevfiles, GetDevfileYAML } from 'custom-types';
+import { getMetadataOfDevfiles, getDevfileYAML } from '@util/server';
 import DevfilePageProjects from '@components/devfile-page/Projects';
 import DevfilePageHeader from '@components/devfile-page/Header';
 import DevfilePageYAML from '@components/devfile-page/YAML';
+import ErrorBanner from '@components/ErrorBanner';
 
 import { InferGetStaticPropsType, GetStaticProps, GetStaticPaths } from 'next';
-
-let firstPageLoad = true;
 
 interface Path {
   params: { id: string };
@@ -25,9 +24,11 @@ interface Path {
 const DevfilePage = ({
   devfile,
   devfileYAML,
-  devfileJSON
+  devfileJSON,
+  errors
 }: InferGetStaticPropsType<typeof getStaticProps>) => (
   <div style={{ alignContent: 'center', minHeight: '100vh' }}>
+    <ErrorBanner errors={errors} />
     {devfile.type === 'stack' ? (
       <div>
         <DevfilePageHeader devfileMetadata={devfileJSON.metadata} devfile={devfile} />
@@ -41,7 +42,7 @@ const DevfilePage = ({
 );
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const devfiles: Devfile[] = await getDevfilesMetadata();
+  const [devfiles, devfileErrors]: GetMetadataOfDevfiles = await getMetadataOfDevfiles();
 
   const devfile: Devfile = devfiles.find((devfile: Devfile) => {
     const id = context.params?.id as string;
@@ -49,31 +50,27 @@ export const getStaticProps: GetStaticProps = async (context) => {
     return devfile.sourceRepo === source && devfile.name === name;
   })!;
 
-  const res = await getDevfileYAML(devfile);
-  const devfileYAML = res?.devfileYAML;
-  const devfileJSON = res?.devfileJSON;
+  const [devfileYAML, devfileJSON, yamlErrors]: GetDevfileYAML = await getDevfileYAML(devfile);
 
-  let revalidateSeconds = 30;
-  if (firstPageLoad) {
-    revalidateSeconds = 1;
-    firstPageLoad = false;
-  }
+  const errors = [...devfileErrors, ...yamlErrors];
 
   return {
     props: {
       devfile,
       devfileYAML,
-      devfileJSON
+      devfileJSON,
+      errors
     },
     // Next.js will attempt to re-generate the page:
     // - When a request comes in
     // - At most once every 30 seconds
-    revalidate: revalidateSeconds
+    revalidate: 15
   };
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const devfiles: Devfile[] = await getDevfilesMetadata();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [devfiles, errors]: GetMetadataOfDevfiles = await getMetadataOfDevfiles();
   const sourceWithNames: string[] = devfiles.map(
     (devfile) => `${devfile.sourceRepo.replace(/\+/g, '')}+${devfile.name.replace(/\+/g, '')}`
   );

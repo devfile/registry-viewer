@@ -24,7 +24,7 @@ export interface DevfileFilterProps {
 /**
  * Renders a {@link DevfileFilter} React component.
  * Adds a type and tag filter for devfiles
- * @returns `<DevfileFilter tagsData={tagsData} typesData={typesData} setTagsData={setTagsData} setTypesData={setTypesData}/>`
+ * @returns `<DevfileFilter tagsStateWithFreq={tagsStateWithFreq} typesStateWithFreq={typesStateWithFreq} setTagsStateWithFreq={setTagsStateWithFreq} setTypesStateWithFreq={setTypesStateWithFreq}/>`
  */
 const DevfileFilter: React.FC<DevfileFilterProps> = ({
   tagsStateWithFreq,
@@ -72,48 +72,52 @@ const DevfileFilter: React.FC<DevfileFilterProps> = ({
         <Text component={TextVariants.h2}>Filters</Text>
       </TextContent>
       <Form isHorizontal>
-        <FormGroup fieldId="type-selector" label="Types" hasNoPaddingTop>
-          {typesStateWithFreq.map((type) => (
-            <div key={type.value} style={{ margin: '0.5rem 0rem' }}>
-              <Checkbox
-                data-test-id={`type-${type.value.replace(/\.| /g, '')}`}
-                isChecked={type.state}
-                onChange={onCheckboxTypesChange}
-                id={`types-${type.value}`}
-                label={capitalizeFirstLetter(type.value)}
-                name={type.value}
+        {typesStateWithFreq.length > 1 && (
+          <FormGroup fieldId="type-selector" label="Types" hasNoPaddingTop>
+            {typesStateWithFreq.map((type) => (
+              <div key={type.value} style={{ margin: '0.5rem 0rem' }}>
+                <Checkbox
+                  data-test-id={`type-${type.value.replace(/\.| /g, '')}`}
+                  isChecked={type.state}
+                  onChange={onCheckboxTypesChange}
+                  id={`types-${type.value}`}
+                  label={capitalizeFirstLetter(type.value)}
+                  name={type.value}
+                />
+              </div>
+            ))}
+          </FormGroup>
+        )}
+        {tagsStateWithFreq.length > 1 && (
+          <FormGroup fieldId="tag-selector" label="Tags" hasNoPaddingTop>
+            {tagsStateWithFreq.length > 1 && (
+              <SearchInput
+                data-test-id="search-bar-tag"
+                placeholder="Find by tag name"
+                value={tagSearchBarValue}
+                onChange={onSearchChange}
+                onClear={() => onSearchChange('')}
+                resultsCount={getFilterResultCount(tagsStateWithFreq, tagSearchBarValue)}
               />
+            )}
+            <div style={{ height: '20rem', overflow: 'auto' }}>
+              {tagsStateWithFreq
+                .filter((tag) => tag.value.toLowerCase().includes(tagSearchBarValue.toLowerCase()))
+                .map((tag) => (
+                  <div key={tag.value} style={{ margin: '0.5rem 0rem' }}>
+                    <Checkbox
+                      data-test-id={`tag-${tag.value.replace(/\.| /g, '')}`}
+                      isChecked={tag.state}
+                      onChange={onCheckboxTagsChange}
+                      id={`types-${tag.value}`}
+                      label={tag.value}
+                      name={tag.value}
+                    />
+                  </div>
+                ))}
             </div>
-          ))}
-        </FormGroup>
-        <FormGroup fieldId="tag-selector" label="Tags" hasNoPaddingTop>
-          <SearchInput
-            data-test-id="search-bar-tag"
-            placeholder="Find by tag name"
-            value={tagSearchBarValue}
-            onChange={onSearchChange}
-            onClear={() => onSearchChange('')}
-            resultsCount={getFilterResultCount(tagsStateWithFreq, tagSearchBarValue)}
-          />
-          <div style={{ height: '20rem', overflow: 'auto' }}>
-            {tagsStateWithFreq
-              .filter((tagData) =>
-                tagData.value.toLowerCase().includes(tagSearchBarValue.toLowerCase())
-              )
-              .map((tag) => (
-                <div key={tag.value} style={{ margin: '0.5rem 0rem' }}>
-                  <Checkbox
-                    data-test-id={`tag-${tag.value.replace(/\.| /g, '')}`}
-                    isChecked={tag.state}
-                    onChange={onCheckboxTagsChange}
-                    id={`types-${tag.value}`}
-                    label={tag.value}
-                    name={tag.value}
-                  />
-                </div>
-              ))}
-          </div>
-        </FormGroup>
+          </FormGroup>
+        )}
       </Form>
     </>
   );
