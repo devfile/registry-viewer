@@ -7,6 +7,8 @@ import ErrorBanner from '@components/ErrorBanner';
 
 import { InferGetStaticPropsType, GetStaticProps, GetStaticPaths } from 'next';
 
+let firstTimeRegeneration = true;
+
 interface Path {
   params: { id: string };
 }
@@ -54,6 +56,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   const errors = [...devfileErrors, ...yamlErrors];
 
+  let revalidateSeconds = 15;
+  if (firstTimeRegeneration) {
+    revalidateSeconds = 3;
+    firstTimeRegeneration = false;
+  }
+
   return {
     props: {
       devfile,
@@ -63,8 +71,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
     },
     // Next.js will attempt to re-generate the page:
     // - When a request comes in
-    // - At most once every 30 seconds
-    revalidate: 15
+    // - At most once every 15 seconds
+    revalidate: revalidateSeconds
   };
 };
 
