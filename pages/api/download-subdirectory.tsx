@@ -15,13 +15,22 @@ export default async function handler(
     const array = await response.arrayBuffer();
 
     const zip = await JSZip.loadAsync(array, {});
-    const rootname = Object.keys(zip.files)[0];
-    const subdirZip = zip.folder(rootname)?.folder(data.subdirectory);
 
-    if (subdirZip === null || subdirZip === undefined) {
+    const notFound = Object.keys(zip.files).every((fileName) => {
+      const firstLevelDirectory = fileName.split('/')[1];
+      return firstLevelDirectory !== data.subdirectory;
+    });
+    if (notFound) {
       throw TypeError('subdirectory does not exist');
     }
-    const base64send = await subdirZip.generateAsync({ type: 'base64' });
+
+    const rootName = Object.keys(zip.files)[0];
+    const subdirectoryZip = zip.folder(rootName)?.folder(data.subdirectory);
+
+    if (subdirectoryZip === null || subdirectoryZip === undefined) {
+      throw Error('subdirectory zip is null');
+    }
+    const base64send = await subdirectoryZip.generateAsync({ type: 'base64' });
 
     res.status(200);
     res.send(base64send);

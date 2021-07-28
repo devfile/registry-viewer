@@ -2,7 +2,6 @@
 import HeaderTags from '../../../components/devfile-page/HeaderTags';
 import { Label, Popover } from '@patternfly/react-core';
 import { shallow } from 'enzyme';
-import React from 'react';
 
 /** testing partitions
  *

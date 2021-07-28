@@ -25,7 +25,7 @@ import React, { useState } from 'react';
  * @param name - name of alert
  * @param error - error that occurred
  * @param message - message to display
- * @alertType - type of alert
+ * @param alertType - type of alert
  */
 interface ErrorAlert {
   name: string;
@@ -86,7 +86,7 @@ interface Props {
 
 class UnsupportedLinkError extends Error {
   /**
-   * error constructor with message 'Unsupported link: @param link'
+   * error constructor with message 'Unsupported link: {@link link}'
    * @param link - unsupported link
    */
   constructor(link: string) {
@@ -134,7 +134,7 @@ const DevPageProjects = ({ starterProjects }: Props) => {
           name: 'Error',
           error: error.text,
           message:
-            'Internal Error has occurred during download. Please try again or report as issue',
+            'Internal Error has occurred during download. Please try again or report as issue. \n',
           alertType: 'danger',
         });
       }
@@ -148,6 +148,7 @@ const DevPageProjects = ({ starterProjects }: Props) => {
 
   return (
     <Card
+      id="dev-page-projects"
       isExpanded={expanded}
       isRounded
       style={{
@@ -168,7 +169,7 @@ const DevPageProjects = ({ starterProjects }: Props) => {
           'aria-expanded': expanded,
         }}
       >
-        <CardTitle id="titleId">Starter Projects</CardTitle>
+        <CardTitle>Starter Projects</CardTitle>
       </CardHeader>
       <CardExpandableContent>
         <CardBody>
@@ -182,7 +183,10 @@ const DevPageProjects = ({ starterProjects }: Props) => {
               actionLinks={
                 <React.Fragment>
                   <AlertActionLink
-                    href="https://github.com/devfile/registry-viewer"
+                    href={
+                      'https://github.com/devfile/api/issues/new?assignees=&labels=&template=bug_report.md&title=' +
+                      alert.name.replace(' ', '+')
+                    }
                     target="_blank"
                   >
                     Report Issue to Github
@@ -193,6 +197,7 @@ const DevPageProjects = ({ starterProjects }: Props) => {
               <TextContent>
                 <Text id="alert-message" component={TextVariants.p}>
                   {errorAlert.message}
+                  <code>{errorAlert.error}</code>
                 </Text>
               </TextContent>
             </Alert>
@@ -216,7 +221,7 @@ const DevPageProjects = ({ starterProjects }: Props) => {
                 starterProjects.map((project) => (
                   <div
                     key={project.name}
-                    id="project-list-item"
+                    id="projects-selector-item"
                     style={{ width: '95%' }}
                     onMouseDown={() => setSelectedProject(project)}
                     onMouseEnter={() => setCurrentlyHoveredProject(project)}
@@ -404,6 +409,6 @@ async function download(project: Project) {
 
 export default DevPageProjects;
 
-//for testing
+// for testing
 export { download, getURLForGit, downloadSubdirectory, UnsupportedLinkError };
 export type { Git, Project };
