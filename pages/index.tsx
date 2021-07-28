@@ -9,8 +9,6 @@ import { InferGetStaticPropsType, GetStaticProps } from 'next';
 import { useState, useEffect } from 'react';
 import { Grid, GridItem } from '@patternfly/react-core';
 
-let firstTimeRegeneration = true;
-
 /**
  * Renders the {@link HomePage}
  */
@@ -167,12 +165,6 @@ export const getStaticProps: GetStaticProps = async () => {
   const tags: FilterElem[] = getTagsStateWithFreq(devfiles);
   const types: FilterElem[] = getTypesStateWithFreq(devfiles);
 
-  let revalidateSeconds = 15;
-  if (firstTimeRegeneration) {
-    revalidateSeconds = 3;
-    firstTimeRegeneration = false;
-  }
-
   return {
     props: {
       devfiles,
@@ -183,7 +175,7 @@ export const getStaticProps: GetStaticProps = async () => {
     // Next.js will attempt to re-generate the page:
     // - When a request comes in
     // - At most once every 15 seconds
-    revalidate: revalidateSeconds
+    revalidate: 15
   };
 };
 

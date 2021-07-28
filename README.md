@@ -121,8 +121,9 @@ Configure the registry viewer through environment the variable.
 
 `DEVFILE_REGISTRY_HOSTS`
 
-Notes about environment variables:
+Notes about environment variable:
 
+- The value assigned to the environment variable must be surrounded by quotes.
 - Each source MUST contain a name for the source repository, a source type (url or stacks), and a location and is split by ">". i.e. `name>type>location`
 - Multiple sources are be split by "|". i.e. `name>type>location|name>type>location`
 
