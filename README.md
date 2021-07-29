@@ -81,7 +81,7 @@ Notes:
 |   +-- index.json
 ```
 
-`/config/index.json`
+`/**/index.json`
 
 ```json
 [
