@@ -1,8 +1,4 @@
 declare module 'custom-types' {
-  export interface Remote {
-    [key: string]: string;
-  }
-
   export interface Devfile {
     name: string;
     version?: string;
@@ -19,7 +15,9 @@ declare module 'custom-types' {
     resources?: string[];
     starterProjects?: string[];
     git?: {
-      remotes: Remote;
+      remotes: {
+        [key: string]: string;
+      };
     };
     sourceRepo: string;
   }
@@ -43,10 +41,10 @@ declare module 'custom-types' {
   export type Host = HostStack | HostURL | HostBase;
 
   export interface HostList {
-    [key: string]: Host;
+    [sourceRepo: string]: Host;
   }
 
-  export type TryCatch<T> = [T, Error | null];
+  export type TryCatch<T> = [T | null, Error | null];
 
   export type devfileYAML = string | null;
   export type devfileJSON = Object | string | number | null | undefined;
