@@ -1,21 +1,20 @@
 {
   "name": "registry-viewer",
-  "author": "Paul Schultz & Nadia Waid",
+  "author": "Red Hat",
   "version": "1.0.0",
   "scripts": {
     "dev": "next",
-    "build": "next build && next export",
+    "build": "next build",
     "start": "next start",
-    "start-build": "yarn build & yarn start",
     "clean": "rm -rf .next/ out/ node_modules/",
-    "cypress:start": "yarn cypress open",
-    "cypress:start-build": "concurrently --names 'CYPRESS,SERVER' --prefix-colors 'yellow,blue' \"yarn cypress:start\" \"yarn start-build\"",
+    "cypress:start": "concurrently --names 'CYPRESS,SERVER' --prefix-colors 'yellow,blue' \"yarn cypress open\" \"yarn build && yarn start\"",
     "typedoc:build": "node_modules/.bin/typedoc --tsconfig .",
     "typedoc:start": "npx serve docs",
     "jest:test": "jest --watchAll --verbose",
     "test": "cypress run",
     "lint": "prettier --check .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@patternfly/react-core": "^4.121.1",
@@ -25,32 +24,25 @@
     "file-saver": "^2.0.5",
     "js-yaml": "^4.1.0",
     "jszip": "^3.6.0",
-    "next": "^11.0.0",
+    "next": "^11.0.1",
     "next-compose-plugins": "^2.2.1",
     "next-images": "^1.8.1",
     "next-pwa": "^5.2.21",
     "next-transpile-modules": "^8.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-syntax-highlighter": "^15.4.3"
+    "react-syntax-highlighter": "^15.4.3",
+    "tslib": "^2.3.0",
+    "typescript-is": "^0.18.3"
   },
   "license": "EPL-2.0",
   "devDependencies": {
     "@babel/core": "^7.14.3",
-    "@cypress/code-coverage": "^3.9.7",
-    "@types/jest": "^26.0.23",
     "@types/node": "^15.6.1",
     "@types/react": "^17.0.8",
     "@typescript-eslint/eslint-plugin": "^4.26.1",
     "@typescript-eslint/parser": "^4.26.1",
-    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.2",
-    "babel-jest": "^27.0.2",
     "babel-plugin-istanbul": "^6.0.0",
-    "concurrently": "^6.2.0",
-    "cypress": "^7.6.0",
-    "debug": "^4.3.1",
-    "enquirer": "^2.3.6",
-    "enzyme": "^3.11.0",
     "eslint": "^7.27.0",
     "eslint-config-next": "^11.0.0",
     "eslint-config-prettier": "^8.3.0",
@@ -66,20 +58,28 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-tsdoc": "^0.2.14",
     "husky": "^6.0.0",
-    "jest": "^27.0.4",
-    "jest-enzyme": "^7.1.2",
+    "lint-staged": "^11.0.1",
     "prettier": "2.3.1",
-    "typedoc": "^0.20.36",
-    "typedoc-plugin-merge-modules": "^2.1.1",
+    "ts-loader": "^9.2.4",
     "typescript": "^4.3.4",
     "webpack": "^5.38.1"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
-    "*": "prettier --write"
+    "*.{js,jsx,ts,tsx,md,html,css,json}": "prettier --write"
+  },
+  "optionalDependencies": {
+    "@cypress/code-coverage": "^3.9.9",
+    "@types/jest": "^26.0.24",
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.3",
+    "babel-jest": "^27.0.6",
+    "concurrently": "^6.2.0",
+    "cypress": "^8.0.0",
+    "debug": "^4.3.2",
+    "enquirer": "^2.3.6",
+    "enzyme": "^3.11.0",
+    "jest": "^27.0.6",
+    "jest-enzyme": "^7.1.2",
+    "typedoc": "^0.21.4",
+    "typedoc-plugin-merge-modules": "^3.0.0"
   }
 }
