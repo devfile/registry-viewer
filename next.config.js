@@ -2,12 +2,15 @@ const typescriptIsTransformer = require('typescript-is/lib/transform-inline/tran
 const withPlugins = require('next-compose-plugins');
 const withPWA = require('next-pwa');
 const withImages = require('next-images');
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true'
+});
 const withTM = require('next-transpile-modules')([
   '@patternfly/react-core',
   '@patternfly/react-styles'
 ]);
 
-module.exports = withPlugins([withTM, withImages, withPWA], {
+module.exports = withPlugins([withTM, withImages, withBundleAnalyzer, withPWA], {
   webpack: (config) => {
     config.module.rules.push({
       test: /\.ts$/,
