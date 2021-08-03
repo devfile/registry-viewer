@@ -343,7 +343,7 @@ describe('<Projects />', () => {
       (testProject) => testProject.project.name
     );
     const projectsWrappersList = wrapper.findWhere(
-      (component) => component.prop('id') === 'project-list-item'
+      (component) => component.prop('id') === 'projects-selector-item'
     );
 
     expect(projectsWrappersList.length).toBe(projectNames.length);
