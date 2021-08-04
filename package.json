@@ -18,6 +18,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@next/bundle-analyzer": "^11.0.1",
     "@patternfly/react-core": "^4.121.1",
     "@patternfly/react-icons": "^4.10.7",
     "@types/file-saver": "^2.0.2",
@@ -71,7 +72,6 @@
   },
   "optionalDependencies": {
     "@cypress/code-coverage": "^3.9.9",
-    "@next/bundle-analyzer": "^11.0.1",
     "@types/jest": "^26.0.24",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.6.3",
     "babel-jest": "^27.0.6",
