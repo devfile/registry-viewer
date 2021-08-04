@@ -1,9 +1,4 @@
-import {
-  SearchInput,
-  Text,
-  TextContent,
-  TextVariants,
-} from '@patternfly/react-core';
+import { SearchInput, Text, TextContent, TextVariants } from '@patternfly/react-core';
 
 export interface DevfileSearchBarProps {
   devfileCount: number;
@@ -19,7 +14,7 @@ export interface DevfileSearchBarProps {
 const DevfileSearchBar: React.FC<DevfileSearchBarProps> = ({
   devfileCount,
   onSearchBarChange,
-  searchBarValue,
+  searchBarValue
 }: DevfileSearchBarProps) => (
   <div style={{ display: 'flex' }}>
     <TextContent style={{ paddingRight: '1rem' }}>

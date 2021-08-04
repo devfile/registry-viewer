@@ -14,7 +14,7 @@ export interface MetaProps {
 const Meta: React.FC<MetaProps> = ({
   title,
   keywords,
-  description,
+  description
 }: MetaProps): React.ReactElement => (
   <Head>
     <title>{title}</title>
@@ -37,7 +37,7 @@ const Meta: React.FC<MetaProps> = ({
 Meta.defaultProps = {
   title: 'Devfile Registry',
   keywords: 'Devfile, Registry, OpenShift, Kubernetes',
-  description: 'UI for the Devfile Registry',
+  description: 'UI for the Devfile Registry'
 };
 
 export default Meta;

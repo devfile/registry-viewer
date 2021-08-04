@@ -1,30 +1,23 @@
 import { Devfile } from 'custom-types';
 import devfileLogo from '../../public/images/devfileLogo.svg';
 import HeaderTags from './HeaderTags';
-import {
-  Brand,
-  Card,
-  CardBody,
-  Text,
-  TextContent,
-  TextVariants,
-} from '@patternfly/react-core';
-
-type DevfileMetadata = Record<string, string>;
+import { Brand, Card, CardBody, Text, TextContent, TextVariants } from '@patternfly/react-core';
 
 /**
- * props for dev page metadata header
+ * props for devfile page metadata header
  * @param devfile - devfile index information
  * @param metadata - metadata from
  */
 interface Props {
   devfile: Devfile;
-  devfileMetadata?: DevfileMetadata;
+  devfileMetadata?: {
+    [key: string]: string;
+  };
 }
 
 /**
  * header that displays basic information and metadata information for respective devfile
- * @param devfile - index information for devfie
+ * @param devfile - index information for devfile
  * @param metadata - metadata information from devfile yaml
  */
 const DevPageHeader = ({ devfile, devfileMetadata }: Props) => {
@@ -39,7 +32,7 @@ const DevPageHeader = ({ devfile, devfileMetadata }: Props) => {
         maxWidth: '1000px',
         margin: 'auto',
         marginTop: '30px',
-        marginBottom: '30px',
+        marginBottom: '30px'
       }}
     >
       <CardBody style={{ display: 'flex', width: '100%' }}>
@@ -47,16 +40,14 @@ const DevPageHeader = ({ devfile, devfileMetadata }: Props) => {
           style={{
             display: 'flex',
             width: '50%',
-            borderRight: '2px solid #ADABAE',
+            borderRight: '2px solid #ADABAE'
           }}
         >
           <div style={{ margin: '10px' }}>
             <Brand
               id="icon"
               src={devfile.icon || devfileLogo}
-              alt={
-                devfile.icon ? devfile.displayName + ' logo' : 'devfile logo'
-              }
+              alt={devfile.icon ? devfile.displayName + ' logo' : 'devfile logo'}
               style={{ width: '60%' }}
             />
             <TextContent>
@@ -65,7 +56,7 @@ const DevPageHeader = ({ devfile, devfileMetadata }: Props) => {
                 style={{
                   color: '#ADABAE',
                   marginLeft: 'auto',
-                  marginRight: 'auto',
+                  marginRight: 'auto'
                 }}
               >
                 {devfile.type}
@@ -74,11 +65,7 @@ const DevPageHeader = ({ devfile, devfileMetadata }: Props) => {
           </div>
           <div style={{ margin: '10px' }}>
             <TextContent>
-              <Text
-                id="displayName"
-                component={TextVariants.h2}
-                style={{ margin: '0.5rem' }}
-              >
+              <Text id="displayName" component={TextVariants.h2} style={{ margin: '0.5rem' }}>
                 {devfile.displayName}
               </Text>
               {devfile.description && (
@@ -90,12 +77,9 @@ const DevPageHeader = ({ devfile, devfileMetadata }: Props) => {
             <HeaderTags tags={devfile.tags} />
           </div>
         </div>
-        <TextContent
-          id="devfile-metadata"
-          style={{ width: '50%', margin: '2%' }}
-        >
+        <TextContent id="devfile-metadata" style={{ width: '50%', margin: '2%' }}>
           {Object.entries(devfile).map(([key, value]) => {
-            if (devfileMetaInclude.includes(key)) {
+            if (devfileMetaInclude.includes(key) && value) {
               let label = key.replace(/([a-z](?=[A-Z]))/g, '$1 '); // split camel case up
               label = label[0].toUpperCase() + label.substring(1);
               return (
@@ -111,11 +95,7 @@ const DevPageHeader = ({ devfile, devfileMetadata }: Props) => {
               devfileMetadata.website && (
                 <Text id="website">
                   <strong>Website: </strong>
-                  <a
-                    href={devfileMetadata.website}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
+                  <a href={devfileMetadata.website} target="_blank" rel="noreferrer">
                     {devfileMetadata.website}
                   </a>
                 </Text>
@@ -123,9 +103,7 @@ const DevPageHeader = ({ devfile, devfileMetadata }: Props) => {
             : devfile.git && (
                 <Text id="git-remotes">
                   <a
-                    href={
-                      devfile.git.remotes[Object.keys(devfile.git.remotes)[0]]
-                    }
+                    href={devfile.git.remotes[Object.keys(devfile.git.remotes)[0]]}
                     target="_blank"
                     rel="noreferrer"
                   >

@@ -44,4 +44,14 @@ package-lock.json
 /docs
 /stacks
 
-/config/devfile-registry-hosts.json
+#specifically dockerignore
+tests
+.vscode
+.github
+cypress
+cypress.json
+jest.config.js
+jest.setup.js
+LICENSE
+OWNERSHIP
+README.md

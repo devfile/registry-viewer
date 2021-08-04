@@ -1,4 +1,7 @@
-import styles from './devpage.module.css';
+import styles from '@components/devfile-page/Projects.module.css';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
+
 import {
   Alert,
   AlertActionLink,
@@ -11,12 +14,10 @@ import {
   Button,
   Text,
   TextContent,
-  TextVariants,
+  TextVariants
 } from '@patternfly/react-core';
 
-import JSZip from 'jszip';
-import { saveAs } from 'file-saver';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 /**
  * type for errorAlert variable in {@link DevPageProjects}
@@ -108,14 +109,15 @@ class UnsupportedLinkError extends Error {
  */
 
 const DevPageProjects = ({ starterProjects }: Props) => {
+  if (!starterProjects || starterProjects.length === 0) {
+    return null;
+  }
+
   const [expanded, setExpanded] = useState<boolean>(false);
   const [downloading, setDownloading] = useState<boolean>(false);
 
-  const [selectedProject, setSelectedProject] = useState<Project>(
-    starterProjects[0]
-  );
-  const [currentlyHoveredProject, setCurrentlyHoveredProject] =
-    useState<Project | null>(null); // null when not hovering over project list
+  const [selectedProject, setSelectedProject] = useState<Project>(starterProjects[0]);
+  const [currentlyHoveredProject, setCurrentlyHoveredProject] = useState<Project | null>(null); // null when not hovering over project list
 
   const [errorAlert, setErrorAlert] = useState<null | ErrorAlert>(null);
 
@@ -127,7 +129,7 @@ const DevPageProjects = ({ starterProjects }: Props) => {
           name: 'Unsupported Link',
           error: error.toString(),
           message: error.message,
-          alertType: 'warning',
+          alertType: 'warning'
         });
       } else {
         setErrorAlert({
@@ -135,15 +137,11 @@ const DevPageProjects = ({ starterProjects }: Props) => {
           error: error.text,
           message:
             'Internal Error has occurred during download. Please try again or report as issue. \n',
-          alertType: 'danger',
+          alertType: 'danger'
         });
       }
     });
     setDownloading(false);
-  }
-
-  if (starterProjects.length === 0) {
-    return null;
   }
 
   return (
@@ -156,7 +154,7 @@ const DevPageProjects = ({ starterProjects }: Props) => {
         maxWidth: '1000px',
         margin: 'auto',
         marginTop: '30px',
-        marginBottom: '30px',
+        marginBottom: '30px'
       }}
     >
       <CardHeader
@@ -166,7 +164,7 @@ const DevPageProjects = ({ starterProjects }: Props) => {
           id: 'toggle-button',
           'aria-label': 'Details',
           'aria-labelledby': 'titleId toggle-button',
-          'aria-expanded': expanded,
+          'aria-expanded': expanded
         }}
       >
         <CardTitle>Starter Projects</CardTitle>
@@ -177,11 +175,9 @@ const DevPageProjects = ({ starterProjects }: Props) => {
             <Alert
               variant={errorAlert.alertType}
               title={errorAlert.name}
-              actionClose={
-                <AlertActionCloseButton onClose={() => setErrorAlert(null)} />
-              }
+              actionClose={<AlertActionCloseButton onClose={() => setErrorAlert(null)} />}
               actionLinks={
-                <React.Fragment>
+                <>
                   <AlertActionLink
                     href={
                       'https://github.com/devfile/api/issues/new?assignees=&labels=&template=bug_report.md&title=' +
@@ -191,7 +187,7 @@ const DevPageProjects = ({ starterProjects }: Props) => {
                   >
                     Report Issue to Github
                   </AlertActionLink>
-                </React.Fragment>
+                </>
               }
             >
               <TextContent>
@@ -212,7 +208,7 @@ const DevPageProjects = ({ starterProjects }: Props) => {
                 alignItems: 'center',
                 height: '10rem',
                 overflowY: 'scroll',
-                order: 0,
+                order: 0
               }}
               onMouseLeave={() => setCurrentlyHoveredProject(null)}
             >
@@ -226,9 +222,7 @@ const DevPageProjects = ({ starterProjects }: Props) => {
                     onMouseDown={() => setSelectedProject(project)}
                     onMouseEnter={() => setCurrentlyHoveredProject(project)}
                     className={
-                      selectedProject.name === project.name
-                        ? styles.selected
-                        : styles.project
+                      selectedProject.name === project.name ? styles.selected : styles.project
                     }
                   >
                     {project.name}
@@ -243,37 +237,25 @@ const DevPageProjects = ({ starterProjects }: Props) => {
                 alignItems: 'center',
                 marginLeft: 'auto',
                 marginRight: 'auto',
-                order: 0,
+                order: 0
               }}
             >
               <div style={{ width: '80%', padding: 'auto', margin: '10px' }}>
                 {!currentlyHoveredProject ? ( // sets displayed project description
                   <TextContent>
-                    <Text
-                      id="display-selected-project-name"
-                      style={{ margin: '0px' }}
-                    >
+                    <Text id="display-selected-project-name" style={{ margin: '0px' }}>
                       {selectedProject.name}
                     </Text>
-                    <Text
-                      id="display-selected-project-description"
-                      style={{ color: '#ADABAE' }}
-                    >
+                    <Text id="display-selected-project-description" style={{ color: '#ADABAE' }}>
                       {selectedProject.description}
                     </Text>
                   </TextContent>
                 ) : (
                   <TextContent>
-                    <Text
-                      id="display-hovered-project-name"
-                      style={{ margin: '0px' }}
-                    >
+                    <Text id="display-hovered-project-name" style={{ margin: '0px' }}>
                       {currentlyHoveredProject.name}
                     </Text>
-                    <Text
-                      id="display-hovered-project-description"
-                      style={{ color: '#ADABAE' }}
-                    >
+                    <Text id="display-hovered-project-description" style={{ color: '#ADABAE' }}>
                       {currentlyHoveredProject.description}
                     </Text>
                   </TextContent>
@@ -311,27 +293,26 @@ const DevPageProjects = ({ starterProjects }: Props) => {
 async function downloadSubdirectory(url: string, subdirectory: string) {
   const data = {
     url,
-    subdirectory,
+    subdirectory
   };
-  const response = await fetch('/api/download-subdirectory', {
+  const res = await fetch('/api/download-subdirectory', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
+    body: JSON.stringify(data)
   });
 
-  const status = response.status;
+  const status = res.status;
   if (status !== 200) {
-    const errorJSON = await response.json();
-    throw new Error(errorJSON.error);
+    const errorJson = await res.json();
+    throw new Error(errorJson.error);
   }
 
-  const base64string = await response.text();
+  const base64string = await res.text();
   const zip = await JSZip.loadAsync(base64string, { base64: true });
   try {
     const blob = await zip.generateAsync({ type: 'blob' });
     saveAs(blob, subdirectory + '.zip');
   } catch (error) {
-    console.log(error);
     throw new Error(error.text);
   }
 }

@@ -1,9 +1,13 @@
+.github
 .next
 .nyc_output
 coverage
 docs
 node_modules
 out
+stacks
+
+next-env.d.ts
 
 /public/*.js
 /public/*.js.map

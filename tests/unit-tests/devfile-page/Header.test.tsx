@@ -1,7 +1,5 @@
-/// <reference types="jest" />
-
 import { Devfile } from 'custom-types';
-import Header from '../../../components/devfile-page/DevPageHeader';
+import Header from '../../../components/devfile-page/Header';
 import HeaderTags from '../../../components/devfile-page/HeaderTags';
 import devfileLogo from '../../../public/images/devfileLogo.svg';
 import { Brand } from '@patternfly/react-core';
@@ -9,12 +7,13 @@ import { Brand } from '@patternfly/react-core';
 import { mount } from 'enzyme';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
+import { describe, expect, test } from '@jest/globals';
 
 /**
  * defile
  *     description: existing, undefined
- *     icon: non-existing -> devfile logo, existing
- *     keys with list values: empty list, non-empty list
+ *     icon: undefined, empty -> devfile logo, existing
+ *     keys with list values: undefined, empty list, non-empty list
  * for stacks:
  *     metadata: undefined, with website, without website
  * for samples:
@@ -23,18 +22,11 @@ import React from 'react';
 
 const baseDevfile: Devfile = {
   name: 'java-maven',
-  version: '1.1.0',
   displayName: 'Maven Java',
   type: 'stack',
   projectType: 'maven',
-  tags: [],
-  icon: '',
   language: 'java',
-  links: {
-    self: 'devfile-catalog/java-maven:latest',
-  },
-  resources: [],
-  starterProjects: [],
+  sourceRepo: ''
 };
 
 const propStackValues: Array<{
@@ -43,13 +35,23 @@ const propStackValues: Array<{
   devfileMetadata?: Record<string, string>;
 }> = [
   {
-    name: 'devfile with n metadata',
-    devfile: { ...baseDevfile },
+    name: 'devfile with no metadata',
+    devfile: baseDevfile
   },
   {
-    name: "devfile with metadata that doesn't include a website",
-    devfile: { ...baseDevfile },
-    devfileMetadata: { notWebsite: 'not-website' },
+    name: "devfile with metadata that doesn't include a website and empty fields",
+    devfile: {
+      ...baseDevfile,
+      version: '',
+      tags: [],
+      icon: '',
+      links: {
+        self: 'devfile-catalog/java-maven:latest'
+      },
+      resources: [],
+      starterProjects: []
+    },
+    devfileMetadata: { notWebsite: 'not-website' }
   },
   {
     name: 'devfile with description, icon, and extra information and metadata that includes a website',
@@ -61,20 +63,17 @@ const propStackValues: Array<{
       type: 'stack',
       projectType: 'wildfly',
       links: {
-        self: 'a different link',
+        self: 'a different link'
       },
       tags: ['tag1', 'tag2', 'tag3'],
       icon: 'https://raw.githubusercontent.com/maysunfaisal/node-bulletin-board-2/main/nodejs-icon.png',
       language: 'java',
       resources: ['resource1', 'resource2', 'resource3'],
-      starterProjects: [
-        'starter-projects1',
-        'starter-projects2',
-        'starter-projects3',
-      ],
+      starterProjects: ['starter-projects1', 'starter-projects2', 'starter-projects3'],
+      sourceRepo: 'github'
     },
-    devfileMetadata: { website: 'https://registry.devfile.io' },
-  },
+    devfileMetadata: { website: 'https://registry.devfile.io' }
+  }
 ];
 
 const propSampleValues: Array<{ name: string; devfile: Devfile }> = [
@@ -86,29 +85,26 @@ const propSampleValues: Array<{ name: string; devfile: Devfile }> = [
       type: 'sample',
       git: {
         remotes: {
-          remote: 'https://www.youtube.com/watch?v=JCrnRLV5slc',
-        },
-      },
-    },
-  },
+          remote: 'https://www.youtube.com/watch?v=JCrnRLV5slc'
+        }
+      }
+    }
+  }
 ];
 
 describe('<Header />', () => {
   const devfileKeys = Object.keys(baseDevfile);
-  devfileKeys.push('description');
+  devfileKeys.push('description', 'icon', 'version', 'tags');
 
   const numOfInheritedIDs = 2; // IDs of text and brand components are passed to children
 
   let wrapper = mount(<Header devfile={propStackValues[0].devfile} />);
 
-  //check content in header except website (for stacks) and git repo (for samples)
+  // check content in header except website (for stacks) and git repo (for samples)
   function checkHeaderContent(devfile: Devfile) {
     let idToComponentWrappers: Record<string, ReactWrapper> = {};
     devfileKeys.forEach(
-      (key) =>
-        (idToComponentWrappers[key] = wrapper.findWhere(
-          (n) => n.prop('id') === key
-        ))
+      (key) => (idToComponentWrappers[key] = wrapper.findWhere((n) => n.prop('id') === key))
     );
 
     function getWrapperText(id: string) {
@@ -131,58 +127,46 @@ describe('<Header />', () => {
       devfile.description ? numOfInheritedIDs : 0
     );
     if (devfile.description) {
-      expect(
-        getWrapperText('description').includes(devfile.description)
-      ).toBeTruthy();
+      expect(getWrapperText('description').includes(devfile.description)).toBeTruthy();
     }
 
     expect(wrapper.find(HeaderTags).length).toBe(1);
-    if (devfile.tags.length === 0) {
+    if (!devfile.tags || devfile.tags.length === 0) {
       expect(wrapper.find(HeaderTags).first().html()).toEqual(null);
     } else {
-      expect(wrapper.find(HeaderTags).length).not.toEqual(null);
+      expect(wrapper.find(HeaderTags).first().html()).not.toEqual(null);
     }
 
-    function checkMetadataWithID(id: string, label: string) {
-      const value =
-        id !== 'version'
-          ? id !== 'language'
-            ? devfile.projectType
-            : devfile.language
-          : devfile.version;
-
+    // check for correct metadata
+    function checkMetadataWithID(id: string, label: string, expectedValue: string) {
       expect(idToComponentWrappers[id].length).toBe(numOfInheritedIDs);
-      expect(getWrapperText(id)).toBe(label + ': ' + value);
-      expect(idToComponentWrappers[id].parent().first().prop('id')).toBe(
-        'devfile-metadata'
-      );
+      expect(getWrapperText(id)).toBe(label + ': ' + expectedValue);
+      expect(idToComponentWrappers[id].parent().first().prop('id')).toBe('devfile-metadata');
     }
 
-    checkMetadataWithID('version', 'Version');
-    checkMetadataWithID('projectType', 'Project Type');
-    checkMetadataWithID('language', 'Language');
+    checkMetadataWithID('projectType', 'Project Type', devfile.projectType);
+    checkMetadataWithID('language', 'Language', devfile.language);
+
+    if (devfile.version) {
+      checkMetadataWithID('version', 'Version', devfile.version);
+    } else {
+      expect(idToComponentWrappers['version'].length).toBe(0);
+    }
   }
 
-  test.each(propStackValues)(
-    'stack test: $name',
-    ({ devfile, devfileMetadata }) => {
-      wrapper.setProps({ devfile: devfile, devfileMetadata: devfileMetadata });
+  test.each(propStackValues)('stack test: $name', ({ devfile, devfileMetadata }) => {
+    wrapper.setProps({ devfile: devfile, devfileMetadata: devfileMetadata });
 
-      checkHeaderContent(devfile);
+    checkHeaderContent(devfile);
 
-      const websiteWrapper = wrapper.findWhere(
-        (n) => n.prop('id') === 'website'
-      );
-      if (devfileMetadata && devfileMetadata.website) {
-        expect(websiteWrapper.length).toBe(numOfInheritedIDs);
-        expect(websiteWrapper.first().text()).toBe(
-          'Website: ' + devfileMetadata.website
-        );
-      } else {
-        expect(websiteWrapper.length).toBe(0);
-      }
+    const websiteWrapper = wrapper.findWhere((n) => n.prop('id') === 'website');
+    if (devfileMetadata && devfileMetadata.website) {
+      expect(websiteWrapper.length).toBe(numOfInheritedIDs);
+      expect(websiteWrapper.first().text()).toBe('Website: ' + devfileMetadata.website);
+    } else {
+      expect(websiteWrapper.length).toBe(0);
     }
-  );
+  });
 
   test.each(propSampleValues)('sample test: $name', ({ devfile }) => {
     wrapper.setProps({ devfile: devfile, devfileMetadata: null });

@@ -56,14 +56,14 @@ describe('Test invalid fetch', () => {
   it('zip file with non-existing subdirectory', () => {
     const data = {
       url: 'https://code.quarkus.io/d?e=io.quarkus%3Aquarkus-resteasy&e=io.quarkus%3Aquarkus-micrometer&e=io.quarkus%3Aquarkus-smallrye-health&e=io.quarkus%3Aquarkus-openshift&cn=devfile',
-      subdirectory: 'non-existing',
+      subdirectory: 'non-existing'
     };
     cy.request({
       url: '/api/download-subdirectory',
       failOnStatusCode: false,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+      body: JSON.stringify(data)
     }).should(async (response) => {
       expect(response.status).to.eq(404);
     });
@@ -72,14 +72,14 @@ describe('Test invalid fetch', () => {
   it('zip file with non-existing link', () => {
     const data = {
       url: 'https://non-existing.com/',
-      subdirectory: 'non-existing',
+      subdirectory: 'non-existing'
     };
     cy.request({
       url: '/api/download-subdirectory',
       failOnStatusCode: false,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+      body: JSON.stringify(data)
     }).should(async (response) => {
       expect(response.status).to.eq(500);
     });
@@ -110,7 +110,7 @@ function checkForValidZipFetch(
 ) {
   const data = {
     url: url,
-    subdirectory: subdirectory,
+    subdirectory: subdirectory
   };
   const expected = expectedRootFileAndFolders;
   expected.sort((a, b) => a.localeCompare(b));
@@ -119,7 +119,7 @@ function checkForValidZipFetch(
     url: '/api/download-subdirectory',
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
+    body: JSON.stringify(data)
   }).should(async (response) => {
     expect(response.status).to.eq(200);
 

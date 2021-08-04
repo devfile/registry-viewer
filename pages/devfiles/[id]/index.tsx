@@ -1,7 +1,9 @@
-import { Devfile } from 'custom-types';
-import DevPageProjects from '@components/devfile-page/DevPageProjects';
-import DevPageHeader from '@components/devfile-page/DevPageHeader';
-import DevPageYAML from '@components/devfile-page/DevPageYAML';
+import { Devfile, GetMetadataOfDevfiles, GetDevfileYAML } from 'custom-types';
+import { getMetadataOfDevfiles, getDevfileYAML } from '@util/server';
+import DevfilePageProjects from '@components/devfile-page/Projects';
+import DevfilePageHeader from '@components/devfile-page/Header';
+import DevfilePageYAML from '@components/devfile-page/YAML';
+import ErrorBanner from '@components/ErrorBanner';
 
 import { InferGetStaticPropsType, GetStaticProps, GetStaticPaths } from 'next';
 
@@ -15,79 +17,68 @@ interface Path {
  *    stacks have header, starter projects, and yaml
  *    sample has header
  *
- * @param devfile - index information for devile
- * @param devfileText - text of devile YAML, null when sample
+ * @param devfile - index information for devfile
+ * @param devfileText - text of devfile YAML, null when sample
  * @param devfileJSON -  json representation of devfile YAML, null when sample
  */
 const DevfilePage = ({
   devfile,
-  devfileText,
+  devfileYAML,
   devfileJSON,
+  errors
 }: InferGetStaticPropsType<typeof getStaticProps>) => (
   <div style={{ alignContent: 'center', minHeight: '100vh' }}>
+    <ErrorBanner errors={errors} />
     {devfile.type === 'stack' ? (
       <div>
-        <DevPageHeader
-          devfileMetadata={devfileJSON.metadata}
-          devfile={devfile}
-        />
-        <DevPageProjects starterProjects={devfileJSON.starterProjects} />
-        <DevPageYAML devYAML={devfileText} />
+        <DevfilePageHeader devfileMetadata={devfileJSON.metadata} devfile={devfile} />
+        <DevfilePageProjects starterProjects={devfileJSON.starterProjects} />
+        <DevfilePageYAML devfileYAML={devfileYAML} />
       </div>
     ) : (
-      <DevPageHeader devfile={devfile} />
+      <DevfilePageHeader devfile={devfile} />
     )}
   </div>
 );
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const indexResponse: Response = await fetch(
-    'https://registry.devfile.io/index/all?icon=base64'
-  );
-  const devfiles: Devfile[] = (await indexResponse.json()) as Devfile[];
-  const devfile: Devfile = devfiles.find(
-    (devfile: Devfile) => devfile.name === context.params?.id
-  )!;
+  const [devfiles, devfileErrors]: GetMetadataOfDevfiles = await getMetadataOfDevfiles();
 
-  let devfileYAMLResponse: Response;
-  let devfileText: string | null = null;
-  let devfileJSON = null;
+  const devfile: Devfile = devfiles.find((devfile: Devfile) => {
+    const id = context.params?.id as string;
+    const [source, name] = id.split('+');
+    return devfile.sourceRepo === source && devfile.name === name;
+  })!;
 
-  if (devfile.type === 'stack') {
-    devfileYAMLResponse = await fetch(
-      'https://registry.devfile.io/devfiles/' + devfile.name,
-      {
-        headers: { 'Accept-Type': 'text/plain' },
-      }
-    );
-    devfileText = await devfileYAMLResponse.text();
+  const [devfileYAML, devfileJSON, yamlErrors]: GetDevfileYAML = await getDevfileYAML(devfile);
 
-    // convert yaml text to json
-    const yaml = require('js-yaml');
-    devfileJSON = yaml.load(devfileText);
-  }
+  const errors = [...devfileErrors, ...yamlErrors];
 
   return {
     props: {
       devfile,
-      devfileText,
+      devfileYAML,
       devfileJSON,
+      errors
     },
-    revalidate: 21600, // Regenerate page every 6 hours
+    // Next.js will attempt to re-generate the page:
+    // - When a request comes in
+    // - At most once every 15 seconds
+    revalidate: 15
   };
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const res: Response = await fetch(
-    'https://registry.devfile.io/index/all?icon=base64'
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [devfiles, errors]: GetMetadataOfDevfiles = await getMetadataOfDevfiles();
+  const sourceWithNames: string[] = devfiles.map(
+    (devfile) => `${devfile.sourceRepo.replace(/\+/g, '')}+${devfile.name.replace(/\+/g, '')}`
   );
-  const devfiles: Devfile[] = (await res.json()) as Devfile[];
-  const ids: string[] = devfiles.map((devfile) => devfile.name);
-  const paths: Path[] = ids.map((id) => ({ params: { id } }));
+  const paths: Path[] = sourceWithNames.map((id) => ({ params: { id } }));
 
   return {
     paths,
-    fallback: false,
+    fallback: 'blocking'
   };
 };
 

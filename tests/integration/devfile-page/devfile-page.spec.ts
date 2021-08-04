@@ -1,4 +1,4 @@
-// / <reference types="cypress" />
+/// <reference types="cypress" />
 
 /**
  * page type: stack, sample
@@ -69,10 +69,7 @@ describe('Test select', () => {
 function verifyDownloadOnClick(url: string) {
   cy.visit(url);
   cy.get("[id='dev-page-projects']").get('button').click({ force: true });
-  cy.get("[id='dev-page-projects']")
-    .get('button')
-    .last()
-    .click({ force: true });
+  cy.get("[id='dev-page-projects']").get('button').last().click({ force: true });
 }
 
 export {};

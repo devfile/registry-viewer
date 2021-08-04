@@ -2,13 +2,9 @@
 import Projects, {
   download,
   downloadSubdirectory,
-  getURLForGit,
-} from '../../../components/devfile-page/DevPageProjects';
-import {
-  Git,
-  Project,
-  UnsupportedLinkError,
-} from '../../../components/devfile-page/DevPageProjects';
+  getURLForGit
+} from '../../../components/devfile-page/Projects';
+import { Git, Project, UnsupportedLinkError } from '../../../components/devfile-page/Projects';
 import { Alert, Button, CardExpandableContent } from '@patternfly/react-core';
 
 import { mount, shallow } from 'enzyme';
@@ -47,12 +43,11 @@ const testProjects: Array<{
       name: 'project1',
       git: {
         remotes: {
-          git: 'https://github.com/odo-devfiles/springboot-ex.git',
-        },
-      },
+          git: 'https://github.com/odo-devfiles/springboot-ex.git'
+        }
+      }
     },
-    expectedURL:
-      'https://api.github.com/repos/odo-devfiles/springboot-ex/zipball/',
+    expectedURL: 'https://api.github.com/repos/odo-devfiles/springboot-ex/zipball/'
   },
   {
     name: 'with multiple remotes and specified revision for git',
@@ -61,22 +56,21 @@ const testProjects: Array<{
       name: 'project2',
       description: 'this is a description',
       attributes: {
-        attribute: 'this is an attribute',
+        attribute: 'this is an attribute'
       },
       git: {
         checkoutFrom: {
           remote: 'anotherGit',
-          revision: '23.0.2.Final',
+          revision: '23.0.2.Final'
         },
         remotes: {
           git: 'https://github.com/odo-devfiles/springboot-ex.git',
-          anotherGit: 'https://github.com/wildfly/quickstart',
-        },
+          anotherGit: 'https://github.com/wildfly/quickstart'
+        }
       },
-      subDir: 'existing',
+      subDir: 'existing'
     },
-    expectedURL:
-      'https://api.github.com/repos/wildfly/quickstart/zipball/23.0.2.Final',
+    expectedURL: 'https://api.github.com/repos/wildfly/quickstart/zipball/23.0.2.Final'
   },
   {
     name: 'with zip and no subdirectory', // expected and project.zip.location should be same url
@@ -85,11 +79,11 @@ const testProjects: Array<{
       name: 'project3',
       zip: {
         location:
-          'https://code.quarkus.redhat.com/d?e=io.quarkus%3Aquarkus-resteasy&e=io.quarkus%3Aquarkus-smallrye-health&e=io.quarkus%3Aquarkus-openshift',
-      },
+          'https://code.quarkus.redhat.com/d?e=io.quarkus%3Aquarkus-resteasy&e=io.quarkus%3Aquarkus-smallrye-health&e=io.quarkus%3Aquarkus-openshift'
+      }
     },
     expectedURL:
-      'https://code.quarkus.redhat.com/d?e=io.quarkus%3Aquarkus-resteasy&e=io.quarkus%3Aquarkus-smallrye-health&e=io.quarkus%3Aquarkus-openshift',
+      'https://code.quarkus.redhat.com/d?e=io.quarkus%3Aquarkus-resteasy&e=io.quarkus%3Aquarkus-smallrye-health&e=io.quarkus%3Aquarkus-openshift'
   },
   {
     name: 'extra project', // expected and project.zip.location should be same url, extra for <Project /> test
@@ -101,12 +95,12 @@ const testProjects: Array<{
         "The bee, of course, flies anyway because bees don't care what humans think is impossible. Yellow, black. Yellow, black. Yellow, black. Yellow, black.",
       zip: {
         location:
-          'https://code.quarkus.redhat.com/d?e=io.quarkus%3Aquarkus-resteasy&e=io.quarkus%3Aquarkus-smallrye-health&e=io.quarkus%3Aquarkus-openshift',
-      },
+          'https://code.quarkus.redhat.com/d?e=io.quarkus%3Aquarkus-resteasy&e=io.quarkus%3Aquarkus-smallrye-health&e=io.quarkus%3Aquarkus-openshift'
+      }
     },
     expectedURL:
-      'https://code.quarkus.redhat.com/d?e=io.quarkus%3Aquarkus-resteasy&e=io.quarkus%3Aquarkus-smallrye-health&e=io.quarkus%3Aquarkus-openshift',
-  },
+      'https://code.quarkus.redhat.com/d?e=io.quarkus%3Aquarkus-resteasy&e=io.quarkus%3Aquarkus-smallrye-health&e=io.quarkus%3Aquarkus-openshift'
+  }
 ];
 
 const errorTestProjects: Array<{
@@ -123,11 +117,11 @@ const errorTestProjects: Array<{
       git: {
         remotes: {
           git: 'https://github.com/odo-devfiles/springboot-ex.git',
-          anotherGit: 'https://github.com/wildfly/quickstart',
-        },
-      },
+          anotherGit: 'https://github.com/wildfly/quickstart'
+        }
+      }
     },
-    expected: new TypeError('Invalid git remotes'),
+    expected: new TypeError('Invalid git remotes')
   },
   {
     name: 'with unsupported git hosting site',
@@ -136,47 +130,45 @@ const errorTestProjects: Array<{
       name: 'project2',
       git: {
         remotes: {
-          git: 'https://unsupported-site.com/odo-devfiles/springboot-ex.git',
-        },
-      },
+          git: 'https://unsupported-site.com/odo-devfiles/springboot-ex.git'
+        }
+      }
     },
-    expected: new UnsupportedLinkError(
-      'https://unsupported-site.com/odo-devfiles/springboot-ex'
-    ),
+    expected: new UnsupportedLinkError('https://unsupported-site.com/odo-devfiles/springboot-ex')
   },
   {
     name: 'without zip/git',
     applyTo: ['download'],
     project: {
-      name: 'project3',
+      name: 'project3'
     },
-    expected: new TypeError('Invalid project has no zip/git url'),
-  },
+    expected: new TypeError('Invalid project has no zip/git url')
+  }
 ];
 
 describe('getURLForGit', () => {
-  test.each(
-    testProjects.filter((project) => project.applyTo.includes('getURLForGit'))
-  )('url return tests', ({ project, expectedURL }) => {
-    if (project.git !== undefined) {
-      expect(getURLForGit(project.git)).toBe(expectedURL);
-    } else {
-      throw new TypeError('error with test inputs: should have git');
+  test.each(testProjects.filter((project) => project.applyTo.includes('getURLForGit')))(
+    'url return tests',
+    ({ project, expectedURL }) => {
+      if (project.git !== undefined) {
+        expect(getURLForGit(project.git)).toBe(expectedURL);
+      } else {
+        throw new TypeError('error with test inputs: should have git');
+      }
     }
-  });
+  );
 
-  test.each(
-    errorTestProjects.filter((project) =>
-      project.applyTo.includes('getURLForGit')
-    )
-  )('error tests: Git $name', ({ project, expected }) => {
-    if (project.git !== undefined) {
-      const git: Git = project.git;
-      expect(() => getURLForGit(git)).toThrow(expected);
-    } else {
-      throw new TypeError('error with test inputs: should have git');
+  test.each(errorTestProjects.filter((project) => project.applyTo.includes('getURLForGit')))(
+    'error tests: Git $name',
+    ({ project, expected }) => {
+      if (project.git !== undefined) {
+        const git: Git = project.git;
+        expect(() => getURLForGit(git)).toThrow(expected);
+      } else {
+        throw new TypeError('error with test inputs: should have git');
+      }
     }
-  });
+  );
 });
 
 /**
@@ -194,35 +186,26 @@ describe('downloadSubdirectory', () => {
     const url = 'https://invalid.com/wildfly/quickstart/zipball/23.0.2.Final'; //technically these values don't matter
     const subdirectory = 'existing';
 
-    checkForFetchError(
-      () => downloadSubdirectory(url, subdirectory),
-      url,
-      subdirectory,
-      { error: 'invalid url', status: 500 }
-    );
+    checkForFetchError(() => downloadSubdirectory(url, subdirectory), url, subdirectory, {
+      error: 'invalid url',
+      status: 500
+    });
   });
 
   test('error test: non existing subdirectory, fetch returns with 404 status', () => {
-    const url =
-      'https://api.github.com/wildfly/quickstart/zipball/23.0.2.Final'; //technically these values don't matter
+    const url = 'https://api.github.com/wildfly/quickstart/zipball/23.0.2.Final'; //technically these values don't matter
     const subdirectory = 'non-existing';
 
-    checkForFetchError(
-      () => downloadSubdirectory(url, subdirectory),
-      url,
-      subdirectory,
-      { error: 'non existing subdirectory', status: 404 }
-    );
+    checkForFetchError(() => downloadSubdirectory(url, subdirectory), url, subdirectory, {
+      error: 'non existing subdirectory',
+      status: 404
+    });
   });
 
   test('valid fetch', () => {
     const url = 'https://stuk.github.io/jszip/test/ref/text.zip';
     const subdirectory = 'hello';
-    checkForSuccessfulDownload(
-      () => downloadSubdirectory(url, subdirectory),
-      url,
-      subdirectory
-    );
+    checkForSuccessfulDownload(() => downloadSubdirectory(url, subdirectory), url, subdirectory);
   });
 });
 
@@ -231,62 +214,53 @@ describe('download', () => {
     fetch.resetMocks();
   });
 
-  test.each(
-    testProjects.filter((project) =>
-      project.applyTo.includes('download subdirectory')
-    )
-  )(
+  test.each(testProjects.filter((project) => project.applyTo.includes('download subdirectory')))(
     'Project $name , should call downloadSubdirectory',
     ({ project, expectedURL }) => {
       if (!project.subDir) {
         new TypeError('error with test inputs: should have key subDir');
       }
       const subdirectory = project.subDir ?? '';
-      checkForSuccessfulDownload(
-        () => download(project),
-        expectedURL,
-        subdirectory
-      );
+      checkForSuccessfulDownload(() => download(project), expectedURL, subdirectory);
     }
   );
 
-  test.each(
-    testProjects.filter((project) =>
-      project.applyTo.includes('download window')
-    )
-  )('Project $name , should call window.open', ({ project, expectedURL }) => {
-    const originalOpen = global.open;
-    global.open = jest.fn();
+  test.each(testProjects.filter((project) => project.applyTo.includes('download window')))(
+    'Project $name , should call window.open',
+    ({ project, expectedURL }) => {
+      const originalOpen = global.open;
+      global.open = jest.fn();
 
-    expect(download(project)).resolves.toBe(undefined);
-    expect(global.open).toHaveBeenCalledWith(expectedURL);
+      expect(download(project)).resolves.toBe(undefined);
+      expect(global.open).toHaveBeenCalledWith(expectedURL);
 
-    global.open = jest.fn(originalOpen);
-  });
+      global.open = jest.fn(originalOpen);
+    }
+  );
 
-  test.each(
-    errorTestProjects.filter((project) => project.applyTo.includes('download'))
-  )('error tests: Project $name', ({ project, expected }) => {
-    expect(download(project)).rejects.toThrowError(expected);
-  });
+  test.each(errorTestProjects.filter((project) => project.applyTo.includes('download')))(
+    'error tests: Project $name',
+    ({ project, expected }) => {
+      expect(download(project)).rejects.toThrowError(expected);
+    }
+  );
 
   test('error tests: Project has non-existing subdirectory, fetch returns with 500 status', () => {
     const project: Project = {
       name: 'project2',
       git: {
         remotes: {
-          git: 'https://github.com/odo-devfiles/springboot-ex.git',
-        },
+          git: 'https://github.com/odo-devfiles/springboot-ex.git'
+        }
       },
-      subDir: 'non-existing',
+      subDir: 'non-existing'
     };
     const subdirectory: string = project.subDir ?? '';
-    const expectedURL =
-      'https://api.github.com/repos/odo-devfiles/springboot-ex/zipball/';
+    const expectedURL = 'https://api.github.com/repos/odo-devfiles/springboot-ex/zipball/';
 
     checkForFetchError(() => download(project), expectedURL, subdirectory, {
       error: 'non existing subdirectory',
-      status: 404,
+      status: 404
     });
   });
 
@@ -294,16 +268,16 @@ describe('download', () => {
     const project: Project = {
       name: 'project2',
       zip: {
-        location: 'https://invalid.com/wildfly/quickstart/zipball/23.0.2.Final',
+        location: 'https://invalid.com/wildfly/quickstart/zipball/23.0.2.Final'
       },
-      subDir: 'non-existing',
+      subDir: 'non-existing'
     };
     const subdirectory: string = project.subDir ?? '';
     const expectedURL = project.zip?.location ?? '';
 
     checkForFetchError(() => download(project), expectedURL, subdirectory, {
       error: 'invalid url',
-      status: 500,
+      status: 500
     });
   });
 });
@@ -318,30 +292,24 @@ describe('download', () => {
 
 describe('<Projects />', () => {
   let wrapper = shallow(
-    <Projects
-      starterProjects={testProjects.map((testProject) => testProject.project)}
-    />
+    <Projects starterProjects={testProjects.map((testProject) => testProject.project)} />
   );
   beforeEach(() => {
     wrapper = shallow(
-      <Projects
-        starterProjects={testProjects.map((testProject) => testProject.project)}
-      />
+      <Projects starterProjects={testProjects.map((testProject) => testProject.project)} />
     );
   });
 
   test('starterProjects prop set to empty list, check that HeaderTags is null', () => {
     wrapper.setProps({
-      starterProjects: new Array(0),
+      starterProjects: new Array(0)
     });
 
     expect(wrapper.type()).toEqual(null);
   });
 
   test('check that all projects are in selector', () => {
-    const projectNames = testProjects.map(
-      (testProject) => testProject.project.name
-    );
+    const projectNames = testProjects.map((testProject) => testProject.project.name);
     const projectsWrappersList = wrapper.findWhere(
       (component) => component.prop('id') === 'projects-selector-item'
     );
@@ -349,9 +317,7 @@ describe('<Projects />', () => {
     expect(projectsWrappersList.length).toBe(projectNames.length);
 
     projectNames.forEach((name) => {
-      const projectWrappers = projectsWrappersList.findWhere(
-        (project) => project.key() === name
-      );
+      const projectWrappers = projectsWrappersList.findWhere((project) => project.key() === name);
       expect(projectWrappers.length).toBe(1);
       expect(projectWrappers.first().text()).toBe(name);
     });
@@ -363,43 +329,26 @@ describe('<Projects />', () => {
   });
 
   test('check displayed description, mock selecting and hovering', () => {
-    checkDisplayedDescription(
-      wrapper,
-      testProjects[1].project,
-      testProjects[3].project
-    );
-    checkDisplayedDescription(
-      wrapper,
-      testProjects[2].project,
-      testProjects[0].project
-    );
+    checkDisplayedDescription(wrapper, testProjects[1].project, testProjects[3].project);
+    checkDisplayedDescription(wrapper, testProjects[2].project, testProjects[0].project);
   });
 
   test('check download on button click', async () => {
     const projectToDownload = testProjects[1];
-    const wrapperMount = mount(
-      <Projects starterProjects={[projectToDownload.project]} />
-    );
+    const wrapperMount = mount(<Projects starterProjects={[projectToDownload.project]} />);
 
     const mockZipBase64 =
       'UEsDBAoDAAAAAJx08Trj5ZWwDAAAAAwAAAAJAAAASGVsbG8udHh0SGVsbG8gV29ybGQKUEsBAhQDCgMAAAAAnHTxOuPllbAMAAAADAAAAAkAAAAAAAAAAAAggKSBAAAAAEhlbGxvLnR4dFBLBQYAAAAAAQABADcAAAAzAAAAAAA=';
     const spyFetch = fetch.mockResponseOnce(mockZipBase64, { status: 200 });
-    const spyJSZip = jest
-      .spyOn(JSZip.prototype, 'generateAsync')
-      .mockResolvedValue('blob');
-    const spyFileSaver = jest
-      .spyOn(FileSaver, 'saveAs')
-      .mockImplementation(jest.fn());
+    const spyJSZip = jest.spyOn(JSZip.prototype, 'generateAsync').mockResolvedValue('blob');
+    const spyFileSaver = jest.spyOn(FileSaver, 'saveAs').mockImplementation(jest.fn());
 
     // open expandable
     expect(wrapperMount.find(Button).simulate('click')).resolves;
     wrapperMount.update();
 
     await act(async () => {
-      await wrapperMount
-        .find(CardExpandableContent)
-        .find(Button)
-        .simulate('click');
+      await wrapperMount.find(CardExpandableContent).find(Button).simulate('click');
       wrapperMount.update();
 
       expect(spyJSZip).toHaveBeenCalled();
@@ -414,11 +363,7 @@ describe('<Projects />', () => {
 
   test('check download error alert', async () => {
     const wrapperMount = mount(
-      <Projects
-        starterProjects={errorTestProjects.map(
-          (testProject) => testProject.project
-        )}
-      />
+      <Projects starterProjects={errorTestProjects.map((testProject) => testProject.project)} />
     );
 
     // open expandable
@@ -426,10 +371,7 @@ describe('<Projects />', () => {
     wrapperMount.update();
 
     await act(async () => {
-      await wrapperMount
-        .find(CardExpandableContent)
-        .find(Button)
-        .simulate('click');
+      await wrapperMount.find(CardExpandableContent).find(Button).simulate('click');
       wrapperMount.update();
 
       expect(wrapperMount.find(Alert).length).toBe(1);
@@ -439,23 +381,17 @@ describe('<Projects />', () => {
 
   test('check download UnsupportedLinkType alert', async () => {
     const projectToDownload = errorTestProjects[1];
-    const wrapperMount = mount(
-      <Projects starterProjects={[projectToDownload.project]} />
-    );
-    fetch.mockResponse(
-      JSON.stringify({ error: projectToDownload.expected.message }),
-      { status: 404 }
-    );
+    const wrapperMount = mount(<Projects starterProjects={[projectToDownload.project]} />);
+    fetch.mockResponse(JSON.stringify({ error: projectToDownload.expected.message }), {
+      status: 404
+    });
 
     // open expandable
     expect(wrapperMount.find(Button).simulate('click')).resolves;
     wrapperMount.update();
 
     await act(async () => {
-      await wrapperMount
-        .find(CardExpandableContent)
-        .find(Button)
-        .simulate('click');
+      await wrapperMount.find(CardExpandableContent).find(Button).simulate('click');
       wrapperMount.update();
 
       expect(wrapperMount.find(Alert).length).toBe(1);
@@ -486,16 +422,15 @@ function checkForFetchError(
   subdirectory: string,
   fetchReturn: { error: string; status: number }
 ) {
-  const spyFetch = fetch.mockResponseOnce(
-    JSON.stringify({ error: fetchReturn.error }),
-    { status: fetchReturn.status }
-  );
+  const spyFetch = fetch.mockResponseOnce(JSON.stringify({ error: fetchReturn.error }), {
+    status: fetchReturn.status
+  });
 
   expect(func()).rejects.toThrow(fetchReturn.error);
   expect(spyFetch).toHaveBeenCalledWith('/api/download-subdirectory', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ url, subdirectory }),
+    body: JSON.stringify({ url, subdirectory })
   });
   spyFetch.mockClear();
 }
@@ -510,22 +445,14 @@ function checkForFetchError(
  * @param url - expected url of project to download
  * @param subdirectory - expected subdirectory of project to download
  */
-function checkForSuccessfulDownload(
-  func: () => void,
-  url: string,
-  subdirectory: string
-) {
+function checkForSuccessfulDownload(func: () => void, url: string, subdirectory: string) {
   const mockZipBase64 =
     'UEsDBAoDAAAAAJx08Trj5ZWwDAAAAAwAAAAJAAAASGVsbG8udHh0SGVsbG8gV29ybGQKUEsBAhQDCgMAAAAAnHTxOuPllbAMAAAADAAAAAkAAAAAAAAAAAAggKSBAAAAAEhlbGxvLnR4dFBLBQYAAAAAAQABADcAAAAzAAAAAAA=';
 
   // set spy functions
   const spyFetch = fetch.mockResponseOnce(mockZipBase64, { status: 200 });
-  const spyJSZip = jest
-    .spyOn(JSZip.prototype, 'generateAsync')
-    .mockResolvedValue('blob');
-  const spyFileSaver = jest
-    .spyOn(FileSaver, 'saveAs')
-    .mockImplementation(jest.fn());
+  const spyJSZip = jest.spyOn(JSZip.prototype, 'generateAsync').mockResolvedValue('blob');
+  const spyFileSaver = jest.spyOn(FileSaver, 'saveAs').mockImplementation(jest.fn());
 
   // check that spy functions were called
   expect(func())
@@ -536,7 +463,7 @@ function checkForSuccessfulDownload(
       expect(spyFetch).toHaveBeenCalledWith('/api/download-subdirectory', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url, subdirectory }),
+        body: JSON.stringify({ url, subdirectory })
       });
     });
 
@@ -557,15 +484,11 @@ function checkDisplayedDescription(
   selectProject: Project,
   hoverProject?: Project
 ) {
-  wrapper
-    .findWhere((component) => component.key() === selectProject.name)
-    .simulate('click');
+  wrapper.findWhere((component) => component.key() === selectProject.name).simulate('click');
   wrapper.update();
 
   if (hoverProject) {
-    wrapper
-      .findWhere((component) => component.key() === hoverProject.name)
-      .simulate('mouseEnter');
+    wrapper.findWhere((component) => component.key() === hoverProject.name).simulate('mouseEnter');
     wrapper.update();
   }
 
@@ -573,22 +496,18 @@ function checkDisplayedDescription(
     (component) => component.prop('id') === 'display-selected-project-name'
   );
   let displaySelectedProjectDisplayWrapper = wrapper.findWhere(
-    (component) =>
-      component.prop('id') === 'display-selected-project-description'
+    (component) => component.prop('id') === 'display-selected-project-description'
   );
 
   let displayHoveredProjectNameWrapper = wrapper.findWhere(
     (component) => component.prop('id') === 'display-hovered-project-name'
   );
   let displayHoveredProjectDisplayWrapper = wrapper.findWhere(
-    (component) =>
-      component.prop('id') === 'display-hovered-project-description'
+    (component) => component.prop('id') === 'display-hovered-project-description'
   );
 
   expect(displaySelectedProjectNameWrapper.length).toBe(hoverProject ? 0 : 1);
-  expect(displaySelectedProjectDisplayWrapper.length).toBe(
-    hoverProject ? 0 : 1
-  );
+  expect(displaySelectedProjectDisplayWrapper.length).toBe(hoverProject ? 0 : 1);
 
   expect(displayHoveredProjectNameWrapper.length).toBe(hoverProject ? 1 : 0);
   expect(displayHoveredProjectDisplayWrapper.length).toBe(hoverProject ? 1 : 0);

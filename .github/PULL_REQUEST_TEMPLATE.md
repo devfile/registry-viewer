@@ -8,7 +8,6 @@ Fixes #?
 
 - [ ] Unit Tests
 - [ ] E2E Tests
-
 - [ ] Documentation
 
 **How to test changes / Special notes to the reviewer**:
