@@ -51,9 +51,21 @@ const DevPageHeader = ({ devfile, devfileMetadata }: Props) => {
               style={{ width: '60%' }}
             />
             <TextContent>
+            <Text
+                id="source-repo"
+                style={{
+                  padding:"0",
+                  color: '#ADABAE',
+                  marginLeft: 'auto',
+                  marginRight: 'auto'
+                }}
+              >
+                {devfile.sourceRepo}
+              </Text>
               <Text
                 id="type"
                 style={{
+                  padding:"0",
                   color: '#ADABAE',
                   marginLeft: 'auto',
                   marginRight: 'auto'
