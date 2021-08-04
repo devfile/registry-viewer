@@ -14,12 +14,13 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create next
 
 ```json
 "scripts": {
+  "analyze": "cross-env ANALYZE=true next build",
   "dev": "next",
   "build": "next build",
   "start": "next start",
-  "clean": "rm -rf .next/ out/ node_modules/",
+  "clean": "rimraf .next/ .nyc_output/ coverage/ docs/ out/ node_modules/",
   "cypress:start": "concurrently --names 'CYPRESS,SERVER' --prefix-colors 'yellow,blue' \"yarn cypress open\" \"yarn build && yarn start\"",
-  "typedoc:build": "node_modules/.bin/typedoc --tsconfig .",
+  "typedoc:build": "typedoc --tsconfig .",
   "typedoc:start": "npx serve docs",
   "jest:test": "jest --watchAll --verbose",
   "test": "cypress run",
@@ -29,6 +30,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create next
 }
 ```
 
+- `analyze` - Runs `next build` and analyzes the webpack bundle size
 - `dev` - Runs `next dev` which starts Next.js in development mode
 - `build` - Runs `next build` which builds the application for production usage
 - `start` - Runs `next start` which starts a Next.js production server
