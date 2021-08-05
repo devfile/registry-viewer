@@ -91,7 +91,7 @@ class UnsupportedLinkError extends Error {
    * @param link - unsupported link
    */
   constructor(link: string) {
-    super('Unsupported link: ' + link);
+    super('Attempted download with unsupported git repo link at ' + link);
     this.name = 'UnsupportedLinkError ';
     Object.setPrototypeOf(this, UnsupportedLinkError.prototype);
   }
@@ -133,10 +133,10 @@ const DevPageProjects = ({ starterProjects }: Props) => {
         });
       } else {
         setErrorAlert({
-          name: 'Error',
-          error: error.text,
+          name: 'Download Error',
+          error: error.toString(),
           message:
-            'Internal Error has occurred during download. Please try again or report as issue. \n',
+            'Internal error has occurred during download. Please try again or report as issue. \n',
           alertType: 'danger'
         });
       }
@@ -171,34 +171,6 @@ const DevPageProjects = ({ starterProjects }: Props) => {
       </CardHeader>
       <CardExpandableContent>
         <CardBody>
-          {errorAlert && (
-            <Alert
-              variant={errorAlert.alertType}
-              title={errorAlert.name}
-              actionClose={<AlertActionCloseButton onClose={() => setErrorAlert(null)} />}
-              actionLinks={
-                <>
-                  <AlertActionLink
-                    href={
-                      'https://github.com/devfile/api/issues/new?assignees=&labels=&template=bug_report.md&title=' +
-                      alert.name.replace(' ', '+')
-                    }
-                    target="_blank"
-                  >
-                    Report Issue to Github
-                  </AlertActionLink>
-                </>
-              }
-            >
-              <TextContent>
-                <Text id="alert-message" component={TextVariants.p}>
-                  {errorAlert.message}
-                  <code>{errorAlert.error}</code>
-                </Text>
-              </TextContent>
-            </Alert>
-          )}
-
           <div style={{ display: 'flex', width: '100%' }}>
             <div
               id="projects-selector"
@@ -273,6 +245,36 @@ const DevPageProjects = ({ starterProjects }: Props) => {
               </div>
             </div>
           </div>
+          {errorAlert && (
+            <Alert
+              variant={errorAlert.alertType}
+              title={errorAlert.name}
+              actionClose={<AlertActionCloseButton onClose={() => setErrorAlert(null)} />}
+              actionLinks={
+                <>
+                  <AlertActionLink
+                    onClick={() =>
+                      window.open(
+                        'https://github.com/devfile/api/issues/new?assignees=&labels=&template=bug_report.md&title=Registry+Viewer+' +
+                          errorAlert.name.replace(' ', '+')
+                      )
+                    }
+                  >
+                    Report Issue to Github
+                  </AlertActionLink>
+                </>
+              }
+            >
+              <TextContent>
+                <Text id="alert-message">{errorAlert.message}</Text>
+                {errorAlert.alertType !== 'warning' && (
+                  <Text component={TextVariants.blockquote}>
+                    <code>{errorAlert.error}</code>
+                  </Text>
+                )}
+              </TextContent>
+            </Alert>
+          )}
         </CardBody>
       </CardExpandableContent>
     </Card>
