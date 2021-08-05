@@ -1,4 +1,6 @@
 # Rebuild the source code only when needed
+ARG DEVFILE_VIEWER_ROOT
+ARG DEVFILE_COMMUNITY_HOST
 FROM registry.access.redhat.com/ubi8/nodejs-14-minimal AS builder
 USER root
 WORKDIR /app
