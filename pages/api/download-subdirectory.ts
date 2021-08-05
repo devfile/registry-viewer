@@ -33,11 +33,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.send(base64Send);
     res.end();
   } catch (error) {
-    res.json({ error: error.toString() });
-    if (error.text.contains('subdirectory does not exist')) {
-      res.status(404).end();
+    if (error.toString().includes('subdirectory does not exist')) {
+      res.status(404);
     } else {
-      res.status(500).end();
+      res.status(500);
     }
+    res.json({ error: error.toString() });
+    res.end();
   }
 }

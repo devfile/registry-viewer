@@ -95,6 +95,7 @@ describe('Test invalid fetch', () => {
 function areArraysEqual(a: Array<string>, b: Array<string>) {
   return a.length === b.length && a.every((value) => b.includes(value));
 }
+
 /**
  * Checks that fetch for extracting the subdirectory returns the right zip by
  *  * checking status of response (should be 200)
