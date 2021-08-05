@@ -43,18 +43,19 @@ const DevPageHeader = ({ devfile, devfileMetadata }: Props) => {
             borderRight: '2px solid #ADABAE'
           }}
         >
-          <div style={{ margin: '10px' }}>
+          <div style={{ margin: '10px', width: '30%' }}>
             <Brand
               id="icon"
               src={devfile.icon || devfileLogo}
               alt={devfile.icon ? devfile.displayName + ' logo' : 'devfile logo'}
-              style={{ width: '60%' }}
+              style={{ width: '80%' }}
             />
             <TextContent>
-            <Text
+              <Text
                 id="source-repo"
                 style={{
-                  padding:"0",
+                  margin: '0',
+                  padding: '0',
                   color: '#ADABAE',
                   marginLeft: 'auto',
                   marginRight: 'auto'
@@ -65,7 +66,7 @@ const DevPageHeader = ({ devfile, devfileMetadata }: Props) => {
               <Text
                 id="type"
                 style={{
-                  padding:"0",
+                  padding: '0',
                   color: '#ADABAE',
                   marginLeft: 'auto',
                   marginRight: 'auto'
