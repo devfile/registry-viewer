@@ -18,11 +18,11 @@ const HeaderTags = ({ tags }: Props) => {
   }
 
   return (
-    <div id="header-tags">
+    <div data-testid="header-tags">
       {tags.map(
         (tag, index) =>
           index < numOfVisibleTags && (
-            <Label id="tag" color="blue" style={{ margin: '0.125rem' }} key={tag}>
+            <Label color="blue" style={{ margin: '0.125rem' }} key={tag}>
               {tag}
             </Label>
           )
@@ -30,7 +30,6 @@ const HeaderTags = ({ tags }: Props) => {
 
       {tags.length > numOfVisibleTags && (
         <Popover
-          id="extra-tags-popover"
           aria-label="close"
           position="bottom"
           bodyContent={
@@ -38,7 +37,7 @@ const HeaderTags = ({ tags }: Props) => {
               {tags.map(
                 (tag, index) =>
                   index >= numOfVisibleTags && (
-                    <Label id="tag" color="blue" style={{ margin: '0.125rem' }} key={tag}>
+                    <Label color="blue" style={{ margin: '0.125rem' }} key={tag}>
                       {tag}
                     </Label>
                   )
@@ -46,7 +45,7 @@ const HeaderTags = ({ tags }: Props) => {
             </div>
           }
         >
-          <Label id="extra-tag" key={'popover-label-' + (tags.length - numOfVisibleTags)}>
+          <Label key={'popover-label-' + (tags.length - numOfVisibleTags)}>
             {tags.length - numOfVisibleTags} more
           </Label>
         </Popover>

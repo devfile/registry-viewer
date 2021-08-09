@@ -1,4 +1,3 @@
-/// <reference types='jest' />
 import Projects, {
   download,
   downloadSubdirectory,
@@ -19,13 +18,13 @@ import { act } from 'react-dom/test-utils';
  *      project: git, zip
  *          git:
  *              checkOutFrom:
- *                  revision: specified, unspecified
- *                  remote: specified, unspecified
+ *                  revision: defined, undefined
+ *                  remote: defined, undefined
  *              remotes: single remote, multiple remotes
  *                  remote: supported git site, unsupported
  *                          valid link, invalid link
  *
- *          subDir?: existing in , non-existing in project
+ *          subDir: undefined, existing in project, non-existing in project
  *  getURLForGit
  *        same as above git
  *
@@ -310,8 +309,8 @@ describe('<Projects />', () => {
 
   test('check that all projects are in selector', () => {
     const projectNames = testProjects.map((testProject) => testProject.project.name);
-    const projectsWrappersList = wrapper.findWhere(
-      (component) => component.prop('id') === 'projects-selector-item'
+    const projectsWrappersList = wrapper.findWhere((component) =>
+      component.prop('data-testid')?.includes('projects-selector-item')
     );
 
     expect(projectsWrappersList.length).toBe(projectNames.length);
@@ -493,17 +492,17 @@ function checkDisplayedDescription(
   }
 
   let displaySelectedProjectNameWrapper = wrapper.findWhere(
-    (component) => component.prop('id') === 'display-selected-project-name'
+    (component) => component.prop('data-testid') === 'display-selected-project-name'
   );
   let displaySelectedProjectDisplayWrapper = wrapper.findWhere(
-    (component) => component.prop('id') === 'display-selected-project-description'
+    (component) => component.prop('data-testid') === 'display-selected-project-description'
   );
 
   let displayHoveredProjectNameWrapper = wrapper.findWhere(
-    (component) => component.prop('id') === 'display-hovered-project-name'
+    (component) => component.prop('data-testid') === 'display-hovered-project-name'
   );
   let displayHoveredProjectDisplayWrapper = wrapper.findWhere(
-    (component) => component.prop('id') === 'display-hovered-project-description'
+    (component) => component.prop('data-testid') === 'display-hovered-project-description'
   );
 
   expect(displaySelectedProjectNameWrapper.length).toBe(hoverProject ? 0 : 1);

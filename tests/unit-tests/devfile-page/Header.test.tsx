@@ -1,23 +1,24 @@
-import { Devfile } from 'custom-types';
+import Devfile from 'custom-types';
 import Header from '../../../components/devfile-page/Header';
 import HeaderTags from '../../../components/devfile-page/HeaderTags';
-import devfileLogo from '../../../public/images/devfileLogo.svg';
 import { Brand } from '@patternfly/react-core';
 
 import { mount } from 'enzyme';
 import { ReactWrapper } from 'enzyme';
-import React from 'react';
-import { describe, expect, test } from '@jest/globals';
+
+const devfileLogo = require('../../../public/images/devfileLogo.svg') as string;
 
 /**
  * defile
- *     description: existing, undefined
- *     icon: undefined, empty -> devfile logo, existing
+ *     description: undefined, empty string, non-empty string
+ *     icon: undefined*, empty*, defined
+ *           *should return devfile logo
+ *     version: undefined, empty string, non-empty string
  *     keys with list values: undefined, empty list, non-empty list
  * for stacks:
  *     metadata: undefined, with website, without website
  * for samples:
- *     git.remotes: existing, undefined
+ *     git.remotes: defined, undefined
  */
 
 const baseDevfile: Devfile = {
@@ -26,7 +27,7 @@ const baseDevfile: Devfile = {
   type: 'stack',
   projectType: 'maven',
   language: 'java',
-  sourceRepo: ''
+  sourceRepo: 'community'
 };
 
 const propStackValues: Array<{
@@ -42,6 +43,7 @@ const propStackValues: Array<{
     name: "devfile with metadata that doesn't include a website and empty fields",
     devfile: {
       ...baseDevfile,
+      description: '',
       version: '',
       tags: [],
       icon: '',
@@ -104,7 +106,8 @@ describe('<Header />', () => {
   function checkHeaderContent(devfile: Devfile) {
     let idToComponentWrappers: Record<string, ReactWrapper> = {};
     devfileKeys.forEach(
-      (key) => (idToComponentWrappers[key] = wrapper.findWhere((n) => n.prop('id') === key))
+      (key) =>
+        (idToComponentWrappers[key] = wrapper.findWhere((n) => n.prop('data-testid') === key))
     );
 
     function getWrapperText(id: string) {
@@ -141,7 +144,9 @@ describe('<Header />', () => {
     function checkMetadataWithID(id: string, label: string, expectedValue: string) {
       expect(idToComponentWrappers[id].length).toBe(numOfInheritedIDs);
       expect(getWrapperText(id)).toBe(label + ': ' + expectedValue);
-      expect(idToComponentWrappers[id].parent().first().prop('id')).toBe('devfile-metadata');
+      expect(idToComponentWrappers[id].parent().first().prop('data-testid')).toBe(
+        'devfile-metadata'
+      );
     }
 
     checkMetadataWithID('projectType', 'Project Type', devfile.projectType);
@@ -159,7 +164,7 @@ describe('<Header />', () => {
 
     checkHeaderContent(devfile);
 
-    const websiteWrapper = wrapper.findWhere((n) => n.prop('id') === 'website');
+    const websiteWrapper = wrapper.findWhere((n) => n.prop('data-testid') === 'website');
     if (devfileMetadata && devfileMetadata.website) {
       expect(websiteWrapper.length).toBe(numOfInheritedIDs);
       expect(websiteWrapper.first().text()).toBe('Website: ' + devfileMetadata.website);
@@ -173,7 +178,7 @@ describe('<Header />', () => {
 
     checkHeaderContent(devfile);
 
-    const gitWrapper = wrapper.findWhere((n) => n.prop('id') === 'git-remotes');
+    const gitWrapper = wrapper.findWhere((n) => n.prop('data-testid') === 'git-remotes');
     if (devfile.git && devfile.git.remotes) {
       expect(gitWrapper.length).toBe(numOfInheritedIDs);
       expect(gitWrapper.first().text()).toBe('View Git Repository');

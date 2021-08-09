@@ -19,7 +19,7 @@ interface Props {
  */
 const DevPageYAML = ({ devfileYAML }: Props) => (
   <Card
-    id="dev-page-yaml"
+    data-testid="dev-page-yaml"
     isRounded
     style={{
       width: '75%',

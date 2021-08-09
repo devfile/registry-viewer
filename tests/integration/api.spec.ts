@@ -2,9 +2,9 @@
 import JSZip from 'jszip';
 
 /**
- * repo link: git, zip, non-existing
+ * repo link: git, zip
  *      git: commit id, branch, tag
- * subdirectory: existing, non-existing
+ * subdirectory: undefined, existing, non-existing
  */
 describe('Test valid fetch', () => {
   beforeEach(() => {
@@ -92,7 +92,7 @@ describe('Test invalid fetch', () => {
  * @param b - array to compare
  * @returns boolean of whether arrays a and b are equal
  */
-function areArraysEqual(a: Array<string>, b: Array<string>) {
+function areArraysEqual(a: string[], b: string[]) {
   return a.length === b.length && a.every((value) => b.includes(value));
 }
 

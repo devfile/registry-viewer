@@ -19,8 +19,8 @@
   },
   "dependencies": {
     "@next/bundle-analyzer": "^11.0.1",
-    "@patternfly/react-core": "^4.121.1",
-    "@patternfly/react-icons": "^4.10.7",
+    "@patternfly/react-core": "^4.147.0",
+    "@patternfly/react-icons": "^4.11.8",
     "@types/file-saver": "^2.0.2",
     "@types/react-syntax-highlighter": "^13.5.1",
     "file-saver": "^2.0.5",

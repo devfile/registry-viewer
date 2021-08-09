@@ -1,4 +1,3 @@
-/// <reference types="jest" />
 import HeaderTags from '../../../components/devfile-page/HeaderTags';
 import { Label, Popover } from '@patternfly/react-core';
 import { shallow } from 'enzyme';

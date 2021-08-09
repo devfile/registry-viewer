@@ -108,8 +108,8 @@ class UnsupportedLinkError extends Error {
  * @param starterProjects - starter projects associated with respective devfile
  */
 
-const DevPageProjects = ({ starterProjects }: Props) => {
-  if (!starterProjects || starterProjects.length === 0) {
+const Projects = ({ starterProjects }: Props) => {
+  if (starterProjects?.length === 0) {
     return null;
   }
 
@@ -146,7 +146,7 @@ const DevPageProjects = ({ starterProjects }: Props) => {
 
   return (
     <Card
-      id="dev-page-projects"
+      data-testid="dev-page-projects"
       isExpanded={expanded}
       isRounded
       style={{
@@ -173,7 +173,7 @@ const DevPageProjects = ({ starterProjects }: Props) => {
         <CardBody>
           <div style={{ display: 'flex', width: '100%' }}>
             <div
-              id="projects-selector"
+              data-testid="projects-selector"
               className={styles.select}
               style={{
                 width: '50%',
@@ -189,7 +189,7 @@ const DevPageProjects = ({ starterProjects }: Props) => {
                 starterProjects.map((project) => (
                   <div
                     key={project.name}
-                    id="projects-selector-item"
+                    data-testid={'projects-selector-item-' + project.name}
                     style={{ width: '95%' }}
                     onMouseDown={() => setSelectedProject(project)}
                     onMouseEnter={() => setCurrentlyHoveredProject(project)}
@@ -215,19 +215,25 @@ const DevPageProjects = ({ starterProjects }: Props) => {
               <div style={{ width: '80%', padding: 'auto', margin: '10px' }}>
                 {!currentlyHoveredProject ? ( // sets displayed project description
                   <TextContent>
-                    <Text id="display-selected-project-name" style={{ margin: '0px' }}>
+                    <Text data-testid="display-selected-project-name" style={{ margin: '0px' }}>
                       {selectedProject.name}
                     </Text>
-                    <Text id="display-selected-project-description" style={{ color: '#ADABAE' }}>
+                    <Text
+                      data-testid="display-selected-project-description"
+                      style={{ color: '#ADABAE' }}
+                    >
                       {selectedProject.description}
                     </Text>
                   </TextContent>
                 ) : (
                   <TextContent>
-                    <Text id="display-hovered-project-name" style={{ margin: '0px' }}>
+                    <Text data-testid="display-hovered-project-name" style={{ margin: '0px' }}>
                       {currentlyHoveredProject.name}
                     </Text>
-                    <Text id="display-hovered-project-description" style={{ color: '#ADABAE' }}>
+                    <Text
+                      data-testid="display-hovered-project-description"
+                      style={{ color: '#ADABAE' }}
+                    >
                       {currentlyHoveredProject.description}
                     </Text>
                   </TextContent>
@@ -266,7 +272,7 @@ const DevPageProjects = ({ starterProjects }: Props) => {
               }
             >
               <TextContent>
-                <Text id="alert-message">{errorAlert.message}</Text>
+                <Text data-testid="alert-message">{errorAlert.message}</Text>
                 {errorAlert.alertType !== 'warning' && (
                   <Text component={TextVariants.blockquote}>
                     <code>{errorAlert.error}</code>
@@ -390,7 +396,7 @@ async function download(project: Project) {
   }
 }
 
-export default DevPageProjects;
+export default Projects;
 
 // for testing
 export { download, getURLForGit, downloadSubdirectory, UnsupportedLinkError };
