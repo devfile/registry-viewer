@@ -298,6 +298,13 @@ describe('<Projects />', () => {
       <Projects starterProjects={testProjects.map((testProject) => testProject.project)} />
     );
   });
+  test('starterProjects prop set to undefined, check that HeaderTags is null', () => {
+    wrapper.setProps({
+      starterProjects: undefined
+    });
+
+    expect(wrapper.type()).toEqual(null);
+  });
 
   test('starterProjects prop set to empty list, check that HeaderTags is null', () => {
     wrapper.setProps({
