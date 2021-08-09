@@ -109,7 +109,7 @@ class UnsupportedLinkError extends Error {
  */
 
 const Projects = ({ starterProjects }: Props) => {
-  if (!starterProjects || starterProjects.length === 0) {
+  if (!starterProjects?.length) {
     return null;
   }
 

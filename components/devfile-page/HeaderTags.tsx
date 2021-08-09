@@ -13,7 +13,7 @@ interface Props {
  */
 const HeaderTags = ({ tags }: Props) => {
   const numOfVisibleTags = 8;
-  if (!tags || tags.length === 0) {
+  if (!tags?.length) {
     return null;
   }
 
