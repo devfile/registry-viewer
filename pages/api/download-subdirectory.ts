@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const rootName = Object.keys(zip.files)[0];
     const subdirectoryZip = zip.folder(rootName)?.folder(data.subdirectory);
 
-    if (subdirectoryZip == null ) {
+    if (!subdirectoryZip) {
       throw Error('subdirectory zip is null');
     }
     const base64Send = await subdirectoryZip.generateAsync({ type: 'base64' });
