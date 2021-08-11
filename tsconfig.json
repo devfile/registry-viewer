@@ -33,7 +33,8 @@
     "docs",
     "node_modules",
     "out",
-    "util/server"
+    "util/server",
+    "tests/unit-tests/*"
   ],
   "typedocOptions": {
     "entryPoints": ["pages", "components", "@types", "util"],

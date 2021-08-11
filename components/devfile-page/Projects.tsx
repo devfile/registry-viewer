@@ -3,6 +3,9 @@ import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 
 import {
+  Alert,
+  AlertActionLink,
+  AlertActionCloseButton,
   Card,
   CardHeader,
   CardTitle,
@@ -10,9 +13,27 @@ import {
   CardExpandableContent,
   Button,
   Text,
-  TextContent
+  TextContent,
+  TextVariants
 } from '@patternfly/react-core';
+
 import { useState } from 'react';
+
+/**
+ * type for errorAlert variable in {@link DevPageProjects}
+ * specifically for catching errors in download
+ *
+ * @param name - name of alert
+ * @param error - error that occurred
+ * @param message - message to display
+ * @param alertType - type of alert
+ */
+interface ErrorAlert {
+  name: string;
+  error: string;
+  message: string;
+  alertType: 'warning' | 'danger';
+}
 
 /**
  * Representation of a Git source for  a starter project
@@ -47,6 +68,7 @@ interface Git {
 interface Project {
   name: string;
   description?: string;
+  attributes?: Record<string, string>;
   git?: Git;
   zip?: {
     location: string;
@@ -63,6 +85,18 @@ interface Props {
   starterProjects: Project[];
 }
 
+class UnsupportedLinkError extends Error {
+  /**
+   * error constructor with message 'Unsupported link: {@link link}'
+   * @param link - unsupported link
+   */
+  constructor(link: string) {
+    super('Attempted download with unsupported git repo link at ' + link);
+    this.name = 'UnsupportedLinkError ';
+    Object.setPrototypeOf(this, UnsupportedLinkError.prototype);
+  }
+}
+
 /**
  * component for expandable starter project select with functionality to download
  *
@@ -74,22 +108,45 @@ interface Props {
  * @param starterProjects - starter projects associated with respective devfile
  */
 
-const DevPageProjects = ({ starterProjects }: Props) => {
+const Projects = ({ starterProjects }: Props) => {
+  if (!starterProjects?.length) {
+    return null;
+  }
+
   const [expanded, setExpanded] = useState<boolean>(false);
   const [downloading, setDownloading] = useState<boolean>(false);
 
   const [selectedProject, setSelectedProject] = useState<Project>(starterProjects[0]);
   const [currentlyHoveredProject, setCurrentlyHoveredProject] = useState<Project | null>(null); // null when not hovering over project list
 
+  const [errorAlert, setErrorAlert] = useState<null | ErrorAlert>(null);
+
   async function triggerDownload(project: Project) {
     setDownloading(true);
-    await download(project);
+    await download(project).catch((error) => {
+      if (error instanceof UnsupportedLinkError) {
+        setErrorAlert({
+          name: 'Unsupported Link',
+          error: error.toString(),
+          message: error.message,
+          alertType: 'warning'
+        });
+      } else {
+        setErrorAlert({
+          name: 'Download Error',
+          error: error.toString(),
+          message:
+            'Internal error has occurred during download. Please try again or report as issue. \n',
+          alertType: 'danger'
+        });
+      }
+    });
     setDownloading(false);
   }
 
   return (
     <Card
-      id="card1"
+      data-testid="dev-page-projects"
       isExpanded={expanded}
       isRounded
       style={{
@@ -110,12 +167,13 @@ const DevPageProjects = ({ starterProjects }: Props) => {
           'aria-expanded': expanded
         }}
       >
-        <CardTitle id="titleId">Starter Projects</CardTitle>
+        <CardTitle>Starter Projects</CardTitle>
       </CardHeader>
       <CardExpandableContent>
         <CardBody>
           <div style={{ display: 'flex', width: '100%' }}>
             <div
+              data-testid="projects-selector"
               className={styles.select}
               style={{
                 width: '50%',
@@ -131,7 +189,7 @@ const DevPageProjects = ({ starterProjects }: Props) => {
                 starterProjects.map((project) => (
                   <div
                     key={project.name}
-                    id={project.name}
+                    data-testid={'projects-selector-item-' + project.name}
                     style={{ width: '95%' }}
                     onMouseDown={() => setSelectedProject(project)}
                     onMouseEnter={() => setCurrentlyHoveredProject(project)}
@@ -154,21 +212,33 @@ const DevPageProjects = ({ starterProjects }: Props) => {
                 order: 0
               }}
             >
-              {!currentlyHoveredProject ? ( // sets displayed project description
-                <div style={{ width: '80%', padding: 'auto', margin: '10px' }}>
+              <div style={{ width: '80%', padding: 'auto', margin: '10px' }}>
+                {!currentlyHoveredProject ? ( // sets displayed project description
                   <TextContent>
-                    <Text style={{ margin: '0px' }}>{selectedProject.name}</Text>
-                    <Text style={{ color: '#ADABAE' }}>{selectedProject.description}</Text>
+                    <Text data-testid="display-selected-project-name" style={{ margin: '0px' }}>
+                      {selectedProject.name}
+                    </Text>
+                    <Text
+                      data-testid="display-selected-project-description"
+                      style={{ color: '#ADABAE' }}
+                    >
+                      {selectedProject.description}
+                    </Text>
                   </TextContent>
-                </div>
-              ) : (
-                <div style={{ width: '80%', padding: 'auto', margin: '10px' }}>
+                ) : (
                   <TextContent>
-                    <Text style={{ margin: '0px' }}>{currentlyHoveredProject.name}</Text>
-                    <Text style={{ color: '#ADABAE' }}>{currentlyHoveredProject.description}</Text>
+                    <Text data-testid="display-hovered-project-name" style={{ margin: '0px' }}>
+                      {currentlyHoveredProject.name}
+                    </Text>
+                    <Text
+                      data-testid="display-hovered-project-description"
+                      style={{ color: '#ADABAE' }}
+                    >
+                      {currentlyHoveredProject.description}
+                    </Text>
                   </TextContent>
-                </div>
-              )}
+                )}
+              </div>
               <div style={{ display: 'flex', alignContent: 'center' }}>
                 <Button
                   className={styles.button}
@@ -181,6 +251,36 @@ const DevPageProjects = ({ starterProjects }: Props) => {
               </div>
             </div>
           </div>
+          {errorAlert && (
+            <Alert
+              variant={errorAlert.alertType}
+              title={errorAlert.name}
+              actionClose={<AlertActionCloseButton onClose={() => setErrorAlert(null)} />}
+              actionLinks={
+                <>
+                  <AlertActionLink
+                    onClick={() =>
+                      window.open(
+                        'https://github.com/devfile/api/issues/new?assignees=&labels=&template=bug_report.md&title=Registry+Viewer+' +
+                          errorAlert.name.replace(' ', '+')
+                      )
+                    }
+                  >
+                    Report Issue to Github
+                  </AlertActionLink>
+                </>
+              }
+            >
+              <TextContent>
+                <Text data-testid="alert-message">{errorAlert.message}</Text>
+                {errorAlert.alertType !== 'warning' && (
+                  <Text component={TextVariants.blockquote}>
+                    <code>{errorAlert.error}</code>
+                  </Text>
+                )}
+              </TextContent>
+            </Alert>
+          )}
         </CardBody>
       </CardExpandableContent>
     </Card>
@@ -196,6 +296,7 @@ const DevPageProjects = ({ starterProjects }: Props) => {
  *
  * @throws Error
  *    thrown if error in download
+ *
  */
 async function downloadSubdirectory(url: string, subdirectory: string) {
   const data = {
@@ -211,23 +312,16 @@ async function downloadSubdirectory(url: string, subdirectory: string) {
   const status = res.status;
   if (status !== 200) {
     const errorJson = await res.json();
-    throw new Error(errorJson);
+    throw new Error(errorJson.error);
   }
 
   const base64string = await res.text();
   const zip = await JSZip.loadAsync(base64string, { base64: true });
-
   try {
-    await zip.generateAsync({ type: 'blob' }).then(
-      function (blob) {
-        saveAs(blob, subdirectory + '.zip');
-      },
-      function (err) {
-        throw err;
-      }
-    );
+    const blob = await zip.generateAsync({ type: 'blob' });
+    saveAs(blob, subdirectory + '.zip');
   } catch (error) {
-    throw Error(error.text);
+    throw new Error(error.text);
   }
 }
 
@@ -236,8 +330,11 @@ async function downloadSubdirectory(url: string, subdirectory: string) {
  *
  * @param git - git source of project, assumes github url of root directory of project
  *
- * @throws TypeError
- *      thrown if git remotes isn't configured properly or git link isn't supported yet
+ * @throws {@link TypeError}
+ *      thrown if git remotes isn't configured properly
+ *
+ * @throws {@link UnsupportedLinkException}
+ *      thrown if git repo is supported on an unsupported site
  */
 function getURLForGit(git: Git) {
   let url = '';
@@ -257,9 +354,9 @@ function getURLForGit(git: Git) {
   }
 
   if (url.match(new RegExp('github[.]com'))) {
-    url = url.replace('github.com', 'api.github.com/repos') + '/zipball/'; // remove ".git" from link and convert to api zip link
+    url = url.replace('github.com', 'api.github.com/repos') + '/zipball/'; // remove '.git' from link and convert to api zip link
   } else {
-    throw new TypeError('Unsupported link type: ' + url);
+    throw new UnsupportedLinkError(url);
   }
 
   if (git.checkoutFrom && git.checkoutFrom.revision) {
@@ -272,8 +369,13 @@ function getURLForGit(git: Git) {
  * download project as a zip file as specified version and subdirectory
  * @param project - project to download
  *
- * @throws TypeError
- *      thrown if no url locations are found
+ * @throws {@link TypeError}
+ *      thrown if git remotes isn't configured properly or if no url locations are found
+ *
+ * @throws {@link UnsupportedLinkError}
+ *      thrown if git repo is supported on an unsupported site
+ * @throws {@link Error}
+ *      thrown if git repo is supported on an unsupported site
  */
 async function download(project: Project) {
   let url: string;
@@ -294,4 +396,8 @@ async function download(project: Project) {
   }
 }
 
-export default DevPageProjects;
+export default Projects;
+
+// for testing
+export { download, getURLForGit, downloadSubdirectory, UnsupportedLinkError };
+export type { Git, Project };

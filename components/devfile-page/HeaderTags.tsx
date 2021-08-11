@@ -4,7 +4,7 @@ import { Label, Popover } from '@patternfly/react-core';
  *  props for {@link HeaderTags}
  */
 interface Props {
-  tags: string[] | null;
+  tags?: string[] | null;
 }
 /**
  * component to populate tags with popup for extra tags
@@ -13,12 +13,12 @@ interface Props {
  */
 const HeaderTags = ({ tags }: Props) => {
   const numOfVisibleTags = 8;
-  if (!tags) {
+  if (!tags?.length) {
     return null;
   }
 
   return (
-    <div>
+    <div data-testid="header-tags">
       {tags.map(
         (tag, index) =>
           index < numOfVisibleTags && (
@@ -30,7 +30,7 @@ const HeaderTags = ({ tags }: Props) => {
 
       {tags.length > numOfVisibleTags && (
         <Popover
-          aria-label="extra tags popover"
+          aria-label="close"
           position="bottom"
           bodyContent={
             <div>
@@ -45,7 +45,9 @@ const HeaderTags = ({ tags }: Props) => {
             </div>
           }
         >
-          <Label>{tags.length - numOfVisibleTags} more</Label>
+          <Label key={'popover-label-' + (tags.length - numOfVisibleTags)}>
+            {tags.length - numOfVisibleTags} more
+          </Label>
         </Popover>
       )}
     </div>
