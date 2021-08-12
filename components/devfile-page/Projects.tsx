@@ -1,4 +1,4 @@
-import styles from '@components/devfile-page/Projects.module.css';
+import styles from '@components/devfile-page/styles/Projects.module.css';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 
@@ -145,18 +145,7 @@ const Projects = ({ starterProjects }: Props) => {
   }
 
   return (
-    <Card
-      data-testid="dev-page-projects"
-      isExpanded={expanded}
-      isRounded
-      style={{
-        width: '75%',
-        maxWidth: '1000px',
-        margin: 'auto',
-        marginTop: '30px',
-        marginBottom: '30px'
-      }}
-    >
+    <Card data-testid="dev-page-projects" isExpanded={expanded} isRounded className={styles.card}>
       <CardHeader
         onExpand={() => setExpanded(!expanded)}
         isToggleRightAligned
@@ -171,17 +160,10 @@ const Projects = ({ starterProjects }: Props) => {
       </CardHeader>
       <CardExpandableContent>
         <CardBody>
-          <div style={{ display: 'flex', width: '100%' }}>
+          <div className={styles.cardBody}>
             <div
               data-testid="projects-selector"
               className={styles.select}
-              style={{
-                width: '50%',
-                alignItems: 'center',
-                height: '10rem',
-                overflowY: 'scroll',
-                order: 0
-              }}
               onMouseLeave={() => setCurrentlyHoveredProject(null)}
             >
               {
@@ -190,7 +172,6 @@ const Projects = ({ starterProjects }: Props) => {
                   <div
                     key={project.name}
                     data-testid={'projects-selector-item-' + project.name}
-                    style={{ width: '95%' }}
                     onMouseDown={() => setSelectedProject(project)}
                     onMouseEnter={() => setCurrentlyHoveredProject(project)}
                     className={
@@ -202,53 +183,16 @@ const Projects = ({ starterProjects }: Props) => {
                 ))
               }
             </div>
-
-            <div
-              style={{
-                width: '40%',
-                alignItems: 'center',
-                marginLeft: 'auto',
-                marginRight: 'auto',
-                order: 0
-              }}
-            >
-              <div style={{ width: '80%', padding: 'auto', margin: '10px' }}>
-                {!currentlyHoveredProject ? ( // sets displayed project description
-                  <TextContent>
-                    <Text data-testid="display-selected-project-name" style={{ margin: '0px' }}>
-                      {selectedProject.name}
-                    </Text>
-                    <Text
-                      data-testid="display-selected-project-description"
-                      style={{ color: '#ADABAE' }}
-                    >
-                      {selectedProject.description}
-                    </Text>
-                  </TextContent>
-                ) : (
-                  <TextContent>
-                    <Text data-testid="display-hovered-project-name" style={{ margin: '0px' }}>
-                      {currentlyHoveredProject.name}
-                    </Text>
-                    <Text
-                      data-testid="display-hovered-project-description"
-                      style={{ color: '#ADABAE' }}
-                    >
-                      {currentlyHoveredProject.description}
-                    </Text>
-                  </TextContent>
-                )}
-              </div>
-              <div style={{ display: 'flex', alignContent: 'center' }}>
-                <Button
-                  className={styles.button}
-                  isLoading={downloading}
-                  onClick={() => triggerDownload(selectedProject)}
-                  variant="tertiary"
-                >
-                  Download
-                </Button>
-              </div>
+            <div className={styles.display}>
+              <ProjectDisplay project={currentlyHoveredProject || selectedProject} />
+              <Button
+                className={styles.button}
+                isLoading={downloading}
+                onClick={() => triggerDownload(selectedProject)}
+                variant="tertiary"
+              >
+                Download
+              </Button>
             </div>
           </div>
           {errorAlert && (
@@ -271,7 +215,7 @@ const Projects = ({ starterProjects }: Props) => {
                 </>
               }
             >
-              <TextContent>
+              <TextContent className={styles.displayedProject}>
                 <Text data-testid="alert-message">{errorAlert.message}</Text>
                 {errorAlert.alertType !== 'warning' && (
                   <Text component={TextVariants.blockquote}>
@@ -286,6 +230,23 @@ const Projects = ({ starterProjects }: Props) => {
     </Card>
   );
 };
+
+/**
+ * component that displays the name and description of the selected and/or hovered project
+ *
+ * @param props - project to display
+ * @returns
+ */
+const ProjectDisplay = (props: { project: Project }) => (
+  <TextContent>
+    <Text data-testid="display-hovered-project-name" className={styles.displayedName}>
+      {props.project.name}
+    </Text>
+    <Text data-testid="display-hovered-project-description" className={styles.displayedDescription}>
+      {props.project.description}
+    </Text>
+  </TextContent>
+);
 
 /**
  * download subdirectory from root folder

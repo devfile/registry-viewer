@@ -1,6 +1,7 @@
 import { Card, CardBody, CardHeader } from '@patternfly/react-core';
 import { LightAsync as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { github as style } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
+import styles from '@components/devfile-page/styles/YAML.module.css';
 /**
  * props for DevFile YAML component
  *
@@ -18,19 +19,9 @@ interface Props {
  * @param props - yaml text
  */
 const DevPageYAML = ({ devfileYAML }: Props) => (
-  <Card
-    data-testid="dev-page-yaml"
-    isRounded
-    style={{
-      width: '75%',
-      maxWidth: '1000px',
-      margin: 'auto',
-      marginTop: '30px',
-      marginBottom: '30px'
-    }}
-  >
-    <CardHeader style={{ padding: '10px' }}>devfile.yaml</CardHeader>
-    <CardBody style={{ padding: '0' }}>
+  <Card data-testid="dev-page-yaml" isRounded className={styles.yamlCard}>
+    <CardHeader className={styles.cardHeader}>devfile.yaml</CardHeader>
+    <CardBody className={styles.cardBody}>
       <SyntaxHighlighter language="yaml" showLineNumbers style={style}>
         {devfileYAML}
       </SyntaxHighlighter>
