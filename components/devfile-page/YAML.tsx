@@ -19,11 +19,7 @@ interface Props {
  * @param props - yaml text
  */
 const DevPageYAML = ({ devfileYAML }: Props) => (
-  <Card
-    data-testid="dev-page-yaml"
-    isRounded
-    className= {styles.yamlCard}
-  >
+  <Card data-testid="dev-page-yaml" isRounded className={styles.yamlCard}>
     <CardHeader className={styles.cardHeader}>devfile.yaml</CardHeader>
     <CardBody className={styles.cardBody}>
       <SyntaxHighlighter language="yaml" showLineNumbers style={style}>

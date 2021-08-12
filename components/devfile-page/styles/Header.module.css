@@ -24,8 +24,8 @@
     border-bottom: 2px solid #adabae;
   }
   div .metadata {
-  	width:100%;
-  	word-wrap:break-word;
+    width: 100%;
+    word-wrap: break-word;
   }
 }
 
@@ -73,7 +73,7 @@
 }
 
 .basicText {
-	margin: 0.5rem;
+  margin: 0.5rem;
 }
 
 .tag {
@@ -81,6 +81,6 @@
 }
 
 .metadata {
-	width: 50%; 
-	margin: 2%;
+  width: 50%;
+  margin: 2%;
 }

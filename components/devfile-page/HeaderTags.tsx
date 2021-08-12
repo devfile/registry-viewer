@@ -23,7 +23,7 @@ const HeaderTags = ({ tags }: Props) => {
       {tags.map(
         (tag, index) =>
           index < numOfVisibleTags && (
-            <Label color="blue" className= {styles.tag} key={tag}>
+            <Label color="blue" className={styles.tag} key={tag}>
               {tag}
             </Label>
           )
@@ -38,7 +38,7 @@ const HeaderTags = ({ tags }: Props) => {
               {tags.map(
                 (tag, index) =>
                   index >= numOfVisibleTags && (
-                    <Label color="blue" className= {styles.tag} key={tag}>
+                    <Label color="blue" className={styles.tag} key={tag}>
                       {tag}
                     </Label>
                   )

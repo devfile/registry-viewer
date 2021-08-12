@@ -1,15 +1,15 @@
 .yamlCard {
-	width: 75%;
-    max-width: 1000px;
-    margin: auto;
-    margin-top: 30px;
-    margin-bottom: 30px;
+  width: 75%;
+  max-width: 1000px;
+  margin: auto;
+  margin-top: 30px;
+  margin-bottom: 30px;
 }
 
 .cardHeader {
-	padding: 10px;
+  padding: 10px;
 }
 
 .cardBody {
-	padding: 0;
+  padding: 0;
 }

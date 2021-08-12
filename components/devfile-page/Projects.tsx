@@ -233,9 +233,9 @@ const Projects = ({ starterProjects }: Props) => {
 
 /**
  * component that displays the name and description of the selected and/or hovered project
- * 
+ *
  * @param props - project to display
- * @returns 
+ * @returns
  */
 const ProjectDisplay = (props: { project: Project }) => (
   <TextContent>
