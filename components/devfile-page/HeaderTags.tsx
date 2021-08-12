@@ -1,4 +1,5 @@
 import { Label, Popover } from '@patternfly/react-core';
+import styles from '@components/devfile-page/styles/Header.module.css';
 
 /**
  *  props for {@link HeaderTags}
@@ -22,7 +23,7 @@ const HeaderTags = ({ tags }: Props) => {
       {tags.map(
         (tag, index) =>
           index < numOfVisibleTags && (
-            <Label color="blue" style={{ margin: '0.125rem' }} key={tag}>
+            <Label color="blue" className= {styles.tag} key={tag}>
               {tag}
             </Label>
           )
@@ -37,7 +38,7 @@ const HeaderTags = ({ tags }: Props) => {
               {tags.map(
                 (tag, index) =>
                   index >= numOfVisibleTags && (
-                    <Label color="blue" style={{ margin: '0.125rem' }} key={tag}>
+                    <Label color="blue" className= {styles.tag} key={tag}>
                       {tag}
                     </Label>
                   )
