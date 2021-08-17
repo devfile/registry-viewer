@@ -1,10 +1,11 @@
 import { Devfile, GetMetadataOfDevfiles, GetDevfileYAML } from 'custom-types';
-import { getMetadataOfDevfiles, getDevfileYAML } from '@util/server';
-import DevfilePageProjects from '@components/devfile-page/Projects';
-import DevfilePageHeader from '@components/devfile-page/Header';
-import DevfilePageYAML from '@components/devfile-page/YAML';
-import ErrorBanner from '@components/ErrorBanner';
-
+import { getMetadataOfDevfiles, getDevfileYAML } from '@src/util/server';
+import {
+  DevfilePageProjects,
+  DevfilePageHeader,
+  DevfilePageYAML,
+  ErrorBanner
+} from '@src/components';
 import { InferGetStaticPropsType, GetStaticProps, GetStaticPaths } from 'next';
 
 interface Path {
@@ -21,7 +22,7 @@ interface Path {
  * @param devfileText - text of devfile YAML, null when sample
  * @param devfileJSON -  json representation of devfile YAML, null when sample
  */
-const DevfilePage = ({
+const DevfilePage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
   devfile,
   devfileYAML,
   devfileJSON,

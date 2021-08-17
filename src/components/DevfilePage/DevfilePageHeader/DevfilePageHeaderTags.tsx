@@ -1,23 +1,21 @@
+import styles from './DevfilePageHeaderTags.module.css';
 import { Label, Popover } from '@patternfly/react-core';
-import styles from '@components/devfile-page/styles/Header.module.css';
 
 /**
- *  props for {@link HeaderTags}
+ *  props for {@link DevfilePageHeaderTags}
  */
-interface Props {
-  tags?: string[] | null;
+export interface DevfilePageHeaderTagsProps {
+  tags: string[];
 }
 /**
  * component to populate tags with popup for extra tags
  *
  * @param tags - list of tags to populate devfile page
  */
-const HeaderTags = ({ tags }: Props) => {
+export const DevfilePageHeaderTags: React.FC<DevfilePageHeaderTagsProps> = ({
+  tags
+}: DevfilePageHeaderTagsProps) => {
   const numOfVisibleTags = 8;
-  if (!tags?.length) {
-    return null;
-  }
-
   return (
     <div data-testid="header-tags">
       {tags.map(
@@ -54,4 +52,4 @@ const HeaderTags = ({ tags }: Props) => {
     </div>
   );
 };
-export default HeaderTags;
+DevfilePageHeaderTags.displayName = 'DevfilePageHeaderTags';

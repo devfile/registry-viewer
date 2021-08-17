@@ -2,9 +2,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@components/*": ["components/*"],
-      "@styles/*": ["styles/*"],
-      "@util/*": ["util/*"]
+      "@src/*": ["src/*"],
+      "@public/*": ["public/*"]
     },
     "allowJs": false,
     "target": "es5",
@@ -33,11 +32,11 @@
     "docs",
     "node_modules",
     "out",
-    "util/server",
+    "src/util/server",
     "tests/unit-tests/*"
   ],
   "typedocOptions": {
-    "entryPoints": ["pages", "components", "@types", "util"],
+    "entryPoints": ["pages", "src", "@types"],
     "out": "docs"
   }
 }

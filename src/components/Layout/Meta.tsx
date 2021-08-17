@@ -11,7 +11,7 @@ export interface MetaProps {
  * Can change specific meta values in any pages
  * @returns `<Meta title={title} keywords={keywords} description={description}/>`
  */
-const Meta: React.FC<MetaProps> = ({
+export const Meta: React.FC<MetaProps> = ({
   title,
   keywords,
   description
@@ -33,11 +33,10 @@ const Meta: React.FC<MetaProps> = ({
     <link rel="manifest" href="/manifest.json" />
   </Head>
 );
+Meta.displayName = 'Meta';
 
 Meta.defaultProps = {
   title: 'Devfile Registry',
   keywords: 'Devfile, Registry, OpenShift, Kubernetes',
   description: 'UI for the Devfile Registry'
 };
-
-export default Meta;

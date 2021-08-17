@@ -4,7 +4,7 @@ export interface ErrorBannerProps {
   errors: string[];
 }
 
-const ErrorBanner: React.FC<ErrorBannerProps> = ({ errors }: ErrorBannerProps) => (
+export const ErrorBanner: React.FC<ErrorBannerProps> = ({ errors }: ErrorBannerProps) => (
   <>
     {errors.filter((error: string) => error !== '').length ? (
       <div style={{ marginBottom: '1rem' }}>
@@ -21,5 +21,4 @@ const ErrorBanner: React.FC<ErrorBannerProps> = ({ errors }: ErrorBannerProps) =
     )}
   </>
 );
-
-export default ErrorBanner;
+ErrorBanner.displayName = 'ErrorBanner';

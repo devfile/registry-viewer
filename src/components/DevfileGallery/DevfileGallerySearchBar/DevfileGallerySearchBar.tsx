@@ -7,11 +7,11 @@ export interface DevfileSearchBarProps {
 }
 
 /**
- * Renders a {@link DevfileSearchBar} React component.
+ * Renders a {@link DevfileGallerySearchBar} React component.
  * Adds a search bar for devfiles
  * @returns `<DevfileSearchBar devfileCount={devfileCount} onSearchBarChange={onSearchBarChange} searchBarValue={searchBarValue} />`
  */
-const DevfileSearchBar: React.FC<DevfileSearchBarProps> = ({
+export const DevfileGallerySearchBar: React.FC<DevfileSearchBarProps> = ({
   devfileCount,
   onSearchBarChange,
   searchBarValue
@@ -26,10 +26,9 @@ const DevfileSearchBar: React.FC<DevfileSearchBarProps> = ({
       placeholder="Find by name, tag, or description"
       value={searchBarValue}
       onChange={onSearchBarChange}
-      onClear={() => onSearchBarChange('')}
+      onClear={(): void => onSearchBarChange('')}
       resultsCount={devfileCount}
     />
   </div>
 );
-
-export default DevfileSearchBar;
+DevfileGallerySearchBar.displayName = 'DevfileGallerySearchBar';

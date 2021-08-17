@@ -1,20 +1,20 @@
 import type { Devfile } from 'custom-types';
-
-import DevfileTile from '@components/home-page/Tile';
-
+import { DevfileGalleryItemWrapper as DevfileGalleryItem } from '@src/components';
 import Link from 'next/link';
 import { Gallery } from '@patternfly/react-core';
 
-export interface DevfileGridProps {
+export interface DevfileGalleryGridProps {
   devfiles: Devfile[];
 }
 
 /**
- * Renders a {@link DevfileGrid} React component.
+ * Renders a {@link DevfileGalleryGrid} React component.
  * Adds a grid containing DevfileTiles
  * @returns `<DevfileGrid devfiles={devfiles} \>`
  */
-const DevfileGrid: React.FC<DevfileGridProps> = ({ devfiles }: DevfileGridProps) => (
+export const DevfileGalleryGrid: React.FC<DevfileGalleryGridProps> = ({
+  devfiles
+}: DevfileGalleryGridProps) => (
   <Gallery style={{ paddingTop: '1rem' }}>
     {devfiles.map((devfile) => (
       <Link
@@ -25,10 +25,9 @@ const DevfileGrid: React.FC<DevfileGridProps> = ({ devfiles }: DevfileGridProps)
         )}`}
         passHref
       >
-        <DevfileTile devfile={devfile} />
+        <DevfileGalleryItem devfile={devfile} />
       </Link>
     ))}
   </Gallery>
 );
-
-export default DevfileGrid;
+DevfileGalleryGrid.displayName = 'DevfileGalleryGrid';

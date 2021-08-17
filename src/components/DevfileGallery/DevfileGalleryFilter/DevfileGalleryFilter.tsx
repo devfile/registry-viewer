@@ -1,8 +1,6 @@
 import type { FilterElem } from 'custom-types';
 import type { Dispatch, SetStateAction } from 'react';
-
-import { capitalizeFirstLetter } from '@util/client';
-
+import { capitalizeFirstLetter } from '@src/util/client';
 import {
   Checkbox,
   Form,
@@ -14,7 +12,7 @@ import {
 } from '@patternfly/react-core';
 import { useState, useEffect } from 'react';
 
-export interface DevfileFilterProps {
+export interface DevfileGalleryFilterProps {
   tagsStateWithFreq: FilterElem[];
   typesStateWithFreq: FilterElem[];
   setTagsStateWithFreq: Dispatch<SetStateAction<FilterElem[]>>;
@@ -22,23 +20,26 @@ export interface DevfileFilterProps {
 }
 
 /**
- * Renders a {@link DevfileFilter} React component.
+ * Renders a {@link DevfileGalleryFilter} React component.
  * Adds a type and tag filter for devfiles
  * @returns `<DevfileFilter tagsStateWithFreq={tagsStateWithFreq} typesStateWithFreq={typesStateWithFreq} setTagsStateWithFreq={setTagsStateWithFreq} setTypesStateWithFreq={setTypesStateWithFreq}/>`
  */
-const DevfileFilter: React.FC<DevfileFilterProps> = ({
+export const DevfileGalleryFilter: React.FC<DevfileGalleryFilterProps> = ({
   tagsStateWithFreq,
   typesStateWithFreq,
   setTagsStateWithFreq,
   setTypesStateWithFreq
-}: DevfileFilterProps) => {
+}: DevfileGalleryFilterProps) => {
   const [tagSearchBarValue, setTagSearchBarValue] = useState('');
 
   useEffect(() => {
     setTagsStateWithFreq(sortFilterDataArr(tagsStateWithFreq));
   }, [tagsStateWithFreq]);
 
-  const onCheckboxTagsChange = (checked: boolean, event: React.FormEvent<HTMLInputElement>) => {
+  const onCheckboxTagsChange = (
+    checked: boolean,
+    event: React.FormEvent<HTMLInputElement>
+  ): void => {
     const target: EventTarget = event.target;
     const state: boolean = (target as HTMLInputElement).checked;
     const value: string = (target as HTMLInputElement).name;
@@ -50,7 +51,10 @@ const DevfileFilter: React.FC<DevfileFilterProps> = ({
     setTagsStateWithFreq(copy);
   };
 
-  const onCheckboxTypesChange = (checked: boolean, event: React.FormEvent<HTMLInputElement>) => {
+  const onCheckboxTypesChange = (
+    checked: boolean,
+    event: React.FormEvent<HTMLInputElement>
+  ): void => {
     const target: EventTarget = event.target;
     const state: boolean = (target as HTMLInputElement).checked;
     const value: string = (target as HTMLInputElement).name;
@@ -62,7 +66,7 @@ const DevfileFilter: React.FC<DevfileFilterProps> = ({
     setTypesStateWithFreq(copy);
   };
 
-  const onSearchChange = (value: string) => {
+  const onSearchChange = (value: string): void => {
     setTagSearchBarValue(value);
   };
 
@@ -96,7 +100,7 @@ const DevfileFilter: React.FC<DevfileFilterProps> = ({
                 placeholder="Find by tag name"
                 value={tagSearchBarValue}
                 onChange={onSearchChange}
-                onClear={() => onSearchChange('')}
+                onClear={(): void => onSearchChange('')}
                 resultsCount={getFilterResultCount(tagsStateWithFreq, tagSearchBarValue)}
               />
             )}
@@ -138,10 +142,9 @@ const sortFilterDataArr = (tagsStateWithFreq: FilterElem[]): FilterElem[] => {
 
   return copy;
 };
+DevfileGalleryFilter.displayName = 'DevfileGalleryFilter';
 
-const getFilterResultCount = (filterElemArr: FilterElem[], searchBarValue: string) =>
+const getFilterResultCount = (filterElemArr: FilterElem[], searchBarValue: string): number =>
   filterElemArr.filter((filterElem) =>
     filterElem.value.toLowerCase().includes(searchBarValue.toLowerCase())
   ).length;
-
-export default DevfileFilter;

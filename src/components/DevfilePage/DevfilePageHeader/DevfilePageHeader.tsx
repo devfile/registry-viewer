@@ -1,15 +1,15 @@
+import styles from './DevfilePageHeader.module.css';
 import { Devfile } from 'custom-types';
-import devfileLogo from '../../public/images/devfileLogo.svg';
-import HeaderTags from './HeaderTags';
+import devfileLogo from '@public/images/devfileLogo.svg';
+import { DevfilePageHeaderTags } from '@src/components';
 import { Brand, Text, TextContent, TextVariants } from '@patternfly/react-core';
-import styles from '@components/devfile-page/styles/Header.module.css';
 
 /**
  * props for devfile page metadata header
  * @param devfile - devfile index information
  * @param metadata - metadata from
  */
-interface Props {
+export interface DevfilePageHeaderProps {
   devfile: Devfile;
   devfileMetadata?: {
     [key: string]: string;
@@ -21,7 +21,10 @@ interface Props {
  * @param devfile - index information for devfile
  * @param metadata - metadata information from devfile yaml
  */
-const Header = ({ devfile, devfileMetadata }: Props) => {
+export const DevfilePageHeader: React.FC<DevfilePageHeaderProps> = ({
+  devfile,
+  devfileMetadata
+}: DevfilePageHeaderProps) => {
   const devfileMetaInclude = ['projectType', 'version', 'language']; // types to include in metadata from index
 
   return (
@@ -58,7 +61,7 @@ const Header = ({ devfile, devfileMetadata }: Props) => {
               </Text>
             )}
           </TextContent>
-          <HeaderTags tags={devfile.tags} />
+          {devfile?.tags && <DevfilePageHeaderTags tags={devfile.tags} />}
         </div>
       </div>
       <TextContent data-testid="devfile-metadata" className={styles.metadata}>
@@ -99,4 +102,4 @@ const Header = ({ devfile, devfileMetadata }: Props) => {
     </div>
   );
 };
-export default Header;
+DevfilePageHeader.displayName = 'DevfilePageHeader';

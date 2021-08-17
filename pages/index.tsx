@@ -1,10 +1,11 @@
 import type { Devfile, FilterElem, GetMetadataOfDevfiles } from 'custom-types';
-import { getMetadataOfDevfiles } from '@util/server';
-import DevfileFilter from '@components/home-page/Filter';
-import DevfileSearchBar from '@components/home-page/SearchBar';
-import DevfileGrid from '@components/home-page/Grid';
-import ErrorBanner from '@components/ErrorBanner';
-
+import { getMetadataOfDevfiles } from '@src/util/server';
+import {
+  DevfileGalleryFilter,
+  DevfileGalleryGrid,
+  DevfileGallerySearchBar,
+  ErrorBanner
+} from '@src/components';
 import { InferGetStaticPropsType, GetStaticProps } from 'next';
 import { useState, useEffect } from 'react';
 import { Grid, GridItem } from '@patternfly/react-core';
@@ -32,7 +33,7 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
     setFilteredDevfiles(filteredDevfiles);
   }, [tagsStateWithFreq, typesStateWithFreq, searchBarValue]);
 
-  const onSearchBarChange = (value: string) => {
+  const onSearchBarChange = (value: string): void => {
     setSearchBarValue(value);
   };
 
@@ -41,7 +42,7 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
       <ErrorBanner errors={errors} />
       <Grid hasGutter>
         <GridItem xl2={3} xl={4} lg={5} md={6} sm={12} span={12}>
-          <DevfileFilter
+          <DevfileGalleryFilter
             tagsStateWithFreq={tagsStateWithFreq}
             typesStateWithFreq={typesStateWithFreq}
             setTagsStateWithFreq={setTagsStateWithFreq}
@@ -49,22 +50,27 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
           />
         </GridItem>
         <GridItem xl2={9} xl={8} lg={7} md={6} sm={12} span={12}>
-          <DevfileSearchBar
+          <DevfileGallerySearchBar
             devfileCount={filteredDevfiles.length}
             onSearchBarChange={onSearchBarChange}
             searchBarValue={searchBarValue}
           />
-          <DevfileGrid devfiles={filteredDevfiles} />
+          <DevfileGalleryGrid devfiles={filteredDevfiles} />
         </GridItem>
       </Grid>
     </>
   );
 };
 
-const isSearchBarValueIn = (value: string | undefined, searchBarValue: string) =>
-  value?.toLowerCase().includes(searchBarValue.toLowerCase());
+const isSearchBarValueIn = (
+  value: string | undefined,
+  searchBarValue: string
+): boolean | undefined => value?.toLowerCase().includes(searchBarValue.toLowerCase());
 
-const isSearchBarValueInTag = (tags: string[] | undefined, searchBarValue: string) =>
+const isSearchBarValueInTag = (
+  tags: string[] | undefined,
+  searchBarValue: string
+): boolean | undefined =>
   tags?.some((tag) => tag.toLowerCase().includes(searchBarValue.toLowerCase()));
 
 const filterDevfilesOnSearchBar = (devfiles: Devfile[], searchBarValue: string): Devfile[] => {

@@ -1,5 +1,5 @@
-import Meta from '@components/Meta';
-
+import { Meta } from '@src/components';
+import devfileLogo from '@public/images/devfileLogo.svg';
 import Link from 'next/link';
 import {
   Text,
@@ -12,8 +12,6 @@ import {
   PageSectionVariants
 } from '@patternfly/react-core';
 
-import devfileLogo from '../public/images/devfileLogo.svg';
-
 export interface LayoutProps {
   children: React.ReactNode;
 }
@@ -23,7 +21,7 @@ export interface LayoutProps {
  * Adds a layout for all the webpages e.g. the header and background
  * @returns `<Layout><Component {...pageProps} /></Layout>`
  */
-const Layout: React.FC<LayoutProps> = ({ children }: LayoutProps) => {
+export const Layout: React.FC<LayoutProps> = ({ children }: LayoutProps) => {
   const logoProps = {
     href: '/'
   };
@@ -55,5 +53,4 @@ const Layout: React.FC<LayoutProps> = ({ children }: LayoutProps) => {
     </Page>
   );
 };
-
-export default Layout;
+Layout.displayName = 'Layout';

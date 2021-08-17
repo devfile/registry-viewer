@@ -28,6 +28,7 @@ declare module 'custom-types' {
     freq: number;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface HostBase {}
 
   export interface HostStack extends HostBase {
@@ -47,8 +48,23 @@ declare module 'custom-types' {
   export type TryCatch<T> = [T | null, Error | null];
 
   export type devfileYAML = string | null;
-  export type devfileJSON = Object | string | number | null | undefined;
+
+  export type devfileJSON = Record<string, unknown> | string | number | null | undefined;
+
   export type GetDevfileYAML = [devfileYAML, devfileJSON, string[]];
 
   export type GetMetadataOfDevfiles = [Devfile[], string[]];
+
+  export type GetHosts = [HostList, (Error | null)[]];
+
+  export interface Project {
+    name: string;
+    description?: string;
+    attributes?: Record<string, string>;
+    git?: Git;
+    zip?: {
+      location: string;
+    };
+    subDir?: string;
+  }
 }

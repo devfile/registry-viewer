@@ -5,7 +5,8 @@ import type {
   HostURL,
   TryCatch,
   GetDevfileYAML,
-  GetMetadataOfDevfiles
+  GetMetadataOfDevfiles,
+  GetHosts
 } from 'custom-types';
 import { promises as fs } from 'fs';
 import path from 'path';
@@ -13,7 +14,7 @@ import path from 'path';
 import { load as yamlToJSON } from 'js-yaml';
 import { is } from 'typescript-is';
 
-export const tryCatch = (func: Function): TryCatch<any> => {
+export function tryCatch<T>(func: () => T): TryCatch<T> {
   try {
     const data = func() || null;
     return [data, null];
@@ -23,9 +24,10 @@ export const tryCatch = (func: Function): TryCatch<any> => {
     console.error(err);
     return [null, err];
   }
-};
+}
 
-export const asyncTryCatch = async (func: Function): Promise<TryCatch<any>> => {
+// eslint-disable-next-line @typescript-eslint/ban-types
+export async function asyncTryCatch<T>(func: () => Promise<T>): Promise<TryCatch<T>> {
   try {
     const data = (await func()) || null;
     return [data, null];
@@ -35,7 +37,7 @@ export const asyncTryCatch = async (func: Function): Promise<TryCatch<any>> => {
     console.error(err);
     return [null, err];
   }
-};
+}
 
 const getConfigFileHosts = async (fileRelPath: string): Promise<HostList> => {
   const splitRelFilePath = fileRelPath.split('/');
@@ -87,7 +89,7 @@ const getLocalYAML = async (devfileName: string, yamlLocation: string): Promise<
   return devfileYAML;
 };
 
-const getENVHosts = () => {
+const getENVHosts = (): HostList => {
   const envHosts = process.env.DEVFILE_REGISTRY_HOSTS?.split('|').filter((host) => host !== '');
 
   let hosts: HostList = {};
@@ -114,13 +116,11 @@ const getENVHosts = () => {
   return hosts;
 };
 
-const getHosts = async (): Promise<[HostList, (Error | null)[]]> => {
-  const [configHosts, configError]: TryCatch<HostList> = await asyncTryCatch(
+const getHosts = async (): Promise<GetHosts> => {
+  const [configHosts, configError] = await asyncTryCatch(
     async () => await getConfigFileHosts('/config/devfile-registry-hosts.json')
   );
-  const [envHosts, envError]: TryCatch<HostList> = await asyncTryCatch(
-    async () => await getENVHosts()
-  );
+  const [envHosts, envError] = await asyncTryCatch(async () => await getENVHosts());
 
   let hosts = { ...configHosts, ...envHosts };
 
@@ -139,9 +139,9 @@ const getHosts = async (): Promise<[HostList, (Error | null)[]]> => {
 };
 
 export const getMetadataOfDevfiles = async (): Promise<GetMetadataOfDevfiles> => {
-  const [hosts, hostErrors]: [HostList, (Error | null)[]] = await getHosts();
+  const [hosts, hostErrors] = await getHosts();
 
-  const [devfiles, devfileError]: TryCatch<Devfile[]> = await asyncTryCatch(async () => {
+  const [devfiles, devfileError] = await asyncTryCatch(async () => {
     let devfiles: Devfile[] = [];
     await Promise.all(
       Object.entries(hosts).map(async ([hostName, hostLocation]) => {
@@ -181,7 +181,7 @@ export const getDevfileYAML = async (devfile: Devfile): Promise<GetDevfileYAML> 
     return [devfileYAML, devfileJSON, []];
   }
 
-  const [hosts, hostErrors]: [HostList, (Error | null)[]] = await getHosts();
+  const [hosts, hostErrors] = await getHosts();
 
   for (const [hostName, hostLocation] of Object.entries(hosts)) {
     if (hostName === devfile.sourceRepo) {
