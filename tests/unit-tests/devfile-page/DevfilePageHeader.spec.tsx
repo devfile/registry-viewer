@@ -1,15 +1,13 @@
-import Devfile from 'custom-types';
-import Header from '../../../components/devfile-page/Header';
-import HeaderTags from '../../../components/devfile-page/HeaderTags';
+import type { Devfile } from 'custom-types';
+import type { ReactWrapper } from 'enzyme';
+import { DevfilePageHeader, DevfilePageHeaderTags } from '@src/components';
+import devfileLogo from '@public/images/devfileLogo.svg';
+import { expect, test } from '@jest/globals';
 import { Brand } from '@patternfly/react-core';
-
 import { mount } from 'enzyme';
-import { ReactWrapper } from 'enzyme';
-
-const devfileLogo = require('../../../public/images/devfileLogo.svg') as string;
 
 /**
- * defile
+ * devfile
  *     description: undefined, empty string, non-empty string
  *     icon: undefined*, empty*, defined
  *           *should return devfile logo
@@ -30,16 +28,19 @@ const baseDevfile: Devfile = {
   sourceRepo: 'community'
 };
 
-const propStackValues: Array<{
+const propStackValues: {
   name: string;
   devfile: Devfile;
-  devfileMetadata?: Record<string, string>;
-}> = [
+  devfileMetadata?: {
+    [key: string]: string;
+  };
+}[] = [
   {
     name: 'devfile with no metadata',
     devfile: baseDevfile
   },
   {
+    // eslint-disable-next-line quotes
     name: "devfile with metadata that doesn't include a website and empty fields",
     devfile: {
       ...baseDevfile,
@@ -78,7 +79,7 @@ const propStackValues: Array<{
   }
 ];
 
-const propSampleValues: Array<{ name: string; devfile: Devfile }> = [
+const propSampleValues: { name: string; devfile: Devfile }[] = [
   { name: 'basic devfile', devfile: { ...baseDevfile, type: 'sample' } },
   {
     name: 'devfile with description, icon, extra information, and git remotes',
@@ -100,48 +101,48 @@ describe('<Header />', () => {
 
   const numOfInheritedIDs = 2; // IDs of text and brand components are passed to children
 
-  let wrapper = mount(<Header devfile={propStackValues[0].devfile} />);
+  const wrapper = mount(<DevfilePageHeader devfile={propStackValues[0].devfile} />);
 
   // check content in header except website (for stacks) and git repo (for samples)
-  function checkHeaderContent(devfile: Devfile) {
-    let idToComponentWrappers: Record<string, ReactWrapper> = {};
+  function checkHeaderContent(devfile: Devfile): void {
+    const idToComponentWrappers: Record<string, ReactWrapper> = {};
     devfileKeys.forEach(
       (key) =>
         (idToComponentWrappers[key] = wrapper.findWhere((n) => n.prop('data-testid') === key))
     );
 
-    function getWrapperText(id: string) {
+    function getWrapperText(id: string): string {
       return idToComponentWrappers[id].last().text();
     }
 
-    expect(idToComponentWrappers['type'].length).toBe(numOfInheritedIDs);
+    expect(idToComponentWrappers.type.length).toBe(numOfInheritedIDs);
     expect(getWrapperText('type')).toBe(devfile.type);
 
-    expect(idToComponentWrappers['icon'].length).toBe(numOfInheritedIDs);
+    expect(idToComponentWrappers.icon.length).toBe(numOfInheritedIDs);
     expect(wrapper.find(Brand).prop('alt')).toBe(
       devfile.icon ? devfile.displayName + ' logo' : 'devfile logo'
     );
     expect(wrapper.find(Brand).prop('src')).toBe(devfile.icon || devfileLogo);
 
-    expect(idToComponentWrappers['displayName'].length).toBe(numOfInheritedIDs);
+    expect(idToComponentWrappers.displayName.length).toBe(numOfInheritedIDs);
     expect(getWrapperText('displayName')).toBe(devfile.displayName);
 
-    expect(idToComponentWrappers['description'].length).toBe(
+    expect(idToComponentWrappers.description.length).toBe(
       devfile.description ? numOfInheritedIDs : 0
     );
     if (devfile.description) {
       expect(getWrapperText('description').includes(devfile.description)).toBeTruthy();
     }
 
-    expect(wrapper.find(HeaderTags).length).toBe(1);
+    expect(wrapper.find(DevfilePageHeaderTags).length).toBe(1);
     if (!devfile.tags || devfile.tags.length === 0) {
-      expect(wrapper.find(HeaderTags).first().html()).toEqual(null);
+      expect(wrapper.find(DevfilePageHeaderTags).first().html()).toEqual(null);
     } else {
-      expect(wrapper.find(HeaderTags).first().html()).not.toEqual(null);
+      expect(wrapper.find(DevfilePageHeaderTags).first().html()).not.toEqual(null);
     }
 
     // check for correct metadata
-    function checkMetadataWithID(id: string, label: string, expectedValue: string) {
+    function checkMetadataWithID(id: string, label: string, expectedValue: string): void {
       expect(idToComponentWrappers[id].length).toBe(numOfInheritedIDs);
       expect(getWrapperText(id)).toBe(label + ': ' + expectedValue);
       expect(idToComponentWrappers[id].parent().first().prop('data-testid')).toBe(
@@ -155,12 +156,12 @@ describe('<Header />', () => {
     if (devfile.version) {
       checkMetadataWithID('version', 'Version', devfile.version);
     } else {
-      expect(idToComponentWrappers['version'].length).toBe(0);
+      expect(idToComponentWrappers.version.length).toBe(0);
     }
   }
 
   test.each(propStackValues)('stack test: $name', ({ devfile, devfileMetadata }) => {
-    wrapper.setProps({ devfile: devfile, devfileMetadata: devfileMetadata });
+    wrapper.setProps({ devfile, devfileMetadata });
 
     checkHeaderContent(devfile);
 
@@ -174,7 +175,7 @@ describe('<Header />', () => {
   });
 
   test.each(propSampleValues)('sample test: $name', ({ devfile }) => {
-    wrapper.setProps({ devfile: devfile, devfileMetadata: null });
+    wrapper.setProps({ devfile, devfileMetadata: null });
 
     checkHeaderContent(devfile);
 

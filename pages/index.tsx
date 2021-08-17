@@ -62,16 +62,11 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
   );
 };
 
-const isSearchBarValueIn = (
-  value: string | undefined,
-  searchBarValue: string
-): boolean | undefined => value?.toLowerCase().includes(searchBarValue.toLowerCase());
+const isSearchBarValueIn = (value: string | undefined, searchBarValue: string): boolean =>
+  !!value?.toLowerCase().includes(searchBarValue.toLowerCase());
 
-const isSearchBarValueInTag = (
-  tags: string[] | undefined,
-  searchBarValue: string
-): boolean | undefined =>
-  tags?.some((tag) => tag.toLowerCase().includes(searchBarValue.toLowerCase()));
+const isSearchBarValueInTag = (tags: string[] | undefined, searchBarValue: string): boolean =>
+  !!tags?.some((tag) => tag.toLowerCase().includes(searchBarValue.toLowerCase()));
 
 const filterDevfilesOnSearchBar = (devfiles: Devfile[], searchBarValue: string): Devfile[] => {
   if (searchBarValue === '') {

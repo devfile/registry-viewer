@@ -1,3 +1,4 @@
+// eslint-disable-next-line spaced-comment
 /// <reference types='cypress' />
 /**
  * page type: stack, sample
@@ -55,7 +56,7 @@ describe('Test select', () => {
     cy.get('[data-testid="dev-page-projects"]')
       .get('[data-testid*="projects-selector-item"]', { timeout: 10000 })
       .last()
-      .click({ force: true });
+      .click();
     cy.get('[data-testid="dev-page-projects"]')
       .get('[data-testid*="projects-selector-item"]', { timeout: 10000 })
       .get('[class*=selected]')
@@ -66,18 +67,18 @@ describe('Test select', () => {
 /**
  * Opens the projects expandable for the current devfile page
  */
-function openProjectsExpandable() {
-  cy.get('[data-testid="dev-page-projects"]').get('button').click({ force: true });
+function openProjectsExpandable(): void {
+  cy.get('[data-testid="dev-page-projects"]').get('button').click();
 }
 
 /**
  * Opens url webpage, download the first project, and verify successful download of project
- * @param url Devfile page url to test download on
+ * @param url- Devfile page url to test download on
  */
-function verifyDownloadOnClick(url: string) {
+function verifyDownloadOnClick(url: string): void {
   cy.visit(url);
   openProjectsExpandable();
-  cy.get('[data-testid="dev-page-projects"]').get('button').last().click({ force: true });
+  cy.get('[data-testid="dev-page-projects"]').get('button').last().click();
 }
 
 export {};

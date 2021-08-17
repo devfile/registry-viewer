@@ -1,4 +1,5 @@
-import HeaderTags from '../../../components/devfile-page/HeaderTags';
+import { DevfilePageHeaderTags } from '@src/components';
+import { expect, test } from '@jest/globals';
 import { Label, Popover } from '@patternfly/react-core';
 import { shallow } from 'enzyme';
 
@@ -6,12 +7,12 @@ import { shallow } from 'enzyme';
  *
  * HeaderTags
  *    tags:
- *      null, empty list, list <= numOfVisibleTags, list > numOfVisibleTags
+ *      null, empty list, list \<= numOfVisibleTags, list \> numOfVisibleTags
  */
 
 describe('<HeaderTags />', () => {
   const numOfVisibleTags = 8; // set to the same value as numOfVisibleTags in HeaderTags
-  let wrapper = shallow(<HeaderTags tags={[]} />);
+  const wrapper = shallow(<DevfilePageHeaderTags tags={[]} />);
 
   test('tags prop set to null, check that HeaderTags is null', () => {
     wrapper.setProps({
@@ -45,11 +46,12 @@ describe('<HeaderTags />', () => {
       new Array(numOfVisibleTags + numOfPopupTags),
       (_, index) => 'tag' + index
     );
-    wrapper.setProps({ tags: tags });
+    wrapper.setProps({ tags });
 
     const popover = wrapper.find(Popover);
     const labels = wrapper.find(Label);
-    // @ts-ignore
+
+    // @ts-expect-error imported function does not support right type
     const popoverContent = shallow(popover.prop('bodyContent'));
     const popoverLabels = popoverContent.find(Label);
 

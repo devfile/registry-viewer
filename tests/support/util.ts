@@ -1,7 +1,7 @@
 import type { HostList, HostURL } from 'custom-types';
 import { is } from 'typescript-is';
 
-const getENVHosts = () => {
+const getENVHosts = (): HostList => {
   const envHosts = process.env.DEVFILE_REGISTRY_HOSTS?.split(',').filter((host) => host !== '');
 
   let hosts: HostList = {};

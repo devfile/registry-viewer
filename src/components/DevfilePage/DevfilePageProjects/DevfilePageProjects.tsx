@@ -1,5 +1,5 @@
 import styles from './DevfilePageProjects.module.css';
-import type { Project } from 'custom-types';
+import type { Git, Project } from 'custom-types';
 import { DevfilePageProjectDisplay } from '@src/components';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
@@ -44,15 +44,6 @@ export interface ErrorAlert {
  * @param revision - revision to checkout from
  * @param remotes - remotes map; should be init. to git project
  */
-export interface Git {
-  checkoutFrom?: {
-    remote?: string;
-    revision?: string;
-  };
-  remotes: {
-    [key: string]: string;
-  };
-}
 
 /**
  * Representation of a single starter project

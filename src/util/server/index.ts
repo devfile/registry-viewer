@@ -10,9 +10,9 @@ import type {
 } from 'custom-types';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { is } from 'typescript-is';
 // @ts-expect-error js-yaml has no type definitions
 import { load as yamlToJSON } from 'js-yaml';
-import { is } from 'typescript-is';
 
 export function tryCatch<T>(func: () => T): TryCatch<T> {
   try {

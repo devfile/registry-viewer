@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 // / <reference types="cypress" />
 import JSZip from 'jszip';
 
@@ -92,14 +93,19 @@ describe('Test invalid fetch', () => {
  * @param b - array to compare
  * @returns boolean of whether arrays a and b are equal
  */
-function areArraysEqual(a: string[], b: string[]) {
-  return a.length === b.length && a.every((value) => b.includes(value));
+function areArraysEqual<T>(a: T, b: T): boolean {
+  return (
+    Array.isArray(a) &&
+    Array.isArray(b) &&
+    a.length === b.length &&
+    a.every((val, index) => val === b[index])
+  );
 }
 
 /**
  * Checks that fetch for extracting the subdirectory returns the right zip by
  *  * checking status of response (should be 200)
- *  * checking files and folders at first level of zip (should equal @param expectedRootFileAndFolders)
+ *  * checking files and folders at first level of zip (should equal @param expectedRootFileAndFolders-)
  * @param url - url to fetch zip from
  * @param subdirectory - subdirectory to extract from zip
  * @param expectedRootFileAndFolders - expected files and folders at first level of zip
@@ -107,11 +113,11 @@ function areArraysEqual(a: string[], b: string[]) {
 function checkForValidZipFetch(
   url: string,
   subdirectory: string,
-  expectedRootFileAndFolders: Array<string>
-) {
+  expectedRootFileAndFolders: string[]
+): void {
   const data = {
-    url: url,
-    subdirectory: subdirectory
+    url,
+    subdirectory
   };
   const expected = expectedRootFileAndFolders;
   expected.sort((a, b) => a.localeCompare(b));

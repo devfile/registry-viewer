@@ -71,7 +71,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [devfiles, errors]: GetMetadataOfDevfiles = await getMetadataOfDevfiles();
+  const [devfiles, _]: GetMetadataOfDevfiles = await getMetadataOfDevfiles();
   const sourceWithNames: string[] = devfiles.map(
     (devfile) => `${devfile.sourceRepo.replace(/\+/g, '')}+${devfile.name.replace(/\+/g, '')}`
   );

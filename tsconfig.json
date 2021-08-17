@@ -19,7 +19,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "noImplicitAny": true,
-    "typeRoots": ["@types", "node_modules/@types"],
+    "typeRoots": ["src/@types", "node_modules/@types"],
     "types": ["node"],
     "skipLibCheck": true
   },
@@ -32,11 +32,10 @@
     "docs",
     "node_modules",
     "out",
-    "src/util/server",
-    "tests/unit-tests/*"
+    "src/util/server"
   ],
   "typedocOptions": {
-    "entryPoints": ["pages", "src", "@types"],
+    "entryPoints": ["pages", "src"],
     "out": "docs"
   }
 }

@@ -1,15 +1,18 @@
-import Projects, {
+/* eslint-disable no-unused-expressions */
+import type { Git, Project } from 'custom-types';
+import type { ShallowWrapper } from 'enzyme';
+import {
+  DevfilePageProjects,
   download,
   downloadSubdirectory,
-  getURLForGit
-} from '../../../components/devfile-page/Projects';
-import { Git, Project, UnsupportedLinkError } from '../../../components/devfile-page/Projects';
+  getURLForGit,
+  UnsupportedLinkError
+} from '@src/components';
 import { Alert, Button, CardExpandableContent } from '@patternfly/react-core';
-
+import { expect, test, jest } from '@jest/globals';
 import { mount, shallow } from 'enzyme';
-import { ShallowWrapper } from 'enzyme';
 import FileSaver from 'file-saver';
-import fetch from 'jest-fetch-mock';
+import jestFetch from 'jest-fetch-mock';
 import JSZip from 'jszip';
 import { act } from 'react-dom/test-utils';
 
@@ -29,12 +32,12 @@ import { act } from 'react-dom/test-utils';
  *        same as above git
  *
  */
-const testProjects: Array<{
+const testProjects: {
   name: string;
-  applyTo: Array<String>;
+  applyTo: string[];
   project: Project;
   expectedURL: string;
-}> = [
+}[] = [
   {
     name: 'with single remote for git',
     applyTo: ['getURLForGit', 'download window'],
@@ -91,6 +94,7 @@ const testProjects: Array<{
       name: 'project4',
       description:
         'According to all known laws of aviation, there is no way a bee should be able to fly. Its wings are too small to get its fat little body off the ground.' +
+        // eslint-disable-next-line quotes
         "The bee, of course, flies anyway because bees don't care what humans think is impossible. Yellow, black. Yellow, black. Yellow, black. Yellow, black.",
       zip: {
         location:
@@ -102,12 +106,12 @@ const testProjects: Array<{
   }
 ];
 
-const errorTestProjects: Array<{
+const errorTestProjects: {
   name: string;
-  applyTo: Array<String>;
+  applyTo: string[];
   project: Project;
   expected: Error;
-}> = [
+}[] = [
   {
     name: 'with multiple remotes and unspecified remote',
     applyTo: ['download', 'getURLForGit'],
@@ -178,11 +182,11 @@ describe('getURLForGit', () => {
 
 describe('downloadSubdirectory', () => {
   beforeEach(() => {
-    fetch.resetMocks();
+    jestFetch.resetMocks();
   });
 
   test('error test: invalid url, fetch returns with 500 status', () => {
-    const url = 'https://invalid.com/wildfly/quickstart/zipball/23.0.2.Final'; //technically these values don't matter
+    const url = 'https://invalid.com/wildfly/quickstart/zipball/23.0.2.Final'; // technically these values don't matter
     const subdirectory = 'existing';
 
     checkForFetchError(() => downloadSubdirectory(url, subdirectory), url, subdirectory, {
@@ -192,7 +196,7 @@ describe('downloadSubdirectory', () => {
   });
 
   test('error test: non existing subdirectory, fetch returns with 404 status', () => {
-    const url = 'https://api.github.com/wildfly/quickstart/zipball/23.0.2.Final'; //technically these values don't matter
+    const url = 'https://api.github.com/wildfly/quickstart/zipball/23.0.2.Final'; // technically these values don't matter
     const subdirectory = 'non-existing';
 
     checkForFetchError(() => downloadSubdirectory(url, subdirectory), url, subdirectory, {
@@ -210,7 +214,7 @@ describe('downloadSubdirectory', () => {
 
 describe('download', () => {
   beforeEach(() => {
-    fetch.resetMocks();
+    jestFetch.resetMocks();
   });
 
   test.each(testProjects.filter((project) => project.applyTo.includes('download subdirectory')))(
@@ -291,11 +295,13 @@ describe('download', () => {
 
 describe('<Projects />', () => {
   let wrapper = shallow(
-    <Projects starterProjects={testProjects.map((testProject) => testProject.project)} />
+    <DevfilePageProjects starterProjects={testProjects.map((testProject) => testProject.project)} />
   );
   beforeEach(() => {
     wrapper = shallow(
-      <Projects starterProjects={testProjects.map((testProject) => testProject.project)} />
+      <DevfilePageProjects
+        starterProjects={testProjects.map((testProject) => testProject.project)}
+      />
     );
   });
   test('starterProjects prop set to undefined, check that Projects is null', () => {
@@ -341,11 +347,13 @@ describe('<Projects />', () => {
 
   test('check download on button click', async () => {
     const projectToDownload = testProjects[1];
-    const wrapperMount = mount(<Projects starterProjects={[projectToDownload.project]} />);
+    const wrapperMount = mount(
+      <DevfilePageProjects starterProjects={[projectToDownload.project]} />
+    );
 
     const mockZipBase64 =
       'UEsDBAoDAAAAAJx08Trj5ZWwDAAAAAwAAAAJAAAASGVsbG8udHh0SGVsbG8gV29ybGQKUEsBAhQDCgMAAAAAnHTxOuPllbAMAAAADAAAAAkAAAAAAAAAAAAggKSBAAAAAEhlbGxvLnR4dFBLBQYAAAAAAQABADcAAAAzAAAAAAA=';
-    const spyFetch = fetch.mockResponseOnce(mockZipBase64, { status: 200 });
+    const spyFetch = jestFetch.mockResponseOnce(mockZipBase64, { status: 200 });
     const spyJSZip = jest.spyOn(JSZip.prototype, 'generateAsync').mockResolvedValue('blob');
     const spyFileSaver = jest.spyOn(FileSaver, 'saveAs').mockImplementation(jest.fn());
 
@@ -369,7 +377,9 @@ describe('<Projects />', () => {
 
   test('check download error alert', async () => {
     const wrapperMount = mount(
-      <Projects starterProjects={errorTestProjects.map((testProject) => testProject.project)} />
+      <DevfilePageProjects
+        starterProjects={errorTestProjects.map((testProject) => testProject.project)}
+      />
     );
 
     // open expandable
@@ -387,8 +397,10 @@ describe('<Projects />', () => {
 
   test('check download UnsupportedLinkType alert', async () => {
     const projectToDownload = errorTestProjects[1];
-    const wrapperMount = mount(<Projects starterProjects={[projectToDownload.project]} />);
-    fetch.mockResponse(JSON.stringify({ error: projectToDownload.expected.message }), {
+    const wrapperMount = mount(
+      <DevfilePageProjects starterProjects={[projectToDownload.project]} />
+    );
+    jestFetch.mockResponse(JSON.stringify({ error: projectToDownload.expected.message }), {
       status: 404
     });
 
@@ -403,7 +415,8 @@ describe('<Projects />', () => {
       expect(wrapperMount.find(Alert).length).toBe(1);
       expect(wrapperMount.find(Alert).prop('variant')).toBe('warning');
 
-      fetch.mockClear();
+      // @ts-expect-error Function does not exist? -Nadia
+      jestFetch.mockClear();
     });
   });
 });
@@ -427,8 +440,8 @@ function checkForFetchError(
   url: string,
   subdirectory: string,
   fetchReturn: { error: string; status: number }
-) {
-  const spyFetch = fetch.mockResponseOnce(JSON.stringify({ error: fetchReturn.error }), {
+): void {
+  const spyFetch = jestFetch.mockResponseOnce(JSON.stringify({ error: fetchReturn.error }), {
     status: fetchReturn.status
   });
 
@@ -438,6 +451,7 @@ function checkForFetchError(
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ url, subdirectory })
   });
+  // @ts-expect-error Function does not exist? -Nadia
   spyFetch.mockClear();
 }
 
@@ -445,18 +459,18 @@ function checkForFetchError(
  * mocks calls to download zip file and <br />
  * expects
  *  * fetch to be called with /api/download-subdirectory, subdirectory, and url
- *  * FileSaver.saveAs to be called with 'blob' and {@param subdirectory}.zip
+ *  * FileSaver.saveAs to be called with 'blob' and @param subdirectory- .zip
  *  * generateAsync to be called on a ZipObject with
  * @param func - function to be called, should have call to downloadSubdirectory
  * @param url - expected url of project to download
  * @param subdirectory - expected subdirectory of project to download
  */
-function checkForSuccessfulDownload(func: () => void, url: string, subdirectory: string) {
+function checkForSuccessfulDownload(func: () => void, url: string, subdirectory: string): void {
   const mockZipBase64 =
     'UEsDBAoDAAAAAJx08Trj5ZWwDAAAAAwAAAAJAAAASGVsbG8udHh0SGVsbG8gV29ybGQKUEsBAhQDCgMAAAAAnHTxOuPllbAMAAAADAAAAAkAAAAAAAAAAAAggKSBAAAAAEhlbGxvLnR4dFBLBQYAAAAAAQABADcAAAAzAAAAAAA=';
 
   // set spy functions
-  const spyFetch = fetch.mockResponseOnce(mockZipBase64, { status: 200 });
+  const spyFetch = jestFetch.mockResponseOnce(mockZipBase64, { status: 200 });
   const spyJSZip = jest.spyOn(JSZip.prototype, 'generateAsync').mockResolvedValue('blob');
   const spyFileSaver = jest.spyOn(FileSaver, 'saveAs').mockImplementation(jest.fn());
 
@@ -479,9 +493,9 @@ function checkForSuccessfulDownload(func: () => void, url: string, subdirectory:
 }
 
 /**
- * Simulates hover on {@param hoverProject} if present and simulates select on {@param selectProject}
+ * Simulates hover on @param hoverProject- if present and simulates select on @param selectProject-
  * and checks for correct displayed project name and
- * @param wrapper - wrapper of {@Project component}
+ * @param wrapper - wrapper of Project- component
  * @param selectProject - project to simulate select
  * @param hoverProject - project to simulate hover
  */
@@ -489,7 +503,7 @@ function checkDisplayedDescription(
   wrapper: ShallowWrapper,
   selectProject: Project,
   hoverProject?: Project
-) {
+): void {
   wrapper.findWhere((component) => component.key() === selectProject.name).simulate('click');
   wrapper.update();
 
@@ -498,17 +512,17 @@ function checkDisplayedDescription(
     wrapper.update();
   }
 
-  let displaySelectedProjectNameWrapper = wrapper.findWhere(
+  const displaySelectedProjectNameWrapper = wrapper.findWhere(
     (component) => component.prop('data-testid') === 'display-selected-project-name'
   );
-  let displaySelectedProjectDisplayWrapper = wrapper.findWhere(
+  const displaySelectedProjectDisplayWrapper = wrapper.findWhere(
     (component) => component.prop('data-testid') === 'display-selected-project-description'
   );
 
-  let displayHoveredProjectNameWrapper = wrapper.findWhere(
+  const displayHoveredProjectNameWrapper = wrapper.findWhere(
     (component) => component.prop('data-testid') === 'display-hovered-project-name'
   );
-  let displayHoveredProjectDisplayWrapper = wrapper.findWhere(
+  const displayHoveredProjectDisplayWrapper = wrapper.findWhere(
     (component) => component.prop('data-testid') === 'display-hovered-project-description'
   );
 

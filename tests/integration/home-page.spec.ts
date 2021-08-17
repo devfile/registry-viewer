@@ -76,11 +76,11 @@ describe('Home page tests on desktop', () => {
   });
 });
 
-const isSearchBarValueIn = (value: string | undefined, searchBarValue: string) =>
-  value?.toLowerCase().includes(searchBarValue.toLowerCase());
+const isSearchBarValueIn = (value: string | undefined, searchBarValue: string): boolean =>
+  !!value?.toLowerCase().includes(searchBarValue.toLowerCase());
 
-const isSearchBarValueInTag = (tags: string[] | undefined, searchBarValue: string) =>
-  tags?.some((tag) => tag.toLowerCase().includes(searchBarValue.toLowerCase()));
+const isSearchBarValueInTag = (tags: string[] | undefined, searchBarValue: string): boolean =>
+  !!tags?.some((tag) => tag.toLowerCase().includes(searchBarValue.toLowerCase()));
 
 const filterDevfilesOnSearchBar = (devfiles: Devfile[], searchBarValue: string): Devfile[] => {
   if (searchBarValue === '') {
