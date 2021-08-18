@@ -34,7 +34,9 @@ const DevfilePage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
     {devfile.type === 'stack' ? (
       <div>
         <DevfilePageHeader devfileMetadata={devfileJSON.metadata} devfile={devfile} />
-        <DevfilePageProjects starterProjects={devfileJSON.starterProjects} />
+        {devfileJSON.starterProjects?.length && (
+          <DevfilePageProjects starterProjects={devfileJSON.starterProjects} />
+        )}
         <DevfilePageYAML devfileYAML={devfileYAML} />
       </div>
     ) : (

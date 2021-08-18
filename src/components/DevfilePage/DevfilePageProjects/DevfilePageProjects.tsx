@@ -94,10 +94,6 @@ export class UnsupportedLinkError extends Error {
 export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
   starterProjects
 }: DevfilePageProjectsProps) => {
-  if (!starterProjects?.length) {
-    return null;
-  }
-
   const [expanded, setExpanded] = useState<boolean>(false);
   const [downloading, setDownloading] = useState<boolean>(false);
 
