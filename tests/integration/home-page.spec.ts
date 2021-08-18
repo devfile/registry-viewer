@@ -22,7 +22,7 @@ describe('Home page tests on desktop', () => {
       const textArr: string[] = ['JavA', 'rhel', 'PYTHON', 'vERT.x'];
 
       textArr.forEach((text) => {
-        cy.get('[data-test-id=search-bar-devfile]').type(`{selectall}{backspace}${text}`);
+        cy.get('[data-testid=search-bar-devfile]').type(`{selectall}{backspace}${text}`);
         cy.compareCardLength(filterDevfilesOnSearchBar(devfiles, text).length);
       });
     });
@@ -31,8 +31,8 @@ describe('Home page tests on desktop', () => {
   it('Clickability of each devfile', () => {
     cy.getDevfiles((devfiles: Devfile[]) => {
       devfiles.forEach((devfile) => {
-        cy.get(`[data-test-id=card-${devfile.name.replace(/\.| /g, '')}]`).click();
-        cy.get('[data-test-id=go-home-button').click();
+        cy.get(`[data-testid=card-${devfile.name.replace(/\.| /g, '')}]`).click();
+        cy.get('[data-testid=go-home-button').click();
       });
     });
   });
@@ -64,8 +64,8 @@ describe('Home page tests on desktop', () => {
       const textArr: string[] = ['JavA', 'rhel', 'PYTHON', 'vERT.x'];
 
       textArr.forEach((text) => {
-        cy.get('[data-test-id=search-bar-tag]').type(`{selectall}{backspace}${text}`);
-        cy.get('[data-test-id^=tag-]').should(
+        cy.get('[data-testid=search-bar-tag]').type(`{selectall}{backspace}${text}`);
+        cy.get('[data-testid^=tag-]').should(
           'have.length',
           tagsStateWithFreq.filter((tagData) =>
             tagData.value.toLowerCase().includes(text.toLowerCase())

@@ -34,7 +34,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }: LayoutProps) => {
       headerTools={
         <PageHeaderTools>
           <Link href="/">
-            <a data-test-id="go-home-button">
+            <a data-testid="go-home-button">
               <TextContent>
                 <Text>Devfile Registry</Text>
               </TextContent>

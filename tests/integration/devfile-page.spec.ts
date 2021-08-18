@@ -1,5 +1,5 @@
 // eslint-disable-next-line spaced-comment
-/// <reference types='cypress' />
+/// <reference types="cypress" />
 /**
  * page type: stack, sample
  */
@@ -9,19 +9,19 @@ describe('Test loaded components', () => {
   });
   it('Stack page', () => {
     cy.visit('http://localhost:3000/devfiles/Community+java-maven');
-    cy.get('[data-testid="dev-page-header"]').should('be.visible');
-    cy.get('[data-testid="header-tags"]', { timeout: 10000 }).should('be.visible');
-    cy.get('[data-testid="dev-page-projects"]').should('be.visible');
-    cy.get('[data-testid="dev-page-yaml"]').should('be.visible');
+    cy.get('[data-testid=dev-page-header]').should('be.visible');
+    cy.get('[data-testid=header-tags]', { timeout: 10000 }).should('be.visible');
+    cy.get('[data-testid=dev-page-projects]').should('be.visible');
+    cy.get('[data-testid=dev-page-yaml]').should('be.visible');
   });
 
   it('Sample page', () => {
     cy.visit('http://localhost:3000/devfiles/Community+nodejs-basic');
-    cy.get('[data-testid="dev-page-header"]').should('be.visible');
-    cy.get('[data-testid="header-tags"]', { timeout: 5000 }).should('be.visible');
-    cy.get('[data-testid="dev-page-projects"]').should('not.exist');
-    cy.get('[data-testid="dev-page-yaml"]').should('not.exist');
-    cy.get('[data-testid="git-remotes"]', { timeout: 5000 }).should('be.visible');
+    cy.get('[data-testid=dev-page-header]').should('be.visible');
+    cy.get('[data-testid=header-tags]', { timeout: 5000 }).should('be.visible');
+    cy.get('[data-testid=dev-page-projects]').should('not.exist');
+    cy.get('[data-testid=dev-page-yaml]').should('not.exist');
+    cy.get('[data-testid=git-remotes]', { timeout: 5000 }).should('be.visible');
   });
 });
 
@@ -53,12 +53,12 @@ describe('Test select', () => {
     cy.visit('http://localhost:3000/devfiles/Community+java-quarkus');
     openProjectsExpandable();
 
-    cy.get('[data-testid="dev-page-projects"]')
-      .get('[data-testid*="projects-selector-item"]', { timeout: 10000 })
+    cy.get('[data-testid=dev-page-projects]')
+      .get('[data-testid*=projects-selector-item]', { timeout: 10000 })
       .last()
       .click();
-    cy.get('[data-testid="dev-page-projects"]')
-      .get('[data-testid*="projects-selector-item"]', { timeout: 10000 })
+    cy.get('[data-testid=dev-page-projects]')
+      .get('[data-testid*=projects-selector-item]', { timeout: 10000 })
       .get('[class*=selected]')
       .contains('redhat-product');
   });
@@ -68,7 +68,7 @@ describe('Test select', () => {
  * Opens the projects expandable for the current devfile page
  */
 function openProjectsExpandable(): void {
-  cy.get('[data-testid="dev-page-projects"]').get('button').click();
+  cy.get('[data-testid=dev-page-projects]').get('button').click();
 }
 
 /**
@@ -78,7 +78,7 @@ function openProjectsExpandable(): void {
 function verifyDownloadOnClick(url: string): void {
   cy.visit(url);
   openProjectsExpandable();
-  cy.get('[data-testid="dev-page-projects"]').get('button').last().click();
+  cy.get('[data-testid=dev-page-projects]').get('button').last().click();
 }
 
 export {};

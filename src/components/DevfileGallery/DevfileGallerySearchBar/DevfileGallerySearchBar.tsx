@@ -22,7 +22,7 @@ export const DevfileGallerySearchBar: React.FC<DevfileSearchBarProps> = ({
       <Text component={TextVariants.h2}>Search</Text>
     </TextContent>
     <SearchInput
-      data-test-id="search-bar-devfile"
+      data-testid="search-bar-devfile"
       className={styles.searchBarInput}
       placeholder="Find by name, tag, or description"
       value={searchBarValue}

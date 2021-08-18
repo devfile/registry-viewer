@@ -44,7 +44,7 @@ export const DevfileGalleryItem: React.ForwardRefRenderFunction<HTMLElement, Dev
         className={styles.card}
         onClick={onTileClick}
         isHoverable
-        data-test-id={`card-${devfile.name.replace(/\.| /g, '')}`}
+        data-testid={`card-${devfile.name.replace(/\.| /g, '')}`}
       >
         <CardHeader>
           <CardHeaderMain>

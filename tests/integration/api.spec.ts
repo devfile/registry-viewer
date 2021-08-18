@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-expressions */
-// / <reference types="cypress" />
+// eslint-disable-next-line spaced-comment
+/// <reference types="cypress" />
 import JSZip from 'jszip';
 
 /**

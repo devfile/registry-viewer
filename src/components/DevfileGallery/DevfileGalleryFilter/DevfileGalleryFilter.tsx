@@ -82,7 +82,7 @@ export const DevfileGalleryFilter: React.FC<DevfileGalleryFilterProps> = ({
             {typesStateWithFreq.map((type) => (
               <div key={type.value} className={styles.formGroupElement}>
                 <Checkbox
-                  data-test-id={`type-${type.value.replace(/\.| /g, '')}`}
+                  data-testid={`type-${type.value.replace(/\.| /g, '')}`}
                   isChecked={type.state}
                   onChange={onCheckboxTypesChange}
                   id={`types-${type.value}`}
@@ -98,7 +98,7 @@ export const DevfileGalleryFilter: React.FC<DevfileGalleryFilterProps> = ({
             {tagsStateWithFreq.length > 1 && (
               <SearchInput
                 className={styles.formGroupElement}
-                data-test-id="search-bar-tag"
+                data-testid="search-bar-tag"
                 placeholder="Find by tag name"
                 value={tagSearchBarValue}
                 onChange={onSearchChange}
@@ -112,7 +112,7 @@ export const DevfileGalleryFilter: React.FC<DevfileGalleryFilterProps> = ({
                 .map((tag) => (
                   <div key={tag.value} className={styles.formGroupElement}>
                     <Checkbox
-                      data-test-id={`tag-${tag.value.replace(/\.| /g, '')}`}
+                      data-testid={`tag-${tag.value.replace(/\.| /g, '')}`}
                       isChecked={tag.state}
                       onChange={onCheckboxTagsChange}
                       id={`types-${tag.value}`}
