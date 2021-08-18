@@ -5,6 +5,7 @@
   "scripts": {
     "analyze": "cross-env ANALYZE=true next build",
     "dev": "next",
+    "prebuild": "node ./src/util/server/manifest.mjs",
     "build": "next build",
     "start": "next start",
     "clean": "rimraf .next/ .nyc_output/ coverage/ docs/ out/ node_modules/",
