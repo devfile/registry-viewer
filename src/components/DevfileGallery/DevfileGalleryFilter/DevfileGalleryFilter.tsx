@@ -1,3 +1,4 @@
+import styles from './DevfileGalleryFilter.module.css';
 import type { FilterElem } from 'custom-types';
 import type { Dispatch, SetStateAction } from 'react';
 import { capitalizeFirstLetter } from '@src/util/client';
@@ -75,11 +76,11 @@ export const DevfileGalleryFilter: React.FC<DevfileGalleryFilterProps> = ({
       <TextContent>
         <Text component={TextVariants.h2}>Filters</Text>
       </TextContent>
-      <Form isHorizontal>
+      <Form>
         {typesStateWithFreq.length > 1 && (
           <FormGroup fieldId="type-selector" label="Types" hasNoPaddingTop>
             {typesStateWithFreq.map((type) => (
-              <div key={type.value} style={{ margin: '0.5rem 0rem' }}>
+              <div key={type.value} className={styles.formGroupElement}>
                 <Checkbox
                   data-test-id={`type-${type.value.replace(/\.| /g, '')}`}
                   isChecked={type.state}
@@ -96,6 +97,7 @@ export const DevfileGalleryFilter: React.FC<DevfileGalleryFilterProps> = ({
           <FormGroup fieldId="tag-selector" label="Tags" hasNoPaddingTop>
             {tagsStateWithFreq.length > 1 && (
               <SearchInput
+                className={styles.formGroupElement}
                 data-test-id="search-bar-tag"
                 placeholder="Find by tag name"
                 value={tagSearchBarValue}
@@ -104,11 +106,11 @@ export const DevfileGalleryFilter: React.FC<DevfileGalleryFilterProps> = ({
                 resultsCount={getFilterResultCount(tagsStateWithFreq, tagSearchBarValue)}
               />
             )}
-            <div style={{ height: '20rem', overflow: 'auto' }}>
+            <div className={styles.tagBox}>
               {tagsStateWithFreq
                 .filter((tag) => tag.value.toLowerCase().includes(tagSearchBarValue.toLowerCase()))
                 .map((tag) => (
-                  <div key={tag.value} style={{ margin: '0.5rem 0rem' }}>
+                  <div key={tag.value} className={styles.formGroupElement}>
                     <Checkbox
                       data-test-id={`tag-${tag.value.replace(/\.| /g, '')}`}
                       isChecked={tag.state}

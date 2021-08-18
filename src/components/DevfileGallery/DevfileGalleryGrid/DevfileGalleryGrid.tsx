@@ -1,3 +1,4 @@
+import styles from './DevfileGalleryGrid.module.css';
 import type { Devfile } from 'custom-types';
 import { DevfileGalleryItemWrapper as DevfileGalleryItem } from '@src/components';
 import Link from 'next/link';
@@ -15,7 +16,7 @@ export interface DevfileGalleryGridProps {
 export const DevfileGalleryGrid: React.FC<DevfileGalleryGridProps> = ({
   devfiles
 }: DevfileGalleryGridProps) => (
-  <Gallery style={{ paddingTop: '1rem' }}>
+  <Gallery className={styles.devfileGalleryGrid}>
     {devfiles.map((devfile) => (
       <Link
         key={`${devfile.sourceRepo}+${devfile.name}`}

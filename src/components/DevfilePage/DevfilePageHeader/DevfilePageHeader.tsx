@@ -46,7 +46,7 @@ export const DevfilePageHeader: React.FC<DevfilePageHeaderProps> = ({
             </Text>
           </TextContent>
         </div>
-        <div style={{ margin: '10px' }}>
+        <div className={styles.headerCardBody}>
           <TextContent>
             <Text
               data-testid="displayName"

@@ -1,8 +1,8 @@
+import styles from './DevfileGalleryItem.module.css';
 import type { Devfile } from 'custom-types';
 import type { ForwardedRef } from 'react';
 import devfileLogo from '@public/images/devfileLogo.svg';
 import { capitalizeFirstLetter } from '@src/util/client';
-
 import {
   Text,
   TextContent,
@@ -41,7 +41,7 @@ export const DevfileGalleryItem: React.ForwardRefRenderFunction<HTMLElement, Dev
 
     return (
       <Card
-        style={{ height: 'auto', margin: '0.5rem', cursor: 'pointer' }}
+        className={styles.card}
         onClick={onTileClick}
         isHoverable
         data-test-id={`card-${devfile.name.replace(/\.| /g, '')}`}
@@ -49,11 +49,15 @@ export const DevfileGalleryItem: React.ForwardRefRenderFunction<HTMLElement, Dev
         <CardHeader>
           <CardHeaderMain>
             <TextContent>
-              <Text style={{ marginBottom: '1rem' }} component={TextVariants.p}>{`${
+              <Text className={styles.cardHeader} component={TextVariants.p}>{`${
                 devfile.sourceRepo
               } - ${capitalizeFirstLetter(devfile.type)}`}</Text>
             </TextContent>
-            <Brand src={devfile.icon || devfileLogo} alt="" style={{ height: '2.5rem' }} />
+            <Brand
+              src={devfile.icon || devfileLogo}
+              alt={`${devfile.name} icon`}
+              className={styles.cardImage}
+            />
           </CardHeaderMain>
         </CardHeader>
         <CardTitle>
@@ -61,7 +65,7 @@ export const DevfileGalleryItem: React.ForwardRefRenderFunction<HTMLElement, Dev
             <Text component={TextVariants.h3}>{devfile.displayName}</Text>
           </TextContent>
         </CardTitle>
-        <CardBody style={{ height: '5rem', overflow: 'hidden' }}>
+        <CardBody className={styles.cardBody}>
           <TextContent>
             <Text component={TextVariants.p}>{devfile.description}</Text>
           </TextContent>
@@ -69,7 +73,7 @@ export const DevfileGalleryItem: React.ForwardRefRenderFunction<HTMLElement, Dev
         <CardFooter>
           <LabelGroup>
             {devfile.tags?.slice(0, maxTags).map((tag) => (
-              <Label style={{ margin: '0.125rem' }} key={tag} color="blue">
+              <Label className={styles.cardFooterTag} key={tag} color="blue">
                 {tag}
               </Label>
             ))}

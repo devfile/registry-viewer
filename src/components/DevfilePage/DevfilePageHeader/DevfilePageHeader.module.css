@@ -43,6 +43,10 @@
   padding: 3%;
 }
 
+.headerCardBody {
+  margin: 10px;
+}
+
 .basicInfo {
   display: flex;
   min-width: 20rem;

@@ -1,3 +1,4 @@
+import styles from '@src/styles/devfiles/[id]/index.module.css';
 import { Devfile, GetMetadataOfDevfiles, GetDevfileYAML } from 'custom-types';
 import { getMetadataOfDevfiles, getDevfileYAML } from '@src/util/server';
 import {
@@ -28,7 +29,7 @@ const DevfilePage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
   devfileJSON,
   errors
 }: InferGetStaticPropsType<typeof getStaticProps>) => (
-  <div style={{ alignContent: 'center', minHeight: '100vh' }}>
+  <div className={styles.devfilePage}>
     <ErrorBanner errors={errors} />
     {devfile.type === 'stack' ? (
       <div>

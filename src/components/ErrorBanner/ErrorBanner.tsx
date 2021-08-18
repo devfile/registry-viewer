@@ -1,3 +1,4 @@
+import styles from './ErrorBanner.module.css';
 import { Banner, Text, TextContent, TextVariants } from '@patternfly/react-core';
 
 export interface ErrorBannerProps {
@@ -7,10 +8,10 @@ export interface ErrorBannerProps {
 export const ErrorBanner: React.FC<ErrorBannerProps> = ({ errors }: ErrorBannerProps) => (
   <>
     {errors.filter((error: string) => error !== '').length ? (
-      <div style={{ marginBottom: '1rem' }}>
+      <div className={styles.errorBanner}>
         <Banner isSticky variant="danger">
           <TextContent>
-            <Text style={{ textAlign: 'center' }} component={TextVariants.h1}>
+            <Text className={styles.errorBannerText} component={TextVariants.h1}>
               Error: Cannot receive valid server response!
             </Text>
           </TextContent>

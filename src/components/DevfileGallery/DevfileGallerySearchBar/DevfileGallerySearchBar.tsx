@@ -1,3 +1,4 @@
+import styles from './DevfileGallerySearchBar.module.css';
 import { SearchInput, Text, TextContent, TextVariants } from '@patternfly/react-core';
 
 export interface DevfileSearchBarProps {
@@ -16,13 +17,13 @@ export const DevfileGallerySearchBar: React.FC<DevfileSearchBarProps> = ({
   onSearchBarChange,
   searchBarValue
 }: DevfileSearchBarProps) => (
-  <div style={{ display: 'flex' }}>
-    <TextContent style={{ paddingRight: '1rem' }}>
+  <div className={styles.searchBar}>
+    <TextContent className={styles.searchBarText}>
       <Text component={TextVariants.h2}>Search</Text>
     </TextContent>
     <SearchInput
       data-test-id="search-bar-devfile"
-      style={{ flex: '1 1 0%' }}
+      className={styles.searchBarInput}
       placeholder="Find by name, tag, or description"
       value={searchBarValue}
       onChange={onSearchBarChange}

@@ -1,3 +1,4 @@
+import styles from './Layout.module.css';
 import { Meta } from '@src/components';
 import devfileLogo from '@public/images/devfileLogo.svg';
 import Link from 'next/link';
@@ -28,7 +29,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }: LayoutProps) => {
 
   const Header = (
     <PageHeader
-      logo={<Brand src={devfileLogo} alt="Devfile Registry Logo" style={{ height: '100%' }} />}
+      logo={<Brand src={devfileLogo} alt="Devfile Registry Logo" className={styles.logo} />}
       logoProps={logoProps}
       headerTools={
         <PageHeaderTools>

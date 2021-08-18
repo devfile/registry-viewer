@@ -1,0 +1,22 @@
+.card {
+  height: auto;
+  margin: 0.5rem;
+  cursor: pointer;
+}
+
+.cardHeader {
+  margin-bottom: 1rem;
+}
+
+.cardImage {
+  height: 2.5rem;
+}
+
+.cardBody {
+  height: 5rem;
+  overflow: hidden;
+}
+
+.cardFooterTag {
+  margin: 0.125rem;
+}
