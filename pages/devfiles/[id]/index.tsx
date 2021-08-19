@@ -52,11 +52,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   const errors = [...devfileErrors, ...yamlErrors];
 
-  if (devfile.type === 'sample') {
-    // eslint-disable-next-line no-console
-    console.log(devfileYAML);
-  }
-
   return {
     props: {
       devfile,

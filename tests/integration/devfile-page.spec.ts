@@ -20,7 +20,7 @@ describe('Test loaded components', () => {
     cy.get('[data-testid=dev-page-header]').should('be.visible');
     cy.get('[data-testid=header-tags]', { timeout: 5000 }).should('be.visible');
     cy.get('[data-testid=dev-page-projects]').should('not.exist');
-    cy.get('[data-testid=dev-page-yaml]').should('not.exist');
+    cy.get('[data-testid=dev-page-yaml]').should('be.visible');
     cy.get('[data-testid=git-remotes]', { timeout: 5000 }).should('be.visible');
   });
 });

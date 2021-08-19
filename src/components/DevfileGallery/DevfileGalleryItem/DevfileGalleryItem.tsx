@@ -1,5 +1,5 @@
 import styles from './DevfileGalleryItem.module.css';
-import type { Devfile } from 'custom-types';
+import type { Devfile, FilterElem } from 'custom-types';
 import type { ForwardedRef } from 'react';
 import devfileLogo from '@public/images/devfileLogo.svg';
 import { capitalizeFirstLetter } from '@src/util/client';
@@ -20,6 +20,7 @@ import {
 
 export interface DevfileGalleryProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   devfile: Devfile;
+  sourceRepos: FilterElem[];
 }
 
 /**
@@ -29,7 +30,7 @@ export interface DevfileGalleryProps extends React.AnchorHTMLAttributes<HTMLAnch
  */
 export const DevfileGalleryItem: React.ForwardRefRenderFunction<HTMLElement, DevfileGalleryProps> =
   (
-    { devfile, onClick }: DevfileGalleryProps,
+    { devfile, sourceRepos, onClick }: DevfileGalleryProps,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     ref: ForwardedRef<HTMLElement>
   ) => {
@@ -49,9 +50,15 @@ export const DevfileGalleryItem: React.ForwardRefRenderFunction<HTMLElement, Dev
         <CardHeader>
           <CardHeaderMain>
             <TextContent>
-              <Text className={styles.cardHeader} component={TextVariants.p}>{`${
-                devfile.sourceRepo
-              } - ${capitalizeFirstLetter(devfile.type)}`}</Text>
+              {sourceRepos.length > 1 ? (
+                <Text className={styles.cardHeader} component={TextVariants.p}>{`${
+                  devfile.sourceRepo
+                } - ${capitalizeFirstLetter(devfile.type)}`}</Text>
+              ) : (
+                <Text className={styles.cardHeader} component={TextVariants.p}>
+                  {capitalizeFirstLetter(devfile.type)}
+                </Text>
+              )}
             </TextContent>
             <Brand
               src={devfile.icon || devfileLogo}

@@ -17,6 +17,7 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
   devfiles,
   tags,
   types,
+  sourceRepos,
   errors
 }: InferGetStaticPropsType<GetStaticProps>) => {
   const [searchBarValue, setSearchBarValue] = useState<string>('');
@@ -55,7 +56,7 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
             onSearchBarChange={onSearchBarChange}
             searchBarValue={searchBarValue}
           />
-          <DevfileGalleryGrid devfiles={filteredDevfiles} />
+          <DevfileGalleryGrid devfiles={filteredDevfiles} sourceRepos={sourceRepos} />
         </GridItem>
       </Grid>
     </>
@@ -154,6 +155,14 @@ const getTypesStateWithFreq = (devfiles: Devfile[]): FilterElem[] => {
   return tagsStateWithFreq;
 };
 
+const getSourceReposStateWithFreq = (devfiles: Devfile[]): FilterElem[] => {
+  const sourceRepoValues = devfiles?.map((devfile) => devfile.sourceRepo);
+
+  const sourceReposStateWithFreq = getStateAndStringFreq(sourceRepoValues);
+
+  return sourceReposStateWithFreq;
+};
+
 export const getStaticProps: GetStaticProps = async () => {
   const [unsortedDevfiles, errors] = await getMetadataOfDevfiles();
 
@@ -165,12 +174,14 @@ export const getStaticProps: GetStaticProps = async () => {
 
   const tags = getTagsStateWithFreq(devfiles);
   const types = getTypesStateWithFreq(devfiles);
+  const sourceRepos = getSourceReposStateWithFreq(devfiles);
 
   return {
     props: {
       devfiles,
       tags,
       types,
+      sourceRepos,
       errors
     },
     // Next.js will attempt to re-generate the page:
