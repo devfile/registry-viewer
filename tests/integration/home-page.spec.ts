@@ -32,7 +32,7 @@ describe('Home page tests on desktop', () => {
     cy.getDevfiles((devfiles: Devfile[]) => {
       devfiles.forEach((devfile) => {
         cy.get(`[data-testid=card-${devfile.name.replace(/\.| /g, '')}]`).click();
-        cy.get('[data-testid=go-home-button').click();
+        cy.get('[data-testid=go-home-button]').click();
       });
     });
   });

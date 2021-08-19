@@ -14,6 +14,7 @@ import {
   PageSection,
   PageSectionVariants
 } from '@patternfly/react-core';
+import Link from 'next/link';
 
 export interface LayoutProps {
   children: React.ReactNode;
@@ -48,10 +49,12 @@ export const Layout: React.FC<LayoutProps> = ({ children }: LayoutProps) => {
           {navLinks.map((navLink) =>
             navLink.local ? (
               <NavItem key={navLink.name}>
-                <a href={navLink.link}>
-                  <TextContent>
-                    <Text className={styles.navLinkText}>{navLink.name}</Text>
-                  </TextContent>
+                <a>
+                  <Link href={navLink.link}>
+                    <TextContent>
+                      <Text className={styles.navLinkText}>{navLink.name}</Text>
+                    </TextContent>
+                  </Link>
                 </a>
               </NavItem>
             ) : (
@@ -65,10 +68,12 @@ export const Layout: React.FC<LayoutProps> = ({ children }: LayoutProps) => {
             )
           )}
           <NavItem>
-            <a data-testid="go-home-button" href="/">
-              <TextContent>
-                <Text className={styles.navLinkText}>Devfile Registry</Text>
-              </TextContent>
+            <a>
+              <Link href="/">
+                <TextContent data-testid="go-home-button">
+                  <Text className={styles.navLinkText}>Devfile Registry</Text>
+                </TextContent>
+              </Link>
             </a>
           </NavItem>
         </NavList>
