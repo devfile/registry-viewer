@@ -1,6 +1,6 @@
 import styles from './Layout.module.css';
 import { Meta } from '@src/components';
-import devfileLogo from '@public/images/devfileLogo.svg';
+import devfileLogo from '@public/images/devfileLogoWhiteText.svg';
 import Link from 'next/link';
 import {
   Text,
