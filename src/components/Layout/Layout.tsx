@@ -36,8 +36,8 @@ export const Layout: React.FC<LayoutProps> = ({ children }: LayoutProps) => {
   };
 
   const nav = (
-    <div style={{ display: 'flex', justifyContent: 'space-between', flex: '1 1 0%' }}>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+    <div className={styles.nav}>
+      <div className={styles.title}>
         <Brand src={devfileLogo} alt="Devfile Registry Logo" className={styles.logo} />
         <TextContent>
           <Text component={TextVariants.h3}>Devfile Registry</Text>
@@ -50,7 +50,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }: LayoutProps) => {
               <NavItem key={navLink.name}>
                 <a href={navLink.link}>
                   <TextContent>
-                    <Text style={{ textDecoration: 'none' }}>{navLink.name}</Text>
+                    <Text className={styles.navLinkText}>{navLink.name}</Text>
                   </TextContent>
                 </a>
               </NavItem>
@@ -58,16 +58,16 @@ export const Layout: React.FC<LayoutProps> = ({ children }: LayoutProps) => {
               <NavItem key={navLink.name}>
                 <a target="_blank" rel="noreferrer" href={navLink.link}>
                   <TextContent>
-                    <Text style={{ textDecoration: 'none' }}>{navLink.name}</Text>
+                    <Text className={styles.navLinkText}>{navLink.name}</Text>
                   </TextContent>
                 </a>
               </NavItem>
             )
           )}
           <NavItem>
-            <a data-test-id="go-home-button" href="/">
+            <a data-testid="go-home-button" href="/">
               <TextContent>
-                <Text style={{ textDecoration: 'none' }}>Devfile Registry</Text>
+                <Text className={styles.navLinkText}>Devfile Registry</Text>
               </TextContent>
             </a>
           </NavItem>

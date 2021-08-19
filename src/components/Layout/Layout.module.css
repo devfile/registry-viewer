@@ -1,4 +1,19 @@
+.nav {
+  display: flex;
+  justify-content: space-between;
+  flex: 1 1 0%;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+}
+
 .logo {
   height: 3rem;
   margin-right: 0.75rem;
+}
+
+.navLinkText {
+  text-decoration: none;
 }
