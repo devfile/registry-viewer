@@ -7,7 +7,6 @@ on:
     workflows:
       - Cypress
       - Docker
-      - Lint
     types:
       - completed
 
