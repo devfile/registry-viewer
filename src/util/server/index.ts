@@ -177,10 +177,6 @@ export const getDevfileYAML = async (devfile: Devfile): Promise<GetDevfileYAML> 
   let devfileYAML = null;
   let devfileJSON = null;
 
-  if (devfile.type !== 'stack') {
-    return [devfileYAML, devfileJSON, []];
-  }
-
   const [hosts, hostErrors] = await getHosts();
 
   for (const [hostName, hostLocation] of Object.entries(hosts)) {

@@ -1,4 +1,4 @@
-import type { Devfile, FilterElem, GetMetadataOfDevfiles } from 'custom-types';
+import type { Devfile, FilterElem } from 'custom-types';
 import { getMetadataOfDevfiles } from '@src/util/server';
 import {
   DevfileGalleryFilter,
@@ -139,23 +139,23 @@ const getStateAndStringFreq = (array: string[]): FilterElem[] => {
 };
 
 const getTagsStateWithFreq = (devfiles: Devfile[]): FilterElem[] => {
-  const tagValues: string[] = devfiles?.map((devfile) => devfile?.tags).flat() as string[];
+  const tagValues = devfiles?.map((devfile) => devfile?.tags).flat() as string[];
 
-  const tagsStateWithFreq: FilterElem[] = getStateAndStringFreq(tagValues);
+  const tagsStateWithFreq = getStateAndStringFreq(tagValues);
 
   return tagsStateWithFreq;
 };
 
 const getTypesStateWithFreq = (devfiles: Devfile[]): FilterElem[] => {
-  const typeValues: string[] = devfiles?.map((devfile) => devfile.type);
+  const typeValues = devfiles?.map((devfile) => devfile.type);
 
-  const tagsStateWithFreq: FilterElem[] = getStateAndStringFreq(typeValues);
+  const tagsStateWithFreq = getStateAndStringFreq(typeValues);
 
   return tagsStateWithFreq;
 };
 
 export const getStaticProps: GetStaticProps = async () => {
-  const [unsortedDevfiles, errors]: GetMetadataOfDevfiles = await getMetadataOfDevfiles();
+  const [unsortedDevfiles, errors] = await getMetadataOfDevfiles();
 
   const devfiles = unsortedDevfiles.sort((a, b) =>
     a.displayName.localeCompare(b.displayName, 'en', {
@@ -163,8 +163,8 @@ export const getStaticProps: GetStaticProps = async () => {
     })
   );
 
-  const tags: FilterElem[] = getTagsStateWithFreq(devfiles);
-  const types: FilterElem[] = getTypesStateWithFreq(devfiles);
+  const tags = getTagsStateWithFreq(devfiles);
+  const types = getTypesStateWithFreq(devfiles);
 
   return {
     props: {
