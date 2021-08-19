@@ -31,15 +31,15 @@ declare module 'custom-types' {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface HostBase {}
 
-  export interface HostStack extends HostBase {
-    stacks: string;
+  export interface HostLocal extends HostBase {
+    local: string;
   }
 
   export interface HostURL extends HostBase {
     url: string;
   }
 
-  export type Host = HostStack | HostURL | HostBase;
+  export type Host = HostLocal | HostURL | HostBase;
 
   export interface HostList {
     [sourceRepo: string]: Host;

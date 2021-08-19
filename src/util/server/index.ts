@@ -1,7 +1,7 @@
 import type {
   Devfile,
   HostList,
-  HostStack,
+  HostLocal,
   HostURL,
   TryCatch,
   GetDevfileYAML,
@@ -46,7 +46,7 @@ const getConfigFileHosts = async (fileRelPath: string): Promise<HostList> => {
   const hosts = JSON.parse(hostsUnparsed) as HostList;
 
   if (!is<HostList>(hosts)) {
-    throw Error('The config file can only accept "url" or "stacks"');
+    throw TypeError('The config file can only accept "url" or "local"');
   }
 
   return hosts;
@@ -108,8 +108,8 @@ const getENVHosts = (): HostList => {
   }
 
   if (!is<HostList>(hosts)) {
-    throw Error(
-      'The environment variable DEVFILE_REGISTRY_HOSTS can only accept "url" or "stacks"'
+    throw TypeError(
+      'The environment variable DEVFILE_REGISTRY_HOSTS can only accept "url" or "local"'
     );
   }
 
@@ -149,14 +149,14 @@ export const getMetadataOfDevfiles = async (): Promise<GetMetadataOfDevfiles> =>
         if (is<HostURL>(hostLocation)) {
           extractedDevfiles = await getRemoteJSON(hostName, hostLocation.url);
         }
-        if (is<HostStack>(hostLocation)) {
-          extractedDevfiles = await getLocalJSON(hostName, hostLocation.stacks);
+        if (is<HostLocal>(hostLocation)) {
+          extractedDevfiles = await getLocalJSON(hostName, hostLocation.local);
         }
 
         if (is<Devfile[]>(extractedDevfiles)) {
           devfiles = devfiles.concat(extractedDevfiles);
         } else {
-          throw Error(
+          throw TypeError(
             `${hostName} cannot be assigned to type Devfile[]. (A devfile is most likely missing a required parameter)`
           );
         }
@@ -184,8 +184,8 @@ export const getDevfileYAML = async (devfile: Devfile): Promise<GetDevfileYAML> 
       if (is<HostURL>(hostLocation)) {
         devfileYAML = await getRemoteYAML(devfile.name, hostLocation.url);
       }
-      if (is<HostStack>(hostLocation)) {
-        devfileYAML = await getLocalYAML(devfile.name, hostLocation.stacks);
+      if (is<HostLocal>(hostLocation)) {
+        devfileYAML = await getLocalYAML(devfile.name, hostLocation.local);
       }
     }
   }

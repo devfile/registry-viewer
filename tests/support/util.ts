@@ -21,7 +21,7 @@ const getENVHosts = (): HostList => {
 
   Object.keys(hosts).forEach((host) => {
     if (!is<HostURL>(host)) {
-      throw Error(`The ${location} can only accept "url" or "stacks"`);
+      throw TypeError(`The ${location} can only accept "url"`);
     }
   });
 
@@ -32,7 +32,7 @@ export const getDevfileURLs = (): string => {
   const hosts: HostList = getENVHosts();
 
   if (Object.values(hosts).length > 1) {
-    throw Error('The cypress tests can only accept 1 url');
+    throw TypeError('The cypress tests can only accept 1 url');
   }
 
   const urls = Object.values(hosts).map((host) => {
