@@ -1,7 +1,7 @@
 /* Ignore parserOptions.project warning. 
   This file is only run pre-build */
-import fs from 'fs';
-import path from 'path';
+const fs = require('fs');
+const path = require('path');
 
 const url = process.env.DEVFILE_VIEWER_ROOT ? process.env.DEVFILE_VIEWER_ROOT : '/';
 

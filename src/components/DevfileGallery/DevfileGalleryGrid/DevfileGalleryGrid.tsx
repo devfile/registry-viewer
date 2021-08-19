@@ -1,6 +1,7 @@
 import styles from './DevfileGalleryGrid.module.css';
 import type { Devfile, FilterElem } from 'custom-types';
 import { DevfileGalleryItemWrapper as DevfileGalleryItem } from '@src/components';
+import { serializeURL } from '@src/util/client';
 import Link from 'next/link';
 import { Gallery } from '@patternfly/react-core';
 
@@ -20,14 +21,7 @@ export const DevfileGalleryGrid: React.FC<DevfileGalleryGridProps> = ({
 }: DevfileGalleryGridProps) => (
   <Gallery className={styles.devfileGalleryGrid}>
     {devfiles.map((devfile) => (
-      <Link
-        key={`${devfile.sourceRepo}+${devfile.name}`}
-        href={`/devfiles/${devfile.sourceRepo.replace(/\+/g, '')}+${devfile.name.replace(
-          /\+/g,
-          ''
-        )}`}
-        passHref
-      >
+      <Link key={serializeURL(devfile)} href={`/devfiles/${serializeURL(devfile)}`} passHref>
         <DevfileGalleryItem devfile={devfile} sourceRepos={sourceRepos} />
       </Link>
     ))}

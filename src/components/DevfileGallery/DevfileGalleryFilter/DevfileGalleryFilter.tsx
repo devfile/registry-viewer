@@ -99,7 +99,7 @@ export const DevfileGalleryFilter: React.FC<DevfileGalleryFilterProps> = ({
               <SearchInput
                 className={styles.formGroupElement}
                 data-testid="search-bar-tag"
-                placeholder="Find by tag name"
+                placeholder="Search by tag name"
                 value={tagSearchBarValue}
                 onChange={onSearchChange}
                 onClear={(): void => onSearchChange('')}

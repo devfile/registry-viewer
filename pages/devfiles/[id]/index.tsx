@@ -1,6 +1,7 @@
 import styles from '@src/styles/devfiles/[id]/index.module.css';
 import { Devfile } from 'custom-types';
 import { getMetadataOfDevfiles, getDevfileYAML } from '@src/util/server';
+import { serializeURL } from '@src/util/client';
 import {
   DevfilePageProjects,
   DevfilePageHeader,
@@ -69,9 +70,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 export const getStaticPaths: GetStaticPaths = async () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [devfiles, _] = await getMetadataOfDevfiles();
-  const sourceWithNames = devfiles.map(
-    (devfile) => `${devfile.sourceRepo.replace(/\+/g, '')}+${devfile.name.replace(/\+/g, '')}`
-  );
+  const sourceWithNames = devfiles.map((devfile) => serializeURL(devfile));
   const paths: Path[] = sourceWithNames.map((id) => ({ params: { id } }));
 
   return {
