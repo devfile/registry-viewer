@@ -5,7 +5,17 @@
 }
 
 .cardHeader {
-  margin-bottom: 1rem;
+  display: block;
+}
+
+.cardHeaderSingleSource {
+  float: right;
+  text-align: right;
+}
+
+.cardHeaderMultiSource {
+  display: flex;
+  justify-content: space-between;
 }
 
 .cardImage {

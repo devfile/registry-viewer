@@ -14,8 +14,7 @@ import {
   CardTitle,
   CardBody,
   CardFooter,
-  CardHeader,
-  CardHeaderMain
+  CardHeader
 } from '@patternfly/react-core';
 
 export interface DevfileGalleryProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
@@ -47,25 +46,22 @@ export const DevfileGalleryItem: React.ForwardRefRenderFunction<HTMLElement, Dev
         isHoverable
         data-testid={`card-${devfile.name.replace(/\.| /g, '')}`}
       >
-        <CardHeader>
-          <CardHeaderMain>
-            <TextContent>
-              {sourceRepos.length > 1 ? (
-                <Text className={styles.cardHeader} component={TextVariants.p}>{`${
-                  devfile.sourceRepo
-                } - ${capitalizeFirstLetter(devfile.type)}`}</Text>
-              ) : (
-                <Text className={styles.cardHeader} component={TextVariants.p}>
-                  {capitalizeFirstLetter(devfile.type)}
-                </Text>
-              )}
+        <CardHeader className={styles.cardHeader}>
+          {sourceRepos.length === 1 ? (
+            <TextContent className={styles.cardHeaderSingleSource}>
+              <Text component={TextVariants.p}>{capitalizeFirstLetter(devfile.type)}</Text>
             </TextContent>
-            <Brand
-              src={devfile.icon || devfileLogo}
-              alt={`${devfile.name} icon`}
-              className={styles.cardImage}
-            />
-          </CardHeaderMain>
+          ) : (
+            <TextContent className={styles.cardHeaderMultiSource}>
+              <Text>{capitalizeFirstLetter(devfile.sourceRepo)}</Text>
+              <Text>{capitalizeFirstLetter(devfile.type)}</Text>
+            </TextContent>
+          )}
+          <Brand
+            src={devfile.icon || devfileLogo}
+            alt={`${devfile.name} icon`}
+            className={styles.cardImage}
+          />
         </CardHeader>
         <CardTitle>
           <TextContent>
