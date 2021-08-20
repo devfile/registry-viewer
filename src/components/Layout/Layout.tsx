@@ -34,8 +34,8 @@ export const Layout: React.FC<LayoutProps> = ({ children }: LayoutProps) => {
 
   const nav = (
     <div className={styles.nav}>
-      <Link href="/" data-testid="go-home-button">
-        <a>
+      <Link href="/">
+        <a data-testid="go-home-button">
           <span className={styles.title}>
             <Brand src={devfileLogo} alt="Devfile Registry Logo" className={styles.logo} />
             <TextContent>
