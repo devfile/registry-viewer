@@ -1,5 +1,6 @@
 import styles from './Layout.module.css';
-import { Meta } from '@src/components';
+import type { Link as LinkItem } from 'custom-types';
+import { Footer, Meta } from '@src/components';
 import devfileLogo from '@public/images/devfileLogo.svg';
 import {
   Nav,
@@ -20,7 +21,7 @@ export interface LayoutProps {
   children: React.ReactNode;
 }
 
-const navLinks = [{ name: 'Devfile.io', link: 'https://docs.devfile.io/landing-page' }];
+const navLinks: LinkItem[] = [{ name: 'Devfile.io', link: 'https://docs.devfile.io/landing-page' }];
 
 /**
  * Renders a {@link Layout} React component.
@@ -39,7 +40,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }: LayoutProps) => {
           <span className={styles.title}>
             <Brand src={devfileLogo} alt="Devfile Registry Logo" className={styles.logo} />
             <TextContent>
-              <Text component={TextVariants.h3}>Devfile Registry</Text>
+              <Text component={TextVariants.h1}>Devfile Registry</Text>
             </TextContent>
           </span>
         </a>
@@ -61,12 +62,15 @@ export const Layout: React.FC<LayoutProps> = ({ children }: LayoutProps) => {
   const Header = <PageHeader logoProps={logoProps} topNav={nav} />;
 
   return (
-    <Page header={Header}>
-      <Meta />
-      <PageSection variant={PageSectionVariants.light}>
-        <main>{children}</main>
-      </PageSection>
-    </Page>
+    <>
+      <Page header={Header}>
+        <Meta />
+        <PageSection variant={PageSectionVariants.light} style={{ height: '100%' }}>
+          <main>{children}</main>
+        </PageSection>
+      </Page>
+      <Footer />
+    </>
   );
 };
 Layout.displayName = 'Layout';

@@ -77,4 +77,9 @@ declare module 'custom-types' {
       [key: string]: string;
     };
   }
+
+  export interface Link {
+    name: string;
+    link: string;
+  }
 }
