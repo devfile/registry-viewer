@@ -74,7 +74,7 @@ export class UnsupportedLinkError extends Error {
    * @param link - unsupported link
    */
   public constructor(link: string) {
-    super('Attempted download with unsupported git repo link at ' + link);
+    super(`Attempted download with unsupported git repo link at ${link}`);
     this.name = 'UnsupportedLinkError ';
     Object.setPrototypeOf(this, UnsupportedLinkError.prototype);
   }
@@ -134,7 +134,8 @@ export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
           id: 'toggle-button',
           'aria-label': 'Details',
           'aria-labelledby': 'titleId toggle-button',
-          'aria-expanded': expanded
+          'aria-expanded': expanded,
+          'data-testid': 'toggle-button'
         }}
       >
         <CardTitle>Starter Projects</CardTitle>
@@ -152,7 +153,7 @@ export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
                 starterProjects.map((project) => (
                   <div
                     key={project.name}
-                    data-testid={'projects-selector-item-' + project.name}
+                    data-testid={`projects-selector-item-${project.name}`}
                     onMouseDown={(): void => setSelectedProject(project)}
                     onMouseEnter={(): void => setCurrentlyHoveredProject(project)}
                     className={
@@ -167,6 +168,7 @@ export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
             <div className={styles.display}>
               <DevfilePageProjectDisplay project={currentlyHoveredProject || selectedProject} />
               <Button
+                data-testid="download-button"
                 className={styles.button}
                 isLoading={downloading}
                 onClick={(): Promise<void> => triggerDownload(selectedProject)}
@@ -186,8 +188,10 @@ export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
                   <AlertActionLink
                     onClick={(): Window | null =>
                       window.open(
-                        'https://github.com/devfile/api/issues/new?assignees=&labels=&template=bug_report.md&title=Registry+Viewer+' +
-                          errorAlert.name.replace(' ', '+')
+                        `https://github.com/devfile/api/issues/new?assignees=&labels=&template=bug_report.md&title=Registry+Viewer+${errorAlert.name.replace(
+                          ' ',
+                          '+'
+                        )}`
                       )
                     }
                   >
@@ -245,7 +249,7 @@ export async function downloadSubdirectory(url: string, subdirectory: string): P
   const zip = await JSZip.loadAsync(base64string, { base64: true });
   try {
     const blob = await zip.generateAsync({ type: 'blob' });
-    saveAs(blob, subdirectory + '.zip');
+    saveAs(blob, `${subdirectory}.zip`);
   } catch (error) {
     throw new Error(error.text);
   }
@@ -280,7 +284,7 @@ export function getURLForGit(git: Git): string {
   }
 
   if (url.match(new RegExp('github[.]com'))) {
-    url = url.replace('github.com', 'api.github.com/repos') + '/zipball/'; // remove '.git' from link and convert to api zip link
+    url = `${url.replace('github.com', 'api.github.com/repos')}/zipball/`; // remove '.git' from link and convert to api zip link
   } else {
     throw new UnsupportedLinkError(url);
   }

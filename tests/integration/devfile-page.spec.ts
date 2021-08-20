@@ -68,7 +68,9 @@ describe('Test select', () => {
  * Opens the projects expandable for the current devfile page
  */
 function openProjectsExpandable(): void {
-  cy.get('[data-testid=dev-page-projects]').get('button').click();
+  // eslint-disable-next-line no-console
+  console.log(cy.get('[data-testid=dev-page-projects]'));
+  cy.get('[data-testid=toggle-button]').click();
 }
 
 /**
@@ -78,7 +80,7 @@ function openProjectsExpandable(): void {
 function verifyDownloadOnClick(url: string): void {
   cy.visit(url);
   openProjectsExpandable();
-  cy.get('[data-testid=dev-page-projects]').get('button').last().click();
+  cy.get('[data-testid=download-button]').click();
 }
 
 export {};
