@@ -20,11 +20,7 @@ export interface LayoutProps {
   children: React.ReactNode;
 }
 
-// Local refers to a link that is on the same url as the parent
-const navLinks = [
-  { name: 'Getting Started', link: 'https://docs.devfile.io/landing-page/starting', local: false },
-  { name: 'Docs', link: 'https://docs.devfile.io', local: false }
-];
+const navLinks = [{ name: 'Devfile.io', link: 'https://docs.devfile.io/landing-page' }];
 
 /**
  * Renders a {@link Layout} React component.
@@ -38,44 +34,25 @@ export const Layout: React.FC<LayoutProps> = ({ children }: LayoutProps) => {
 
   const nav = (
     <div className={styles.nav}>
-      <div className={styles.title}>
-        <Brand src={devfileLogo} alt="Devfile Registry Logo" className={styles.logo} />
-        <TextContent>
-          <Text component={TextVariants.h3}>Devfile Registry</Text>
-        </TextContent>
-      </div>
+      <Link href="/" data-testid="go-home-button">
+        <a>
+          <span className={styles.title}>
+            <Brand src={devfileLogo} alt="Devfile Registry Logo" className={styles.logo} />
+            <TextContent>
+              <Text component={TextVariants.h3}>Devfile Registry</Text>
+            </TextContent>
+          </span>
+        </a>
+      </Link>
       <Nav variant="horizontal">
         <NavList>
-          {navLinks.map((navLink) =>
-            navLink.local ? (
-              <NavItem key={navLink.name}>
-                <a>
-                  <Link href={navLink.link}>
-                    <TextContent>
-                      <Text className={styles.navLinkText}>{navLink.name}</Text>
-                    </TextContent>
-                  </Link>
-                </a>
-              </NavItem>
-            ) : (
-              <NavItem key={navLink.name}>
-                <a target="_blank" rel="noreferrer" href={navLink.link}>
-                  <TextContent>
-                    <Text className={styles.navLinkText}>{navLink.name}</Text>
-                  </TextContent>
-                </a>
-              </NavItem>
-            )
-          )}
-          <NavItem>
-            <a>
-              <Link href="/">
-                <TextContent data-testid="go-home-button">
-                  <Text className={styles.navLinkText}>Devfile Registry</Text>
-                </TextContent>
-              </Link>
-            </a>
-          </NavItem>
+          {navLinks.map((navLink) => (
+            <NavItem key={navLink.name}>
+              <a target="_blank" rel="noreferrer" href={navLink.link}>
+                {navLink.name}
+              </a>
+            </NavItem>
+          ))}
         </NavList>
       </Nav>
     </div>
