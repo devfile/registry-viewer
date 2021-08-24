@@ -45,7 +45,9 @@ export const Footer: React.FC = () => (
           <ul>
             {footerLinks.map((footerLink) => (
               <li key={footerLink.name}>
-                <a href={footerLink.link}>{footerLink.name}</a>
+                <a target="_blank" rel="noreferrer" href={footerLink.link}>
+                  {footerLink.name}
+                </a>
               </li>
             ))}
           </ul>

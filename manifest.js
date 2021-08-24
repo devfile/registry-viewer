@@ -28,7 +28,7 @@ const manifest = {
 };
 
 function main() {
-  const manifestJSON = JSON.stringify(manifest);
+  const manifestJSON = JSON.stringify(manifest, null, 2);
   const filePath = path.join(process.cwd(), 'public', 'manifest.json');
   fs.writeFileSync(filePath, manifestJSON, { encoding: 'utf8' });
 }
