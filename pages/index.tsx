@@ -1,9 +1,9 @@
 import type { Devfile, FilterElem } from 'custom-types';
 import { getMetadataOfDevfiles } from '@src/util/server';
 import {
-  DevfileGalleryFilter,
-  DevfileGalleryGrid,
-  DevfileGallerySearchBar,
+  HomeGalleryFilter,
+  HomeGalleryGrid,
+  HomeGallerySearchBar,
   ErrorBanner
 } from '@src/components';
 import { InferGetStaticPropsType, GetStaticProps } from 'next';
@@ -42,21 +42,21 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
     <>
       <ErrorBanner errors={errors} />
       <Grid hasGutter>
-        <GridItem xl2={3} xl={4} lg={5} md={6} sm={12} span={12}>
-          <DevfileGalleryFilter
+        <GridItem xl2={2} xl={3} lg={4} md={6} sm={12} span={12}>
+          <HomeGalleryFilter
             tagsStateWithFreq={tagsStateWithFreq}
             typesStateWithFreq={typesStateWithFreq}
             setTagsStateWithFreq={setTagsStateWithFreq}
             setTypesStateWithFreq={setTypesStateWithFreq}
           />
         </GridItem>
-        <GridItem xl2={9} xl={8} lg={7} md={6} sm={12} span={12}>
-          <DevfileGallerySearchBar
+        <GridItem xl2={10} xl={9} lg={8} md={6} sm={12} span={12}>
+          <HomeGallerySearchBar
             devfileCount={filteredDevfiles.length}
             onSearchBarChange={onSearchBarChange}
             searchBarValue={searchBarValue}
           />
-          <DevfileGalleryGrid devfiles={filteredDevfiles} sourceRepos={sourceRepos} />
+          <HomeGalleryGrid devfiles={filteredDevfiles} sourceRepos={sourceRepos} />
         </GridItem>
       </Grid>
     </>

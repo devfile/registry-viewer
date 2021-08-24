@@ -1,15 +1,10 @@
-.nav {
-  display: flex;
-  justify-content: space-between;
-  flex: 1 1 0%;
+.pageContainer {
+  position: relative;
+  min-height: 100vh;
 }
 
-.title {
-  display: flex;
-  align-items: center;
-}
-
-.logo {
-  height: 3rem;
-  margin-right: 0.75rem;
+.contentWrap {
+  display: block;
+  padding-bottom: 12rem;
+  background-color: var(--pf-global--BackgroundColor--100) !important;
 }
