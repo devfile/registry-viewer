@@ -23,16 +23,16 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
   const [searchBarValue, setSearchBarValue] = useState<string>('');
   const [filteredDevfiles, setFilteredDevfiles] = useState<Devfile[]>(devfiles);
 
-  const [tagsStateWithFreq, setTagsStateWithFreq] = useState<FilterElem[]>(tags);
-  const [typesStateWithFreq, setTypesStateWithFreq] = useState<FilterElem[]>(types);
+  const [tagFilterElems, setTagFilterElems] = useState<FilterElem[]>(tags);
+  const [typeFilterElems, setTypeFilterElems] = useState<FilterElem[]>(types);
 
   useEffect(() => {
     let filteredDevfiles = filterDevfilesOnSearchBar(devfiles, searchBarValue);
-    filteredDevfiles = filterDevfilesOnTags(filteredDevfiles, tagsStateWithFreq);
-    filteredDevfiles = filterDevfilesOnTypes(filteredDevfiles, typesStateWithFreq);
+    filteredDevfiles = filterDevfilesOnTags(filteredDevfiles, tagFilterElems);
+    filteredDevfiles = filterDevfilesOnTypes(filteredDevfiles, typeFilterElems);
 
     setFilteredDevfiles(filteredDevfiles);
-  }, [tagsStateWithFreq, typesStateWithFreq, searchBarValue]);
+  }, [tagFilterElems, typeFilterElems, searchBarValue]);
 
   const onSearchBarChange = (value: string): void => {
     setSearchBarValue(value);
@@ -44,10 +44,10 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
       <Grid hasGutter>
         <GridItem xl2={2} xl={3} lg={4} md={6} sm={12} span={12}>
           <HomeGalleryFilter
-            tagsStateWithFreq={tagsStateWithFreq}
-            typesStateWithFreq={typesStateWithFreq}
-            setTagsStateWithFreq={setTagsStateWithFreq}
-            setTypesStateWithFreq={setTypesStateWithFreq}
+            tagFilterElems={tagFilterElems}
+            typeFilterElems={typeFilterElems}
+            setTagFilterElems={setTagFilterElems}
+            setTypeFilterElems={setTypeFilterElems}
           />
         </GridItem>
         <GridItem xl2={10} xl={9} lg={8} md={6} sm={12} span={12}>
@@ -119,13 +119,22 @@ const filterDevfilesOnTypes = (
   return devfilesFilteredOnTypes;
 };
 
-const getStateAndStringFreq = (array: string[]): FilterElem[] => {
-  array.sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'accent' }));
+const getFilterElemArr = (
+  devfiles: Devfile[],
+  property: keyof Pick<Devfile, 'type' | 'tags' | 'sourceRepo'>
+): FilterElem[] => {
+  let values = devfiles?.map((devfile) => devfile[property]);
+
+  if (property === 'tags') {
+    values = values.flat();
+  }
+
+  (values as string[]).sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'accent' }));
 
   const filterElemArr: FilterElem[] = [];
   let prevElem = '';
 
-  for (const currentElem of array) {
+  for (const currentElem of values as string[]) {
     if (currentElem) {
       if (currentElem !== prevElem) {
         filterElemArr.push({ value: currentElem, state: false, freq: 1 });
@@ -139,30 +148,6 @@ const getStateAndStringFreq = (array: string[]): FilterElem[] => {
   return filterElemArr;
 };
 
-const getTagsStateWithFreq = (devfiles: Devfile[]): FilterElem[] => {
-  const tagValues = devfiles?.map((devfile) => devfile?.tags).flat() as string[];
-
-  const tagsStateWithFreq = getStateAndStringFreq(tagValues);
-
-  return tagsStateWithFreq;
-};
-
-const getTypesStateWithFreq = (devfiles: Devfile[]): FilterElem[] => {
-  const typeValues = devfiles?.map((devfile) => devfile.type);
-
-  const tagsStateWithFreq = getStateAndStringFreq(typeValues);
-
-  return tagsStateWithFreq;
-};
-
-const getSourceReposStateWithFreq = (devfiles: Devfile[]): FilterElem[] => {
-  const sourceRepoValues = devfiles?.map((devfile) => devfile.sourceRepo);
-
-  const sourceReposStateWithFreq = getStateAndStringFreq(sourceRepoValues);
-
-  return sourceReposStateWithFreq;
-};
-
 export const getStaticProps: GetStaticProps = async () => {
   const [unsortedDevfiles, errors] = await getMetadataOfDevfiles();
 
@@ -172,9 +157,9 @@ export const getStaticProps: GetStaticProps = async () => {
     })
   );
 
-  const tags = getTagsStateWithFreq(devfiles);
-  const types = getTypesStateWithFreq(devfiles);
-  const sourceRepos = getSourceReposStateWithFreq(devfiles);
+  const tags = getFilterElemArr(devfiles, 'tags');
+  const types = getFilterElemArr(devfiles, 'type');
+  const sourceRepos = getFilterElemArr(devfiles, 'sourceRepo');
 
   return {
     props: {

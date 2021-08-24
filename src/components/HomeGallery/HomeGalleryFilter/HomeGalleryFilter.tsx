@@ -14,10 +14,10 @@ import {
 import { useState, useEffect } from 'react';
 
 export interface HomeGalleryFilterProps {
-  tagsStateWithFreq: FilterElem[];
-  typesStateWithFreq: FilterElem[];
-  setTagsStateWithFreq: Dispatch<SetStateAction<FilterElem[]>>;
-  setTypesStateWithFreq: Dispatch<SetStateAction<FilterElem[]>>;
+  tagFilterElems: FilterElem[];
+  typeFilterElems: FilterElem[];
+  setTagFilterElems: Dispatch<SetStateAction<FilterElem[]>>;
+  setTypeFilterElems: Dispatch<SetStateAction<FilterElem[]>>;
 }
 
 /**
@@ -26,16 +26,16 @@ export interface HomeGalleryFilterProps {
  * @returns `<DevfileFilter tagsStateWithFreq={tagsStateWithFreq} typesStateWithFreq={typesStateWithFreq} setTagsStateWithFreq={setTagsStateWithFreq} setTypesStateWithFreq={setTypesStateWithFreq}/>`
  */
 export const HomeGalleryFilter: React.FC<HomeGalleryFilterProps> = ({
-  tagsStateWithFreq,
-  typesStateWithFreq,
-  setTagsStateWithFreq,
-  setTypesStateWithFreq
+  tagFilterElems,
+  typeFilterElems,
+  setTagFilterElems,
+  setTypeFilterElems
 }: HomeGalleryFilterProps) => {
   const [tagSearchBarValue, setTagSearchBarValue] = useState('');
 
   useEffect(() => {
-    setTagsStateWithFreq(sortFilterDataArr(tagsStateWithFreq));
-  }, [tagsStateWithFreq]);
+    setTagFilterElems(sortFilterDataArr(tagFilterElems));
+  }, [tagFilterElems]);
 
   const onCheckboxTagsChange = (
     checked: boolean,
@@ -45,11 +45,11 @@ export const HomeGalleryFilter: React.FC<HomeGalleryFilterProps> = ({
     const state: boolean = (target as HTMLInputElement).checked;
     const value: string = (target as HTMLInputElement).name;
 
-    const index: number = tagsStateWithFreq.findIndex((elem) => elem.value === value);
+    const index: number = tagFilterElems.findIndex((elem) => elem.value === value);
 
-    const copy: FilterElem[] = [...tagsStateWithFreq];
+    const copy: FilterElem[] = [...tagFilterElems];
     copy[index].state = state;
-    setTagsStateWithFreq(copy);
+    setTagFilterElems(copy);
   };
 
   const onCheckboxTypesChange = (
@@ -60,11 +60,11 @@ export const HomeGalleryFilter: React.FC<HomeGalleryFilterProps> = ({
     const state: boolean = (target as HTMLInputElement).checked;
     const value: string = (target as HTMLInputElement).name;
 
-    const index: number = typesStateWithFreq.findIndex((elem) => elem.value === value);
+    const index: number = typeFilterElems.findIndex((elem) => elem.value === value);
 
-    const copy: FilterElem[] = [...typesStateWithFreq];
+    const copy: FilterElem[] = [...typeFilterElems];
     copy[index].state = state;
-    setTypesStateWithFreq(copy);
+    setTypeFilterElems(copy);
   };
 
   const onSearchChange = (value: string): void => {
@@ -77,9 +77,9 @@ export const HomeGalleryFilter: React.FC<HomeGalleryFilterProps> = ({
         <Text component={TextVariants.h2}>Filters</Text>
       </TextContent>
       <Form>
-        {typesStateWithFreq.length > 1 && (
+        {typeFilterElems.length > 1 && (
           <FormGroup fieldId="type-selector" label="Types" hasNoPaddingTop>
-            {typesStateWithFreq.map((type) => (
+            {typeFilterElems.map((type) => (
               <div key={type.value} className={styles.formGroupElement}>
                 <Checkbox
                   data-testid={`type-${type.value.replace(/\.| /g, '')}`}
@@ -93,9 +93,9 @@ export const HomeGalleryFilter: React.FC<HomeGalleryFilterProps> = ({
             ))}
           </FormGroup>
         )}
-        {tagsStateWithFreq.length > 1 && (
+        {tagFilterElems.length > 1 && (
           <FormGroup fieldId="tag-selector" label="Tags" hasNoPaddingTop>
-            {tagsStateWithFreq.length > 1 && (
+            {tagFilterElems.length > 1 && (
               <SearchInput
                 className={styles.formGroupElement}
                 data-testid="search-bar-tag"
@@ -103,11 +103,11 @@ export const HomeGalleryFilter: React.FC<HomeGalleryFilterProps> = ({
                 value={tagSearchBarValue}
                 onChange={onSearchChange}
                 onClear={(): void => onSearchChange('')}
-                resultsCount={getFilterResultCount(tagsStateWithFreq, tagSearchBarValue)}
+                resultsCount={getFilterResultCount(tagFilterElems, tagSearchBarValue)}
               />
             )}
             <div className={styles.tagBox}>
-              {tagsStateWithFreq
+              {tagFilterElems
                 .filter((tag) => tag.value.toLowerCase().includes(tagSearchBarValue.toLowerCase()))
                 .map((tag) => (
                   <div key={tag.value} className={styles.formGroupElement}>
