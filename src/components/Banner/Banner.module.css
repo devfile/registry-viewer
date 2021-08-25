@@ -2,8 +2,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--pf-global--BackgroundColor--dark-200);
   padding: 2rem 4rem;
+  background-color: var(--pf-global--BackgroundColor--dark-200);
 }
 
 .text {

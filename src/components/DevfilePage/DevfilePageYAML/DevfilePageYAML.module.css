@@ -4,10 +4,12 @@
   margin: auto;
   margin-top: 30px;
   margin-bottom: 30px;
+  background-color: var(--pf-global--BackgroundColor--100);
 }
 
 .cardHeader {
   padding: 10px;
+  border-bottom: 1px solid var(--pf-global--Color--200);
 }
 
 .cardBody {

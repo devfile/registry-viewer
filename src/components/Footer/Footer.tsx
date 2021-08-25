@@ -1,5 +1,6 @@
 import styles from './Footer.module.css';
 import type { Link } from 'custom-types';
+import { Wave } from '@src/components';
 import devfileLogo from '@public/images/devfileLogo.svg';
 import { Grid, GridItem, Text, TextContent, TextVariants, Brand } from '@patternfly/react-core';
 
@@ -11,6 +12,7 @@ const footerLinks: Link[] = [
 export const Footer: React.FC = () => (
   <footer>
     <div className={styles.footer}>
+      <Wave fill="darker" backgroundColor="light" flip={true} />
       <Grid className={styles.footerGrid}>
         <GridItem span={12} sm={6} className={styles.footerGridItem}>
           <div className={styles.title}>
