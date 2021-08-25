@@ -8,18 +8,16 @@
   display: block;
 }
 
-.cardHeaderSingleSource {
-  float: right;
-  text-align: right;
-}
-
-.cardHeaderMultiSource {
+.cardHeaderDisplay {
   display: flex;
   justify-content: space-between;
 }
 
 .cardImage {
-  height: 2.5rem;
+  width: auto;
+  height: auto;
+  max-width: 6rem;
+  max-height: 3rem;
 }
 
 .cardBody {
@@ -29,4 +27,8 @@
 
 .cardFooterTag {
   margin: 0.125rem;
+}
+
+.text {
+  text-align: right;
 }

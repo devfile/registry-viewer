@@ -46,21 +46,23 @@ export const HomeGalleryItem: React.ForwardRefRenderFunction<HTMLElement, HomeGa
       data-testid={`card-${devfile.name.replace(/\.| /g, '')}`}
     >
       <CardHeader className={styles.cardHeader}>
-        {sourceRepos.length === 1 ? (
-          <TextContent className={styles.cardHeaderSingleSource}>
-            <Text component={TextVariants.p}>{capitalizeFirstLetter(devfile.type)}</Text>
-          </TextContent>
-        ) : (
-          <TextContent className={styles.cardHeaderMultiSource}>
-            <Text>{capitalizeFirstLetter(devfile.sourceRepo)}</Text>
-            <Text>{capitalizeFirstLetter(devfile.type)}</Text>
-          </TextContent>
-        )}
-        <Brand
-          src={devfile.icon || devfileLogo}
-          alt={`${devfile.name} icon`}
-          className={styles.cardImage}
-        />
+        <div className={styles.cardHeaderDisplay}>
+          <Brand
+            src={devfile.icon || devfileLogo}
+            alt={`${devfile.name} icon`}
+            className={styles.cardImage}
+          />
+          {sourceRepos.length === 1 ? (
+            <TextContent>
+              <Text className={styles.text}>{capitalizeFirstLetter(devfile.type)}</Text>
+            </TextContent>
+          ) : (
+            <TextContent>
+              <Text className={styles.text}>{capitalizeFirstLetter(devfile.sourceRepo)}</Text>
+              <Text className={styles.text}>{capitalizeFirstLetter(devfile.type)}</Text>
+            </TextContent>
+          )}
+        </div>
       </CardHeader>
       <CardTitle>
         <TextContent>
