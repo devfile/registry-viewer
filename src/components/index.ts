@@ -1,3 +1,4 @@
+export * from './Banner';
 export * from './HomeGallery';
 export * from './DevfilePage';
 export * from './ErrorBanner';
