@@ -31,4 +31,5 @@
 
 .text {
   text-align: right;
+  color: var(--pf-global--Color--200);
 }
