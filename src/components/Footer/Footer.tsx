@@ -12,7 +12,7 @@ const footerLinks: Link[] = [
 export const Footer: React.FC = () => (
   <footer>
     <div className={styles.footer}>
-      <Wave fill="darker" backgroundColor="light" flip={true} />
+      <Wave fill="darker" backgroundColor="light" flipX={true} flipY={true} />
       <Grid className={styles.footerGrid}>
         <GridItem span={12} sm={6} className={styles.footerGridItem}>
           <div className={styles.title}>

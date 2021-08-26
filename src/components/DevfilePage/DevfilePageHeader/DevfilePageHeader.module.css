@@ -38,7 +38,8 @@
   -moz-box-shadow: var(--pf-global--BoxShadow--sm);
   -webkit-box-shadow: var(--pf-global--BoxShadow--sm);
   box-shadow: var(--pf-global--BoxShadow--sm);
-  border-radius: var(-pf-global--BorderRadius--sm);
+  border-radius: 1rem;
+  border: 1px solid rgb(175, 175, 175);
   display: flex;
   padding: 3%;
   background-color: var(--pf-global--BackgroundColor--100);

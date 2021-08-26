@@ -38,6 +38,8 @@
   margin: auto;
   margin-top: 30px;
   margin-bottom: 30px;
+  border-radius: 1rem;
+  border: 1px solid rgb(175, 175, 175);
 }
 
 .cardBody {

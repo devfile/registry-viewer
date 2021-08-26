@@ -86,7 +86,7 @@ export const HomeGalleryFilter: React.FC<HomeGalleryFilterProps> = ({
                   isChecked={type.state}
                   onChange={onCheckboxTypesChange}
                   id={`types-${type.value}`}
-                  label={capitalizeFirstLetter(type.value)}
+                  label={`${capitalizeFirstLetter(type.value)} (${type.freq})`}
                   name={type.value}
                 />
               </div>
@@ -116,7 +116,7 @@ export const HomeGalleryFilter: React.FC<HomeGalleryFilterProps> = ({
                       isChecked={tag.state}
                       onChange={onCheckboxTagsChange}
                       id={`types-${tag.value}`}
-                      label={tag.value}
+                      label={`${tag.value} (${tag.freq})`}
                       name={tag.value}
                     />
                   </div>

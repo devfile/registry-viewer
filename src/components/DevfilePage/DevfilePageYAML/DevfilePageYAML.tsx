@@ -21,7 +21,7 @@ export interface DevfilePageYAMLProps {
 export const DevfilePageYAML: React.FC<DevfilePageYAMLProps> = ({
   devfileYAML
 }: DevfilePageYAMLProps) => (
-  <Card data-testid="dev-page-yaml" isRounded className={styles.yamlCard}>
+  <Card data-testid="dev-page-yaml" className={styles.yamlCard}>
     <CardHeader className={styles.cardHeader}>devfile.yaml</CardHeader>
     <CardBody className={styles.cardBody}>
       <SyntaxHighlighter language="yaml" showLineNumbers style={style}>

@@ -13,14 +13,13 @@ export const Banner: React.FC = () => {
           <div className={styles.banner}>
             <TextContent>
               <Text className={styles.text} component={TextVariants.h1}>
-                Welcome to Devfile Registry
+                Welcome to the Devfile.io Community Devfile Registry
               </Text>
               <Text className={styles.text} component={TextVariants.h3}>
                 Browse devfile stacks and samples
               </Text>
             </TextContent>
           </div>
-          <Wave fill="dark" backgroundColor="light" />
         </>
       ) : (
         <Wave fill="darker" backgroundColor="light" />

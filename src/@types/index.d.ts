@@ -82,4 +82,18 @@ declare module 'custom-types' {
     name: string;
     link: string;
   }
+
+  export type Color = 'lighter' | 'light' | 'dark' | 'darker';
+
+  export interface ColorMap {
+    name: Color;
+    value: string;
+  }
+
+  export interface Transition {
+    fill: Color;
+    backgroundColor: Color;
+    flipX?: boolean;
+    flipY?: boolean;
+  }
 }

@@ -1,30 +1,13 @@
 import styles from './Wave.module.css';
+import type { Transition } from 'custom-types';
+import { getFillStyle, getTransitionStyles } from '@src/util/client';
 
-export type Color = 'lighter' | 'light' | 'dark' | 'darker';
+export type WaveProps = Transition;
 
-export interface WaveProps {
-  fill: Color;
-  backgroundColor: Color;
-  flip?: boolean;
-}
+export const Wave: React.FC<WaveProps> = ({ fill, backgroundColor, flipX, flipY }: WaveProps) => {
+  const fillStyle = getFillStyle(fill);
 
-const colors = [
-  { name: 'lighter', value: '--pf-global--BackgroundColor--100' },
-  { name: 'light', value: '--pf-global--BackgroundColor--200' },
-  { name: 'dark', value: '--pf-global--BackgroundColor--dark-200' },
-  { name: 'darker', value: '--pf-global--BackgroundColor--dark-100' }
-];
-
-export const Wave: React.FC<WaveProps> = ({ fill, backgroundColor, flip }: WaveProps) => {
-  const fillStyle = { fill: `var(${colors.find((e) => e.name === fill)!.value})` };
-
-  let waveStyle = {
-    backgroundColor: `var(${colors.find((e) => e.name === backgroundColor)!.value})`
-  };
-
-  if (flip) {
-    waveStyle = { ...waveStyle, ...{ transform: 'rotate(180deg)' } };
-  }
+  const waveStyle = getTransitionStyles(backgroundColor, !!flipX, !!flipY);
 
   return (
     <div className={styles.wave} style={waveStyle}>

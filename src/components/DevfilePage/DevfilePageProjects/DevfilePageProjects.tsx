@@ -126,7 +126,7 @@ export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
   }
 
   return (
-    <Card data-testid="dev-page-projects" isExpanded={expanded} isRounded className={styles.card}>
+    <Card data-testid="dev-page-projects" isExpanded={expanded} className={styles.card}>
       <CardHeader
         onExpand={(): void => setExpanded(!expanded)}
         isToggleRightAligned
