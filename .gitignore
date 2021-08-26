@@ -45,3 +45,5 @@ package-lock.json
 
 /docs
 /stacks
+
+/config/devfile-registry-hosts.json
