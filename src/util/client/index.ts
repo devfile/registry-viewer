@@ -14,6 +14,11 @@ export const serializeURL = (devfile: Devfile): string =>
   `${devfile.sourceRepo.replace(/\+/g, '')}+${devfile.name.replace(/\+/g, '')}`;
 
 /**
+ * Serializes the devfile data-testid (Removes any . and space (' ') symbols)
+ */
+export const serializeDataTestid = (value: string): string => value.replace(/\.| /g, '');
+
+/**
  * Color array for the transition components
  */
 export const colors: ColorMap[] = [

@@ -1,7 +1,7 @@
 import styles from './HomeGalleryFilter.module.css';
 import type { FilterElem } from 'custom-types';
 import type { Dispatch, SetStateAction } from 'react';
-import { capitalizeFirstLetter } from '@src/util/client';
+import { capitalizeFirstLetter, serializeDataTestid } from '@src/util/client';
 import {
   Checkbox,
   Form,
@@ -16,8 +16,10 @@ import { useState, useEffect } from 'react';
 export interface HomeGalleryFilterProps {
   tagFilterElems: FilterElem[];
   typeFilterElems: FilterElem[];
+  sourceRepoFilterElems: FilterElem[];
   setTagFilterElems: Dispatch<SetStateAction<FilterElem[]>>;
   setTypeFilterElems: Dispatch<SetStateAction<FilterElem[]>>;
+  setSourceRepoFilterElems: Dispatch<SetStateAction<FilterElem[]>>;
 }
 
 /**
@@ -28,8 +30,10 @@ export interface HomeGalleryFilterProps {
 export const HomeGalleryFilter: React.FC<HomeGalleryFilterProps> = ({
   tagFilterElems,
   typeFilterElems,
+  sourceRepoFilterElems,
   setTagFilterElems,
-  setTypeFilterElems
+  setTypeFilterElems,
+  setSourceRepoFilterElems
 }: HomeGalleryFilterProps) => {
   const [tagSearchBarValue, setTagSearchBarValue] = useState('');
 
@@ -67,6 +71,21 @@ export const HomeGalleryFilter: React.FC<HomeGalleryFilterProps> = ({
     setTypeFilterElems(copy);
   };
 
+  const onCheckboxSourceRepoChange = (
+    checked: boolean,
+    event: React.FormEvent<HTMLInputElement>
+  ): void => {
+    const target: EventTarget = event.target;
+    const state: boolean = (target as HTMLInputElement).checked;
+    const value: string = (target as HTMLInputElement).name;
+
+    const index: number = sourceRepoFilterElems.findIndex((elem) => elem.value === value);
+
+    const copy: FilterElem[] = [...sourceRepoFilterElems];
+    copy[index].state = state;
+    setSourceRepoFilterElems(copy);
+  };
+
   const onSearchChange = (value: string): void => {
     setTagSearchBarValue(value);
   };
@@ -77,12 +96,28 @@ export const HomeGalleryFilter: React.FC<HomeGalleryFilterProps> = ({
         <Text component={TextVariants.h2}>Filters</Text>
       </TextContent>
       <Form>
+        {sourceRepoFilterElems.length > 1 && (
+          <FormGroup fieldId="source-repo-selector" label="Source Repositories" hasNoPaddingTop>
+            {sourceRepoFilterElems.map((sourceRepo) => (
+              <div key={sourceRepo.value} className={styles.formGroupElement}>
+                <Checkbox
+                  data-testid={`source-repo-${serializeDataTestid(sourceRepo.value)}`}
+                  isChecked={sourceRepo.state}
+                  onChange={onCheckboxSourceRepoChange}
+                  id={`source-repo-${sourceRepo.value}`}
+                  label={`${sourceRepo.value} (${sourceRepo.freq})`}
+                  name={sourceRepo.value}
+                />
+              </div>
+            ))}
+          </FormGroup>
+        )}
         {typeFilterElems.length > 1 && (
           <FormGroup fieldId="type-selector" label="Types" hasNoPaddingTop>
             {typeFilterElems.map((type) => (
               <div key={type.value} className={styles.formGroupElement}>
                 <Checkbox
-                  data-testid={`type-${type.value.replace(/\.| /g, '')}`}
+                  data-testid={`type-${serializeDataTestid(type.value)}`}
                   isChecked={type.state}
                   onChange={onCheckboxTypesChange}
                   id={`types-${type.value}`}
@@ -112,7 +147,7 @@ export const HomeGalleryFilter: React.FC<HomeGalleryFilterProps> = ({
                 .map((tag) => (
                   <div key={tag.value} className={styles.formGroupElement}>
                     <Checkbox
-                      data-testid={`tag-${tag.value.replace(/\.| /g, '')}`}
+                      data-testid={`tag-${serializeDataTestid(tag.value)}`}
                       isChecked={tag.state}
                       onChange={onCheckboxTagsChange}
                       id={`types-${tag.value}`}

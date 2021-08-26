@@ -1,6 +1,6 @@
 import styles from '@src/styles/devfiles/[id]/index.module.css';
 import { Devfile } from 'custom-types';
-import { getMetadataOfDevfiles, getDevfileYAML } from '@src/util/server';
+import { getMetadataOfDevfiles, getDevfileYAML, getFilterElemArr } from '@src/util/server';
 import { serializeURL } from '@src/util/client';
 import {
   DevfilePageProjects,
@@ -28,11 +28,16 @@ const DevfilePage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
   devfile,
   devfileYAML,
   devfileJSON,
+  sourceRepos,
   errors
 }: InferGetStaticPropsType<typeof getStaticProps>) => (
   <div className={styles.devfilePage}>
     <ErrorBanner errors={errors} />
-    <DevfilePageHeader devfileMetadata={devfileJSON?.metadata} devfile={devfile} />
+    <DevfilePageHeader
+      devfileMetadata={devfileJSON?.metadata}
+      devfile={devfile}
+      sourceRepos={sourceRepos}
+    />
     {devfileJSON?.starterProjects?.length && devfile.type === 'stack' && (
       <DevfilePageProjects starterProjects={devfileJSON.starterProjects} />
     )}
@@ -53,11 +58,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   const errors = [...devfileErrors, ...yamlErrors];
 
+  const sourceRepos = getFilterElemArr(devfiles, 'sourceRepo');
+
   return {
     props: {
       devfile,
       devfileYAML,
       devfileJSON,
+      sourceRepos,
       errors
     },
     // Next.js will attempt to re-generate the page:

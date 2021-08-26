@@ -1,7 +1,8 @@
 import styles from './DevfilePageHeader.module.css';
-import { Devfile } from 'custom-types';
+import { Devfile, FilterElem } from 'custom-types';
 import devfileLogo from '@public/images/devfileLogo.svg';
 import { DevfilePageHeaderTags } from '@src/components';
+import { capitalizeFirstLetter } from '@src/util/client';
 import { Brand, Text, TextContent, TextVariants } from '@patternfly/react-core';
 
 /**
@@ -14,6 +15,7 @@ export interface DevfilePageHeaderProps {
   devfileMetadata?: {
     [key: string]: string;
   };
+  sourceRepos: FilterElem[];
 }
 
 /**
@@ -23,7 +25,8 @@ export interface DevfilePageHeaderProps {
  */
 export const DevfilePageHeader: React.FC<DevfilePageHeaderProps> = ({
   devfile,
-  devfileMetadata
+  devfileMetadata,
+  sourceRepos
 }: DevfilePageHeaderProps) => {
   const devfileMetaInclude = ['projectType', 'version', 'language']; // types to include in metadata from index
 
@@ -38,11 +41,13 @@ export const DevfilePageHeader: React.FC<DevfilePageHeaderProps> = ({
             className={styles.logo}
           />
           <TextContent className={styles.types}>
-            <Text data-testid="source-repo" className={styles.sourceRepo}>
-              {devfile.sourceRepo}
-            </Text>
+            {sourceRepos.length > 1 && (
+              <Text data-testid="source-repo" className={styles.sourceRepo}>
+                {devfile.sourceRepo}
+              </Text>
+            )}
             <Text data-testid="type" className={styles.type}>
-              {devfile.type}
+              {capitalizeFirstLetter(devfile.type)}
             </Text>
           </TextContent>
         </div>

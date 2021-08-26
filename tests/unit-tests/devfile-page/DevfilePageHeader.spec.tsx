@@ -1,4 +1,4 @@
-import type { Devfile } from 'custom-types';
+import type { Devfile, FilterElem } from 'custom-types';
 import type { ReactWrapper } from 'enzyme';
 import { DevfilePageHeader, DevfilePageHeaderTags } from '@src/components';
 import devfileLogo from '@public/images/devfileLogo.svg';
@@ -19,13 +19,15 @@ import { mount } from 'enzyme';
  *     git.remotes: defined, undefined
  */
 
+const sourceRepos: FilterElem[] = [{ value: 'Community', state: false, freq: 1 }];
+
 const baseDevfile: Devfile = {
   name: 'java-maven',
   displayName: 'Maven Java',
   type: 'stack',
   projectType: 'maven',
   language: 'java',
-  sourceRepo: 'community'
+  sourceRepo: 'Community'
 };
 
 const propStackValues: {
@@ -101,7 +103,9 @@ describe('<Header />', () => {
 
   const numOfInheritedIDs = 2; // IDs of text and brand components are passed to children
 
-  const wrapper = mount(<DevfilePageHeader devfile={propStackValues[0].devfile} />);
+  const wrapper = mount(
+    <DevfilePageHeader devfile={propStackValues[0].devfile} sourceRepos={sourceRepos} />
+  );
 
   // check content in header except website (for stacks) and git repo (for samples)
   function checkHeaderContent(devfile: Devfile): void {
