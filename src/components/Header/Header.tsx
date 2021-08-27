@@ -12,7 +12,7 @@ import {
 } from '@patternfly/react-core';
 import Link from 'next/link';
 
-const navLinks: LinkItem[] = [{ name: 'Devfile.io', link: 'https://docs.devfile.io/landing-page' }];
+const navLinks: LinkItem[] = [{ name: 'Devfile.io', link: 'https://docs.devfile.io/' }];
 
 export const Header: React.FC = () => (
   <header>

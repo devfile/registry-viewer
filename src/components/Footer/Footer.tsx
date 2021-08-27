@@ -5,8 +5,8 @@ import devfileLogo from '@public/images/devfileLogo.svg';
 import { Grid, GridItem, Text, TextContent, TextVariants, Brand } from '@patternfly/react-core';
 
 const footerLinks: Link[] = [
-  { name: 'Devfile.io', link: 'https://docs.devfile.io/landing-page' },
-  { name: 'GitHub', link: 'https://github.com/devfile' }
+  { name: 'Devfile.io', link: 'https://docs.devfile.io/' },
+  { name: 'GitHub', link: 'https://github.com/devfile/registry' }
 ];
 
 export const Footer: React.FC = () => (
