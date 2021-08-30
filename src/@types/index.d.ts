@@ -96,4 +96,12 @@ declare module 'custom-types' {
     flipX?: boolean;
     flipY?: boolean;
   }
+
+  export interface LayoutText {
+    title: string;
+    bannerTitle: string;
+    bannerBody: string;
+    headerLinks: Link[];
+    footerLinks: Link[];
+  }
 }

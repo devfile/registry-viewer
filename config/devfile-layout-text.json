@@ -1,0 +1,10 @@
+{
+  "title": "Devfile Registry",
+  "bannerTitle": "Welcome to the Devfile.io Community Devfile Registry",
+  "bannerBody": "Browse devfile stacks and samples",
+  "headerLinks": [{ "name": "Devfile.io", "link": "https://docs.devfile.io/" }],
+  "footerLinks": [
+    { "name": "Devfile.io", "link": "https://docs.devfile.io/" },
+    { "name": "GitHub", "link": "https://github.com/devfile/registry" }
+  ]
+}

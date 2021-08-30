@@ -1,6 +1,7 @@
 import styles from './Header.module.css';
-import type { Link as LinkItem } from 'custom-types';
+import type { LayoutText } from 'custom-types';
 import devfileLogo from '@public/images/devfileLogo.svg';
+import _layoutText from '../../../config/devfile-layout-text.json';
 import {
   Nav,
   NavItem,
@@ -12,7 +13,7 @@ import {
 } from '@patternfly/react-core';
 import Link from 'next/link';
 
-const navLinks: LinkItem[] = [{ name: 'Devfile.io', link: 'https://docs.devfile.io/' }];
+const layoutText = _layoutText as LayoutText;
 
 export const Header: React.FC = () => (
   <header>
@@ -23,7 +24,7 @@ export const Header: React.FC = () => (
             <Brand src={devfileLogo} alt="Devfile Registry Logo" className={styles.logo} />
             <TextContent>
               <Text className={styles.text} component={TextVariants.h1}>
-                Devfile Registry
+                {layoutText.title}
               </Text>
             </TextContent>
           </span>
@@ -31,12 +32,12 @@ export const Header: React.FC = () => (
       </Link>
       <Nav variant="horizontal">
         <NavList>
-          {navLinks.map((navLink) => (
-            <NavItem key={navLink.name}>
-              <a target="_blank" rel="noreferrer" href={navLink.link}>
+          {layoutText.headerLinks.map((headerLink) => (
+            <NavItem key={headerLink.name}>
+              <a target="_blank" rel="noreferrer" href={headerLink.link}>
                 <TextContent>
                   <Text className={styles.text} component={TextVariants.h3}>
-                    {navLink.name}
+                    {headerLink.name}
                   </Text>
                 </TextContent>
               </a>

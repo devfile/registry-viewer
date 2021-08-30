@@ -1,13 +1,11 @@
 import styles from './Footer.module.css';
-import type { Link } from 'custom-types';
+import type { LayoutText } from 'custom-types';
 import { Wave } from '@src/components';
 import devfileLogo from '@public/images/devfileLogo.svg';
+import _layoutText from '../../../config/devfile-layout-text.json';
 import { Grid, GridItem, Text, TextContent, TextVariants, Brand } from '@patternfly/react-core';
 
-const footerLinks: Link[] = [
-  { name: 'Devfile.io', link: 'https://docs.devfile.io/' },
-  { name: 'GitHub', link: 'https://github.com/devfile/registry' }
-];
+const layoutText = _layoutText as LayoutText;
 
 export const Footer: React.FC = () => (
   <footer>
@@ -19,7 +17,7 @@ export const Footer: React.FC = () => (
             <Brand src={devfileLogo} alt="Devfile Registry Logo" className={styles.logo} />
             <TextContent>
               <Text component={TextVariants.h1} className={styles.text}>
-                Devfile Registry
+                {layoutText.title}
               </Text>
             </TextContent>
           </div>
@@ -32,7 +30,7 @@ export const Footer: React.FC = () => (
               </Text>
             </TextContent>
             <ul>
-              {footerLinks.map((footerLink) => (
+              {layoutText.footerLinks.map((footerLink) => (
                 <li key={footerLink.name}>
                   <a target="_blank" rel="noreferrer" href={footerLink.link}>
                     {footerLink.name}
