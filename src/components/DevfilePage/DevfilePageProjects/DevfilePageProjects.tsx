@@ -35,30 +35,6 @@ export interface ErrorAlert {
 }
 
 /**
- * Representation of a Git source for  a starter project
- *
- * @param checkoutFrom - object with optional remote and revision keys
- *                       and specifies where project should be checked out
- * @param remote - remote name in remotes that should be used as the init and download url
- * @param revision - revision to checkout from
- * @param remotes - remotes map; should be init. to git project
- */
-
-/**
- * Representation of a single starter project
- *
- * @remarks
- *  For more details, check out the devfile API reference at https://docs.devfile.io/devfile/2.1.0/user-guide/api-reference.html
- *
- * @param name - name of starter project
- * @param description - description of starter project
- * @param git - git source of starter project
- * @param zip - zip source of start project with key location
- * @param location - zip project's source location address
- * @param subDir - subdirectory of zip to be used as the root for the starter project
- */
-
-/**
  * props for {@link DevPageProjects}
  *
  * @param starterProjects - list of starter projects
