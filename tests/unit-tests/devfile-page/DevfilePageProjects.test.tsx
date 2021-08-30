@@ -1,13 +1,13 @@
 /* eslint-disable no-unused-expressions */
 import type { Git, Project } from 'custom-types';
 import type { ShallowWrapper } from 'enzyme';
+import { DevfilePageProjects } from '@src/components';
 import {
-  DevfilePageProjects,
   download,
   downloadSubdirectory,
   getURLForGit,
   UnsupportedLinkError
-} from '@src/components';
+} from '@src/util/client';
 import { Alert, Button, CardExpandableContent } from '@patternfly/react-core';
 import { expect, test, jest } from '@jest/globals';
 import { mount, shallow } from 'enzyme';
