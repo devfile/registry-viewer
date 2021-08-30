@@ -1,5 +1,5 @@
 import type { Devfile, FilterElem } from 'custom-types';
-import { getMetadataOfDevfiles, getFilterElemArr } from '@src/util/server';
+import { getDevfileRegistryJSON, getFilterElemArr } from '@src/util/server';
 import {
   HomeGalleryFilter,
   HomeGalleryGrid,
@@ -139,7 +139,7 @@ const filterDevfilesOnSourceRepos = (
 };
 
 export const getStaticProps: GetStaticProps = async () => {
-  const [unsortedDevfiles, errors] = await getMetadataOfDevfiles();
+  const [unsortedDevfiles, errors] = await getDevfileRegistryJSON();
 
   const devfiles = unsortedDevfiles.sort((a, b) =>
     a.displayName.localeCompare(b.displayName, 'en', {

@@ -1,6 +1,6 @@
 import styles from '@src/styles/devfiles/[id]/index.module.css';
 import { Devfile } from 'custom-types';
-import { getMetadataOfDevfiles, getDevfileYAML, getFilterElemArr } from '@src/util/server';
+import { getDevfileRegistryJSON, getDevfileYAML, getFilterElemArr } from '@src/util/server';
 import { serializeURL } from '@src/util/client';
 import {
   DevfilePageProjects,
@@ -46,7 +46,7 @@ const DevfilePage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
 );
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const [devfiles, devfileErrors] = await getMetadataOfDevfiles();
+  const [devfiles, devfileErrors] = await getDevfileRegistryJSON();
 
   const devfile: Devfile = devfiles.find((devfile: Devfile) => {
     const id = context.params?.id as string;
@@ -77,7 +77,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [devfiles, _] = await getMetadataOfDevfiles();
+  const [devfiles, _] = await getDevfileRegistryJSON();
   const sourceWithNames = devfiles.map((devfile) => serializeURL(devfile));
   const paths: Path[] = sourceWithNames.map((id) => ({ params: { id } }));
 

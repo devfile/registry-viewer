@@ -53,7 +53,7 @@ declare module 'custom-types' {
 
   export type GetDevfileYAML = [devfileYAML, devfileJSON, string[]];
 
-  export type GetMetadataOfDevfiles = [Devfile[], string[]];
+  export type GetDevfileRegistryJSON = [Devfile[], string[]];
 
   export type GetHosts = [HostList, (Error | null)[]];
 
