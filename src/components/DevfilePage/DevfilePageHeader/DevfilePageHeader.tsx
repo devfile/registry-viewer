@@ -62,7 +62,7 @@ export const DevfilePageHeader: React.FC<DevfilePageHeaderProps> = ({
             </Text>
             {devfile.description && (
               <Text data-testid="description" className={styles.basicText}>
-                &emsp;{devfile.description}
+                {devfile.description}
               </Text>
             )}
           </TextContent>
