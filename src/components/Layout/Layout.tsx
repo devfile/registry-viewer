@@ -15,7 +15,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }: LayoutProps) => (
   <div className={styles.pageContainer}>
     <Header />
     <Banner />
-    <Page header={Header} className={styles.contentWrap}>
+    <Page className={styles.contentWrap}>
       <Meta />
       <PageSection>{children}</PageSection>
     </Page>
