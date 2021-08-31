@@ -6,6 +6,8 @@ export interface MetaProps {
   description?: string;
 }
 
+const basePath = process.env.DEVFILE_VIEWER_ROOT ? process.env.DEVFILE_VIEWER_ROOT : '';
+
 /**
  * Renders a {@link Meta} React component.
  * Can change specific meta values in any pages
@@ -27,10 +29,10 @@ export const Meta: React.FC<MetaProps> = ({
       name="viewport"
       content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=5"
     />
-    <meta name="theme-color" content="#317EFB" />
+    <meta name="theme-color" content="#151515" />
 
-    <link rel="icon" href="/images/icons/favicon.ico" />
-    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" href={`${basePath}/images/icons/favicon.ico`} />
+    <link rel="manifest" href={`${basePath}/manifest.json`} />
   </Head>
 );
 Meta.displayName = 'Meta';

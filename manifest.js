@@ -3,14 +3,14 @@
 const fs = require('fs');
 const path = require('path');
 
-const url = process.env.DEVFILE_VIEWER_ROOT ? process.env.DEVFILE_VIEWER_ROOT : '/';
+const basePath = process.env.DEVFILE_VIEWER_ROOT ? process.env.DEVFILE_VIEWER_ROOT : '';
 
 const manifest = {
-  theme_color: '#358ef6',
-  background_color: '#f69435',
+  theme_color: '#151515',
+  background_color: '#F0F0F0',
   display: 'standalone',
-  scope: url,
-  start_url: url,
+  scope: basePath,
+  start_url: basePath,
   name: 'Registry Viewer',
   short_name: 'Registry Viewer',
   icons: [
