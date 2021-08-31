@@ -5,7 +5,10 @@ import JSZip from 'jszip';
  * @param req - request body
  * @param res - response body
  */
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+): Promise<Response | void> {
   try {
     const data = req.body;
     const response = await fetch(data.url);

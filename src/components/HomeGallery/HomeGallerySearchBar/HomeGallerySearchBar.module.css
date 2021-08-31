@@ -1,0 +1,11 @@
+.searchBar {
+  display: flex;
+}
+
+.searchBarText {
+  padding-right: 1rem;
+}
+
+.searchBarInput {
+  flex: 1 1 0%;
+}

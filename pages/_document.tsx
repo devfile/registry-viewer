@@ -4,7 +4,7 @@ import Document, { Html, Head, Main, NextScript } from 'next/document';
  * Renders the {@link MyDocument}
  */
 class MyDocument extends Document {
-  render(): React.ReactElement {
+  public render(): React.ReactElement {
     return (
       <Html lang="en-US">
         <Head />

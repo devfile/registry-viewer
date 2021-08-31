@@ -1,10 +1,11 @@
-import type { Devfile, FilterElem, GetMetadataOfDevfiles } from 'custom-types';
-import { getMetadataOfDevfiles } from '@util/server';
-import DevfileFilter from '@components/home-page/Filter';
-import DevfileSearchBar from '@components/home-page/SearchBar';
-import DevfileGrid from '@components/home-page/Grid';
-import ErrorBanner from '@components/ErrorBanner';
-
+import type { Devfile, FilterElem } from 'custom-types';
+import { getDevfileRegistryJSON, getFilterElemArr } from '@src/util/server';
+import {
+  HomeGalleryFilter,
+  HomeGalleryGrid,
+  HomeGallerySearchBar,
+  ErrorBanner
+} from '@src/components';
 import { InferGetStaticPropsType, GetStaticProps } from 'next';
 import { useState, useEffect } from 'react';
 import { Grid, GridItem } from '@patternfly/react-core';
@@ -16,23 +17,26 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
   devfiles,
   tags,
   types,
+  sourceRepos,
   errors
 }: InferGetStaticPropsType<GetStaticProps>) => {
   const [searchBarValue, setSearchBarValue] = useState<string>('');
   const [filteredDevfiles, setFilteredDevfiles] = useState<Devfile[]>(devfiles);
 
-  const [tagsStateWithFreq, setTagsStateWithFreq] = useState<FilterElem[]>(tags);
-  const [typesStateWithFreq, setTypesStateWithFreq] = useState<FilterElem[]>(types);
+  const [tagFilterElems, setTagFilterElems] = useState<FilterElem[]>(tags);
+  const [typeFilterElems, setTypeFilterElems] = useState<FilterElem[]>(types);
+  const [sourceRepoFilterElems, setSourceRepoFilterElems] = useState<FilterElem[]>(sourceRepos);
 
   useEffect(() => {
     let filteredDevfiles = filterDevfilesOnSearchBar(devfiles, searchBarValue);
-    filteredDevfiles = filterDevfilesOnTags(filteredDevfiles, tagsStateWithFreq);
-    filteredDevfiles = filterDevfilesOnTypes(filteredDevfiles, typesStateWithFreq);
+    filteredDevfiles = filterDevfilesOnTags(filteredDevfiles, tagFilterElems);
+    filteredDevfiles = filterDevfilesOnTypes(filteredDevfiles, typeFilterElems);
+    filteredDevfiles = filterDevfilesOnSourceRepos(filteredDevfiles, sourceRepoFilterElems);
 
     setFilteredDevfiles(filteredDevfiles);
-  }, [tagsStateWithFreq, typesStateWithFreq, searchBarValue]);
+  }, [tagFilterElems, typeFilterElems, sourceRepoFilterElems, searchBarValue]);
 
-  const onSearchBarChange = (value: string) => {
+  const onSearchBarChange = (value: string): void => {
     setSearchBarValue(value);
   };
 
@@ -40,32 +44,34 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
     <>
       <ErrorBanner errors={errors} />
       <Grid hasGutter>
-        <GridItem xl2={3} xl={4} lg={5} md={6} sm={12} span={12}>
-          <DevfileFilter
-            tagsStateWithFreq={tagsStateWithFreq}
-            typesStateWithFreq={typesStateWithFreq}
-            setTagsStateWithFreq={setTagsStateWithFreq}
-            setTypesStateWithFreq={setTypesStateWithFreq}
+        <GridItem xl2={2} xl={3} lg={4} md={6} sm={12} span={12}>
+          <HomeGalleryFilter
+            tagFilterElems={tagFilterElems}
+            typeFilterElems={typeFilterElems}
+            sourceRepoFilterElems={sourceRepoFilterElems}
+            setTagFilterElems={setTagFilterElems}
+            setTypeFilterElems={setTypeFilterElems}
+            setSourceRepoFilterElems={setSourceRepoFilterElems}
           />
         </GridItem>
-        <GridItem xl2={9} xl={8} lg={7} md={6} sm={12} span={12}>
-          <DevfileSearchBar
+        <GridItem xl2={10} xl={9} lg={8} md={6} sm={12} span={12}>
+          <HomeGallerySearchBar
             devfileCount={filteredDevfiles.length}
             onSearchBarChange={onSearchBarChange}
             searchBarValue={searchBarValue}
           />
-          <DevfileGrid devfiles={filteredDevfiles} />
+          <HomeGalleryGrid devfiles={filteredDevfiles} sourceRepos={sourceRepos} />
         </GridItem>
       </Grid>
     </>
   );
 };
 
-const isSearchBarValueIn = (value: string | undefined, searchBarValue: string) =>
-  value?.toLowerCase().includes(searchBarValue.toLowerCase());
+const isSearchBarValueIn = (value: string | undefined, searchBarValue: string): boolean =>
+  !!value?.toLowerCase().includes(searchBarValue.toLowerCase());
 
-const isSearchBarValueInTag = (tags: string[] | undefined, searchBarValue: string) =>
-  tags?.some((tag) => tag.toLowerCase().includes(searchBarValue.toLowerCase()));
+const isSearchBarValueInTag = (tags: string[] | undefined, searchBarValue: string): boolean =>
+  !!tags?.some((tag) => tag.toLowerCase().includes(searchBarValue.toLowerCase()));
 
 const filterDevfilesOnSearchBar = (devfiles: Devfile[], searchBarValue: string): Devfile[] => {
   if (searchBarValue === '') {
@@ -86,8 +92,8 @@ const filterDevfilesOnSearchBar = (devfiles: Devfile[], searchBarValue: string):
   return devfilesFilteredOnSearchBar;
 };
 
-const filterDevfilesOnTags = (devfiles: Devfile[], tagsStateWithFreq: FilterElem[]): Devfile[] => {
-  const tagsSelectedByUser: FilterElem[] = tagsStateWithFreq.filter((tag) => tag.state);
+const filterDevfilesOnTags = (devfiles: Devfile[], tagFilterElems: FilterElem[]): Devfile[] => {
+  const tagsSelectedByUser: FilterElem[] = tagFilterElems.filter((tag) => tag.state);
 
   if (!tagsSelectedByUser.length) {
     return devfiles;
@@ -101,60 +107,39 @@ const filterDevfilesOnTags = (devfiles: Devfile[], tagsStateWithFreq: FilterElem
   return devfilesFilteredOnTags;
 };
 
-const filterDevfilesOnTypes = (
-  devfiles: Devfile[],
-  typesStateWithFreq: FilterElem[]
-): Devfile[] => {
-  const typesSelectedByUser: FilterElem[] = typesStateWithFreq.filter((type) => type.state);
+const filterDevfilesOnTypes = (devfiles: Devfile[], typeFilterElems: FilterElem[]): Devfile[] => {
+  const typesSelectedByUser: FilterElem[] = typeFilterElems.filter((type) => type.state);
 
   if (!typesSelectedByUser.length) {
     return devfiles;
   }
 
   const devfilesFilteredOnTypes: Devfile[] = devfiles.filter((devfile: Devfile) =>
-    typesSelectedByUser.some((typeSelectedByUser) => devfile.type === typeSelectedByUser.value)
+    typesSelectedByUser.some((type) => devfile.type === type.value)
   );
   return devfilesFilteredOnTypes;
 };
 
-const getStateAndStringFreq = (array: string[]): FilterElem[] => {
-  array.sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'accent' }));
+const filterDevfilesOnSourceRepos = (
+  devfiles: Devfile[],
+  sourceRepoFilterElems: FilterElem[]
+): Devfile[] => {
+  const sourceReposSelectedByUser: FilterElem[] = sourceRepoFilterElems.filter(
+    (sourceRepo) => sourceRepo.state
+  );
 
-  const filterElemArr: FilterElem[] = [];
-  let prevElem = '';
-
-  for (const currentElem of array) {
-    if (currentElem) {
-      if (currentElem !== prevElem) {
-        filterElemArr.push({ value: currentElem, state: false, freq: 1 });
-      } else {
-        filterElemArr[filterElemArr.length - 1].freq++;
-      }
-      prevElem = currentElem;
-    }
+  if (!sourceReposSelectedByUser.length) {
+    return devfiles;
   }
 
-  return filterElemArr;
-};
-
-const getTagsStateWithFreq = (devfiles: Devfile[]): FilterElem[] => {
-  const tagValues: string[] = devfiles?.map((devfile) => devfile?.tags).flat() as string[];
-
-  const tagsStateWithFreq: FilterElem[] = getStateAndStringFreq(tagValues);
-
-  return tagsStateWithFreq;
-};
-
-const getTypesStateWithFreq = (devfiles: Devfile[]): FilterElem[] => {
-  const typeValues: string[] = devfiles?.map((devfile) => devfile.type);
-
-  const tagsStateWithFreq: FilterElem[] = getStateAndStringFreq(typeValues);
-
-  return tagsStateWithFreq;
+  const devfilesFilteredOnSourceRepos: Devfile[] = devfiles.filter((devfile: Devfile) =>
+    sourceReposSelectedByUser.some((sourceRepo) => devfile.sourceRepo === sourceRepo.value)
+  );
+  return devfilesFilteredOnSourceRepos;
 };
 
 export const getStaticProps: GetStaticProps = async () => {
-  const [unsortedDevfiles, errors]: GetMetadataOfDevfiles = await getMetadataOfDevfiles();
+  const [unsortedDevfiles, errors] = await getDevfileRegistryJSON();
 
   const devfiles = unsortedDevfiles.sort((a, b) =>
     a.displayName.localeCompare(b.displayName, 'en', {
@@ -162,14 +147,16 @@ export const getStaticProps: GetStaticProps = async () => {
     })
   );
 
-  const tags: FilterElem[] = getTagsStateWithFreq(devfiles);
-  const types: FilterElem[] = getTypesStateWithFreq(devfiles);
+  const tags = getFilterElemArr(devfiles, 'tags');
+  const types = getFilterElemArr(devfiles, 'type');
+  const sourceRepos = getFilterElemArr(devfiles, 'sourceRepo');
 
   return {
     props: {
       devfiles,
       tags,
       types,
+      sourceRepos,
       errors
     },
     // Next.js will attempt to re-generate the page:

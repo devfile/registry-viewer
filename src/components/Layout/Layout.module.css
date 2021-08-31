@@ -1,0 +1,10 @@
+.pageContainer {
+  position: relative;
+  min-height: 100vh;
+}
+
+.contentWrap {
+  display: block;
+  padding-bottom: 16rem;
+  background-color: var(--pf-global--BackgroundColor--200) !important;
+}

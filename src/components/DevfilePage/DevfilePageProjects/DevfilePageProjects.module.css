@@ -1,0 +1,116 @@
+@media (max-width: 650px) {
+  div .cardBody {
+    display: block;
+  }
+  div .select {
+    width: 100%;
+    -moz-box-shadow: var(--pf-global--BoxShadow--inset);
+    -webkit-box-shadow: var(--pf-global--BoxShadow--inset);
+    box-shadow: var(--pf-global--BoxShadow--inset);
+    border-radius: var(--pf-global--BorderRadius--sm);
+  }
+
+  div .selected {
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  div .project {
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  div .display {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  div .displayedProject {
+    width: 100%;
+    margin: 2rem;
+  }
+}
+
+.card {
+  width: 75%;
+  max-width: 1000px;
+  margin: auto;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  border-radius: 1rem;
+  border: 1px solid rgb(175, 175, 175);
+}
+
+.cardBody {
+  display: flex;
+}
+
+/* project selector classes */
+.select {
+  width: 50%;
+  align-items: center;
+  height: 10rem;
+  overflow-y: scroll;
+  order: 0;
+}
+
+.select::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+.select::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  border-radius: 0.25rem;
+}
+
+.project {
+  width: 95%;
+  border-radius: 6px;
+  padding-left: 0.5rem;
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
+  cursor: default;
+}
+
+.project:hover {
+  background-color: #adabae;
+  color: #ffffff;
+}
+
+.selected {
+  width: 95%;
+  background-color: #000000;
+  color: #ffffff;
+  border-radius: 6px;
+  padding-left: 0.5rem;
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
+  cursor: default;
+}
+
+.selected:hover {
+  background-color: #adabae;
+  color: #ffffff;
+}
+
+.display {
+  width: 40%;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+/* left hand side classes */
+
+.button:active {
+  background-color: black;
+  color: white;
+}
+
+/* classes for displayed project */
+
+.displayedProject {
+  width: 80%;
+  padding: auto;
+  margin: 10px;
+}

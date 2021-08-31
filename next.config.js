@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const typescriptIsTransformer = require('typescript-is/lib/transform-inline/transformer').default;
 const withPlugins = require('next-compose-plugins');
 const withPWA = require('next-pwa');

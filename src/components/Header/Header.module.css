@@ -1,0 +1,25 @@
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--pf-global--BackgroundColor--dark-100);
+  padding: 2rem 4rem;
+}
+
+.titleLink {
+  text-decoration: none;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  height: 3rem;
+  margin-right: 0.75rem;
+}
+
+.text {
+  color: var(--pf-global--Color--light-200);
+}

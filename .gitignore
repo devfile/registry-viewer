@@ -36,9 +36,10 @@ yarn-error.log*
 # vercel
 .vercel
 
-#public ignores
+# public ignores
 /public/*.js
 /public/*.js.map
+/public/manifest.json
 
 package-lock.json
 

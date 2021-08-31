@@ -2,9 +2,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@components/*": ["components/*"],
-      "@styles/*": ["styles/*"],
-      "@util/*": ["util/*"]
+      "@src/*": ["src/*"],
+      "@public/*": ["public/*"]
     },
     "allowJs": false,
     "target": "es5",
@@ -20,7 +19,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "noImplicitAny": true,
-    "typeRoots": ["@types", "node_modules/@types"],
+    "typeRoots": ["src/@types", "node_modules/@types"],
     "types": ["node"],
     "skipLibCheck": true
   },
@@ -33,11 +32,10 @@
     "docs",
     "node_modules",
     "out",
-    "util/server",
-    "tests/unit-tests/*"
+    "src/util/server"
   ],
   "typedocOptions": {
-    "entryPoints": ["pages", "components", "@types", "util"],
+    "entryPoints": ["pages", "src"],
     "out": "docs"
   }
 }
