@@ -65,6 +65,16 @@ function checkArrayPropertyTypes(arr, arrName) {
         `${configFileString} "${arrName}" array has an element with no "link" property`
       );
     }
+    if (typeof elem.name !== 'string') {
+      throw TypeError(
+        `${configFileString} "${arrName}" array has an element with "name" property not as a string`
+      );
+    }
+    if (typeof elem.link !== 'string') {
+      throw TypeError(
+        `${configFileString} "${arrName}" array has an element with "link" property not as a string`
+      );
+    }
   });
 }
 
