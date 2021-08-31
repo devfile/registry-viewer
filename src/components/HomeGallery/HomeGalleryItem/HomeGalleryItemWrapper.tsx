@@ -1,3 +1,4 @@
+import type { HomeGalleryItemProps } from '@src/components';
 import { HomeGalleryItem } from '@src/components';
 import { forwardRef } from 'react';
 
@@ -6,4 +7,8 @@ import { forwardRef } from 'react';
  * Makes the devfile tile clickable
  * @returns `<Link href={href} passHref><DevfileTile devfile={devfile}/></Link>`
  */
-export const HomeGalleryItemWrapper = forwardRef(HomeGalleryItem);
+export const HomeGalleryItemWrapper: React.ForwardRefExoticComponent<HomeGalleryItemProps> =
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  forwardRef(({ devfile, sourceRepos, onClick }, ref) => (
+    <HomeGalleryItem devfile={devfile} sourceRepos={sourceRepos} onClick={onClick} />
+  ));

@@ -1,6 +1,5 @@
 import styles from './HomeGalleryItem.module.css';
 import type { Devfile, FilterElem } from 'custom-types';
-import type { ForwardedRef } from 'react';
 import devfileLogo from '@public/images/devfileLogo.svg';
 import { capitalizeFirstLetter } from '@src/util/client';
 import {
@@ -17,7 +16,7 @@ import {
   CardHeader
 } from '@patternfly/react-core';
 
-export interface HomeGalleryProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+export interface HomeGalleryItemProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   devfile: Devfile;
   sourceRepos: FilterElem[];
 }
@@ -27,11 +26,11 @@ export interface HomeGalleryProps extends React.AnchorHTMLAttributes<HTMLAnchorE
  * Adds a devfile tile inside of a DevfileGrid
  * @returns `<DevfileTile devfile={devfile}/>`
  */
-export const HomeGalleryItem: React.ForwardRefRenderFunction<HTMLElement, HomeGalleryProps> = (
-  { devfile, sourceRepos, onClick }: HomeGalleryProps,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  ref: ForwardedRef<HTMLElement>
-) => {
+export const HomeGalleryItem: React.FC<HomeGalleryItemProps> = ({
+  devfile,
+  sourceRepos,
+  onClick
+}: HomeGalleryItemProps) => {
   const maxTags = 3;
 
   const onTileClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void => {
