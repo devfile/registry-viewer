@@ -1,0 +1,13 @@
+.banner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 4rem;
+  background-color: var(--pf-global--BackgroundColor--dark-200);
+}
+
+.text {
+  padding: 0.5rem;
+  text-align: center;
+  color: var(--pf-global--Color--light-200);
+}

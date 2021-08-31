@@ -29,7 +29,7 @@ export const getDevfiles = (callback: DevfileCallback): void => {
 };
 
 export const compareCardLength = (length: number): void => {
-  cy.get('[data-test-id^=card-]').should('have.length', length);
+  cy.get('[data-testid^=card-]').should('have.length', length);
 };
 
 export const iterateThroughFilter = (
@@ -37,7 +37,7 @@ export const iterateThroughFilter = (
   filterElemsStateWithFreq: FilterElem[],
   callback: FilterElemsCallback
 ): void => {
-  cy.get(`[data-test-id^=${filterType}-]`).should('have.length', filterElemsStateWithFreq.length);
+  cy.get(`[data-testid^=${filterType}-]`).should('have.length', filterElemsStateWithFreq.length);
 
   for (
     let numFilterElemsSelected = 1;
@@ -52,13 +52,13 @@ export const iterateThroughFilter = (
 
       if (numFilterElemsSelected === 1 || i !== 0) {
         cy.get(
-          `[data-test-id=${filterType}-${selectedFilterElems[
+          `[data-testid=${filterType}-${selectedFilterElems[
             numFilterElemsSelected - 1
           ].value.replace(/\.| /g, '')}]`
         ).click();
       } else {
         selectedFilterElems.forEach((filterElem) => {
-          cy.get(`[data-test-id=${filterType}-${filterElem.value.replace(/\.| /g, '')}]`).click();
+          cy.get(`[data-testid=${filterType}-${filterElem.value.replace(/\.| /g, '')}]`).click();
         });
       }
 
@@ -69,11 +69,11 @@ export const iterateThroughFilter = (
         i + numFilterElemsSelected !== filterElemsStateWithFreq.length
       ) {
         cy.get(
-          `[data-test-id=${filterType}-${selectedFilterElems[0].value.replace(/\.| /g, '')}]`
+          `[data-testid=${filterType}-${selectedFilterElems[0].value.replace(/\.| /g, '')}]`
         ).click();
       } else {
         selectedFilterElems.forEach((filterElem) => {
-          cy.get(`[data-test-id=${filterType}-${filterElem.value.replace(/\.| /g, '')}]`).click();
+          cy.get(`[data-testid=${filterType}-${filterElem.value.replace(/\.| /g, '')}]`).click();
         });
       }
     }

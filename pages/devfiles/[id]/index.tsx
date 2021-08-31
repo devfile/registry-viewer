@@ -1,10 +1,13 @@
-import { Devfile, GetMetadataOfDevfiles, GetDevfileYAML } from 'custom-types';
-import { getMetadataOfDevfiles, getDevfileYAML } from '@util/server';
-import DevfilePageProjects from '@components/devfile-page/Projects';
-import DevfilePageHeader from '@components/devfile-page/Header';
-import DevfilePageYAML from '@components/devfile-page/YAML';
-import ErrorBanner from '@components/ErrorBanner';
-
+import styles from '@src/styles/devfiles/[id]/index.module.css';
+import { Devfile } from 'custom-types';
+import { getDevfileRegistryJSON, getDevfileYAML, getFilterElemArr } from '@src/util/server';
+import { serializeURL } from '@src/util/client';
+import {
+  DevfilePageProjects,
+  DevfilePageHeader,
+  DevfilePageYAML,
+  ErrorBanner
+} from '@src/components';
 import { InferGetStaticPropsType, GetStaticProps, GetStaticPaths } from 'next';
 
 interface Path {
@@ -21,28 +24,29 @@ interface Path {
  * @param devfileText - text of devfile YAML, null when sample
  * @param devfileJSON -  json representation of devfile YAML, null when sample
  */
-const DevfilePage = ({
+const DevfilePage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
   devfile,
   devfileYAML,
   devfileJSON,
+  sourceRepos,
   errors
 }: InferGetStaticPropsType<typeof getStaticProps>) => (
-  <div style={{ alignContent: 'center', minHeight: '100vh' }}>
+  <div className={styles.devfilePage}>
     <ErrorBanner errors={errors} />
-    {devfile.type === 'stack' ? (
-      <div>
-        <DevfilePageHeader devfileMetadata={devfileJSON.metadata} devfile={devfile} />
-        <DevfilePageProjects starterProjects={devfileJSON.starterProjects} />
-        <DevfilePageYAML devfileYAML={devfileYAML} />
-      </div>
-    ) : (
-      <DevfilePageHeader devfile={devfile} />
+    <DevfilePageHeader
+      devfileMetadata={devfileJSON?.metadata}
+      devfile={devfile}
+      sourceRepos={sourceRepos}
+    />
+    {devfileJSON?.starterProjects?.length && devfile.type === 'stack' && (
+      <DevfilePageProjects starterProjects={devfileJSON.starterProjects} />
     )}
+    {devfileYAML && <DevfilePageYAML devfileYAML={devfileYAML} />}
   </div>
 );
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const [devfiles, devfileErrors]: GetMetadataOfDevfiles = await getMetadataOfDevfiles();
+  const [devfiles, devfileErrors] = await getDevfileRegistryJSON();
 
   const devfile: Devfile = devfiles.find((devfile: Devfile) => {
     const id = context.params?.id as string;
@@ -50,15 +54,18 @@ export const getStaticProps: GetStaticProps = async (context) => {
     return devfile.sourceRepo === source && devfile.name === name;
   })!;
 
-  const [devfileYAML, devfileJSON, yamlErrors]: GetDevfileYAML = await getDevfileYAML(devfile);
+  const [devfileYAML, devfileJSON, yamlErrors] = await getDevfileYAML(devfile);
 
   const errors = [...devfileErrors, ...yamlErrors];
+
+  const sourceRepos = getFilterElemArr(devfiles, 'sourceRepo');
 
   return {
     props: {
       devfile,
       devfileYAML,
       devfileJSON,
+      sourceRepos,
       errors
     },
     // Next.js will attempt to re-generate the page:
@@ -70,10 +77,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [devfiles, errors]: GetMetadataOfDevfiles = await getMetadataOfDevfiles();
-  const sourceWithNames: string[] = devfiles.map(
-    (devfile) => `${devfile.sourceRepo.replace(/\+/g, '')}+${devfile.name.replace(/\+/g, '')}`
-  );
+  const [devfiles, _] = await getDevfileRegistryJSON();
+  const sourceWithNames = devfiles.map((devfile) => serializeURL(devfile));
   const paths: Path[] = sourceWithNames.map((id) => ({ params: { id } }));
 
   return {

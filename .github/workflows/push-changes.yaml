@@ -1,0 +1,26 @@
+name: Push Changes
+
+on:
+  push:
+    branches: [main]
+  workflow_run:
+    workflows:
+      - Cypress
+      - Docker
+    types:
+      - completed
+
+jobs:
+  dispatch:
+    strategy:
+      matrix:
+        repo: ['devfile/registry-support']
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository dispatch
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          repository: ${{ matrix.repo }}
+          event-type: build
+          client-payload: '{"repo": "${{ github.event.repository.name }}", "sha": "${{ github.sha }}"}'

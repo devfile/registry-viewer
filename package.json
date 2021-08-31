@@ -5,6 +5,7 @@
   "scripts": {
     "analyze": "cross-env ANALYZE=true next build",
     "dev": "next",
+    "prebuild": "node ./manifest.js && node checkConfigTypes.js",
     "build": "next build",
     "start": "next start",
     "clean": "rimraf .next/ .nyc_output/ coverage/ docs/ out/ node_modules/",
@@ -80,7 +81,7 @@
     "babel-jest": "^27.0.6",
     "concurrently": "^6.2.0",
     "cross-env": "^7.0.3",
-    "cypress": "^8.0.0",
+    "cypress": "^8.3.0",
     "debug": "^4.3.2",
     "enquirer": "^2.3.6",
     "enzyme": "^3.11.0",

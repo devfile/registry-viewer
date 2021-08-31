@@ -1,0 +1,19 @@
+.yamlCard {
+  width: 75%;
+  max-width: 1000px;
+  margin: auto;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  background-color: var(--pf-global--BackgroundColor--100);
+  border-radius: 1rem;
+  border: 1px solid rgb(175, 175, 175);
+}
+
+.cardHeader {
+  padding: 10px;
+  border-bottom: 1px solid rgb(175, 175, 175);
+}
+
+.cardBody {
+  padding: 0 0 0.75rem 0;
+}

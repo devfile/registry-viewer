@@ -1,0 +1,14 @@
+.triangleAsymmetrical {
+  position: relative;
+  margin-top: -2rem;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.triangleAsymmetrical svg {
+  position: relative;
+  display: block;
+  width: calc(110% + 1.3px);
+  height: 56px;
+}

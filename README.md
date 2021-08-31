@@ -68,14 +68,14 @@ Notes:
 
 - For devfile hosts (environment variable or config file) specify a remote url or a local folder structure and `index.json` that follows the `devfile/api` spec.
 - You can have infinitely many sources as long as the name for the source repository is different.
-- There are two types of source types, url and stacks.
+- There are two types of source types, url and local.
   - url is for specifying a remote hosts.
-  - stacks is for specifying a local hosts. NOTE: Stacks MUST have `index.json` under the root path specified, an example is below.
+  - local is for specifying a local hosts. NOTE: Local MUST have `index.json` under the root path specified, an example is below.
 
-`/stacks`
+`/devfiles`
 
 ```
-+-- stacks
++-- devfiles
 |   +-- java-maven
 |       +-- devfile.yaml
 |   +-- java-openliberty
@@ -126,11 +126,11 @@ Configure the registry viewer through environment the variable.
 Notes about environment variable:
 
 - The value assigned to the environment variable must be surrounded by quotes.
-- Each source MUST contain a name for the source repository, a source type (url or stacks), and a location and is split by ">". i.e. `name>type>location`
+- Each source MUST contain a name for the source repository, a source type (url or local), and a location and is split by ">". i.e. `name>type>location`
 - Multiple sources are be split by "|". i.e. `name>type>location|name>type>location`
 
 ```
-DEVFILE_REGISTRY_HOSTS="example1>url>https://registry.devfile.io|example2>stacks>/stacks"
+DEVFILE_REGISTRY_HOSTS="example1>url>https://registry.devfile.io|example2>local>/devfiles"
 ```
 
 Configure the registry viewer through config file.
@@ -143,7 +143,7 @@ Configure the registry viewer through config file.
     "url": "https://registry.devfile.io"
   },
   "Example2": {
-    "stacks": "/stacks"
+    "local": "/devfiles"
   }
 }
 ```
