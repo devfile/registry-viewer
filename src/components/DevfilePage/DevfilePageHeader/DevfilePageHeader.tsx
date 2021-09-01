@@ -28,7 +28,7 @@ export const DevfilePageHeader: React.FC<DevfilePageHeaderProps> = ({
   devfileMetadata,
   sourceRepos
 }: DevfilePageHeaderProps) => {
-  const devfileMetaInclude = ['projectType', 'version', 'language']; // types to include in metadata from index
+  const devfileMetaInclude = ['projectType', 'version', 'language', 'provider']; // types to include in metadata from index
 
   return (
     <div data-testid="dev-page-header" className={styles.headerCard}>
@@ -103,6 +103,13 @@ export const DevfilePageHeader: React.FC<DevfilePageHeaderProps> = ({
                 </a>
               </Text>
             )}
+        {devfile.supportURL && (
+          <Text data-testid="support-information">
+            <a href={devfile.supportURL} target="_blank" rel="noreferrer">
+              Support Information
+            </a>
+          </Text>
+        )}
       </TextContent>
     </div>
   );
