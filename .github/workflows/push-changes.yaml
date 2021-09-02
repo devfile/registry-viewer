@@ -3,12 +3,6 @@ name: Push Changes
 on:
   push:
     branches: [main]
-  workflow_run:
-    workflows:
-      - Cypress
-      - Docker
-    types:
-      - completed
 
 jobs:
   dispatch:
