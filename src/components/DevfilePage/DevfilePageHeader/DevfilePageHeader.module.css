@@ -46,7 +46,7 @@
 }
 
 .headerCardBody {
-  margin: 10px;
+  margin: auto;
 }
 
 .basicInfo {
@@ -59,6 +59,7 @@
 .brand {
   padding: 1rem;
   width: 30%;
+  margin: auto;
 }
 .logo {
   width: 80%;

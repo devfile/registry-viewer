@@ -20,6 +20,7 @@ declare module 'custom-types' {
       };
     };
     sourceRepo: string;
+    provider?: string;
   }
 
   export interface FilterElem {
