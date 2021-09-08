@@ -21,7 +21,6 @@ declare module 'custom-types' {
     };
     sourceRepo: string;
     provider?: string;
-    supportURL?: string;
   }
 
   export interface FilterElem {

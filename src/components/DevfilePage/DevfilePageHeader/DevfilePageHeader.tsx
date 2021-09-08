@@ -103,9 +103,9 @@ export const DevfilePageHeader: React.FC<DevfilePageHeaderProps> = ({
                 </a>
               </Text>
             )}
-        {devfile.supportURL && (
+        {devfileMetadata && devfileMetadata.supportUrl && (
           <Text data-testid="support-information">
-            <a href={devfile.supportURL} target="_blank" rel="noreferrer">
+            <a href={devfileMetadata.supportUrl} target="_blank" rel="noreferrer">
               Support Information
             </a>
           </Text>
