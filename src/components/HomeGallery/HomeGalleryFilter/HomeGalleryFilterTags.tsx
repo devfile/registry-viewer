@@ -4,6 +4,7 @@ import type { Dispatch, SetStateAction } from 'react';
 import { serializeDataTestid } from '@src/util/client';
 import { Checkbox, FormGroup, SearchInput } from '@patternfly/react-core';
 import { useState, useEffect } from 'react';
+import { getFilterResultCount, sortFilterDataArr } from './utils';
 
 export interface HomeGalleryFilterTagsProps {
   tagFilterElems: FilterElem[];
@@ -72,24 +73,3 @@ export const HomeGalleryFilterTags: React.FC<HomeGalleryFilterTagsProps> = ({
   );
 };
 HomeGalleryFilterTags.displayName = 'HomeGalleryFilterTags';
-
-export const getFilterResultCount = (filterElemArr: FilterElem[], searchBarValue: string): number =>
-  filterElemArr.filter((filterElem) =>
-    filterElem.value.toLowerCase().includes(searchBarValue.toLowerCase())
-  ).length;
-
-export const sortFilterDataArr = (tagsStateWithFreq: FilterElem[]): FilterElem[] => {
-  const copy: FilterElem[] = tagsStateWithFreq.sort((a, b) => {
-    if (a.state === b.state) {
-      return a.value.localeCompare(b.value, 'en', { sensitivity: 'accent' });
-    }
-
-    if (a.state && !b.state) {
-      return -1;
-    }
-
-    return 1;
-  });
-
-  return copy;
-};

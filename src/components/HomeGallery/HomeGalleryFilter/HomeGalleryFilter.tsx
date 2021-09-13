@@ -6,14 +6,17 @@ import {
 } from '@src/components';
 import type { Dispatch, SetStateAction } from 'react';
 import { Form, Text, TextContent, TextVariants } from '@patternfly/react-core';
+import { HomeGalleryFilterProviders } from './HomeGalleryFilterProviders';
 
 export interface HomeGalleryFilterProps {
   tagFilterElems: FilterElem[];
   typeFilterElems: FilterElem[];
   sourceRepoFilterElems: FilterElem[];
+  providerFilterElems: FilterElem[];
   setTagFilterElems: Dispatch<SetStateAction<FilterElem[]>>;
   setTypeFilterElems: Dispatch<SetStateAction<FilterElem[]>>;
   setSourceRepoFilterElems: Dispatch<SetStateAction<FilterElem[]>>;
+  setProviderFilterElems: Dispatch<SetStateAction<FilterElem[]>>;
 }
 
 /**
@@ -25,9 +28,11 @@ export const HomeGalleryFilter: React.FC<HomeGalleryFilterProps> = ({
   tagFilterElems,
   typeFilterElems,
   sourceRepoFilterElems,
+  providerFilterElems,
   setTagFilterElems,
   setTypeFilterElems,
-  setSourceRepoFilterElems
+  setSourceRepoFilterElems,
+  setProviderFilterElems
 }: HomeGalleryFilterProps) => (
   <>
     <TextContent>
@@ -50,6 +55,12 @@ export const HomeGalleryFilter: React.FC<HomeGalleryFilterProps> = ({
         <HomeGalleryFilterTags
           tagFilterElems={tagFilterElems}
           setTagFilterElems={setTagFilterElems}
+        />
+      )}
+      {providerFilterElems.length > 1 && (
+        <HomeGalleryFilterProviders
+          providerFilterElems={providerFilterElems}
+          setProviderFilterElems={setProviderFilterElems}
         />
       )}
     </Form>

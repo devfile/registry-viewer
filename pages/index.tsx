@@ -18,6 +18,7 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
   tags,
   types,
   sourceRepos,
+  providers,
   errors
 }: InferGetStaticPropsType<GetStaticProps>) => {
   const [searchBarValue, setSearchBarValue] = useState<string>('');
@@ -26,15 +27,17 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
   const [tagFilterElems, setTagFilterElems] = useState<FilterElem[]>(tags);
   const [typeFilterElems, setTypeFilterElems] = useState<FilterElem[]>(types);
   const [sourceRepoFilterElems, setSourceRepoFilterElems] = useState<FilterElem[]>(sourceRepos);
+  const [providerFilterElems, setProviderFilterElems] = useState<FilterElem[]>(providers);
 
   useEffect(() => {
     let filteredDevfiles = filterDevfilesOnSearchBar(devfiles, searchBarValue);
     filteredDevfiles = filterDevfilesOnTags(filteredDevfiles, tagFilterElems);
     filteredDevfiles = filterDevfilesOnTypes(filteredDevfiles, typeFilterElems);
     filteredDevfiles = filterDevfilesOnSourceRepos(filteredDevfiles, sourceRepoFilterElems);
+    filteredDevfiles = filterDevfilesOnProviders(filteredDevfiles, providerFilterElems);
 
     setFilteredDevfiles(filteredDevfiles);
-  }, [tagFilterElems, typeFilterElems, sourceRepoFilterElems, searchBarValue]);
+  }, [tagFilterElems, typeFilterElems, sourceRepoFilterElems, searchBarValue, providerFilterElems]);
 
   const onSearchBarChange = (value: string): void => {
     setSearchBarValue(value);
@@ -49,9 +52,11 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
             tagFilterElems={tagFilterElems}
             typeFilterElems={typeFilterElems}
             sourceRepoFilterElems={sourceRepoFilterElems}
+            providerFilterElems={providerFilterElems}
             setTagFilterElems={setTagFilterElems}
             setTypeFilterElems={setTypeFilterElems}
             setSourceRepoFilterElems={setSourceRepoFilterElems}
+            setProviderFilterElems={setProviderFilterElems}
           />
         </GridItem>
         <GridItem xl2={10} xl={9} lg={8} md={6} sm={12} span={12}>
@@ -107,6 +112,24 @@ const filterDevfilesOnTags = (devfiles: Devfile[], tagFilterElems: FilterElem[])
   return devfilesFilteredOnTags;
 };
 
+const filterDevfilesOnProviders = (
+  devfiles: Devfile[],
+  providerFilterElems: FilterElem[]
+): Devfile[] => {
+  const providersSelectedByUser: FilterElem[] = providerFilterElems.filter(
+    (provider) => provider.state
+  );
+
+  if (!providersSelectedByUser.length) {
+    return devfiles;
+  }
+
+  const devfilesFilteredOnProviders: Devfile[] = devfiles.filter((devfile: Devfile) =>
+    providersSelectedByUser.some((provider) => devfile.provider === provider.value)
+  );
+  return devfilesFilteredOnProviders;
+};
+
 const filterDevfilesOnTypes = (devfiles: Devfile[], typeFilterElems: FilterElem[]): Devfile[] => {
   const typesSelectedByUser: FilterElem[] = typeFilterElems.filter((type) => type.state);
 
@@ -150,6 +173,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const tags = getFilterElemArr(devfiles, 'tags');
   const types = getFilterElemArr(devfiles, 'type');
   const sourceRepos = getFilterElemArr(devfiles, 'sourceRepo');
+  const providers = getFilterElemArr(devfiles, 'provider');
 
   return {
     props: {
@@ -157,6 +181,7 @@ export const getStaticProps: GetStaticProps = async () => {
       tags,
       types,
       sourceRepos,
+      providers,
       errors
     },
     // Next.js will attempt to re-generate the page:
