@@ -19,6 +19,7 @@ import {
 export interface HomeGalleryItemProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   devfile: Devfile;
   sourceRepos: FilterElem[];
+  providers: FilterElem[];
 }
 
 /**
@@ -29,6 +30,7 @@ export interface HomeGalleryItemProps extends React.AnchorHTMLAttributes<HTMLAnc
 export const HomeGalleryItem: React.FC<HomeGalleryItemProps> = ({
   devfile,
   sourceRepos,
+  providers,
   onClick
 }: HomeGalleryItemProps) => {
   const maxTags = 3;
@@ -51,16 +53,17 @@ export const HomeGalleryItem: React.FC<HomeGalleryItemProps> = ({
             alt={`${devfile.name} icon`}
             className={styles.cardImage}
           />
-          {sourceRepos.length === 1 ? (
-            <TextContent>
-              <Text className={styles.text}>{capitalizeFirstLetter(devfile.type)}</Text>
-            </TextContent>
-          ) : (
-            <TextContent>
+          <TextContent>
+            {sourceRepos.length !== 1 && (
               <Text className={styles.text}>{capitalizeFirstLetter(devfile.sourceRepo)}</Text>
-              <Text className={styles.text}>{capitalizeFirstLetter(devfile.type)}</Text>
-            </TextContent>
-          )}
+            )}
+            {providers.length > 1 && (
+              <Text className={styles.text}>
+                {capitalizeFirstLetter(devfile.provider ? devfile.provider : '')}
+              </Text>
+            )}
+            <Text className={styles.text}>{capitalizeFirstLetter(devfile.type)}</Text>
+          </TextContent>
         </div>
       </CardHeader>
       <CardTitle>

@@ -2,9 +2,7 @@ import styles from './HomeGalleryFilterProviders.module.css';
 import type { FilterElem } from 'custom-types';
 import type { Dispatch, SetStateAction } from 'react';
 import { serializeDataTestid } from '@src/util/client';
-import { Checkbox, FormGroup, SearchInput } from '@patternfly/react-core';
-import { useState, useEffect } from 'react';
-import { getFilterResultCount, sortFilterDataArr } from './utils';
+import { Checkbox, FormGroup } from '@patternfly/react-core';
 
 export interface HomeGalleryFilterProvidersProps {
   providerFilterElems: FilterElem[];
@@ -15,12 +13,6 @@ export const HomeGalleryFilterProviders: React.FC<HomeGalleryFilterProvidersProp
   providerFilterElems,
   setProviderFilterElems
 }: HomeGalleryFilterProvidersProps) => {
-  const [providerSearchBarValue, setProviderSearchBarValue] = useState('');
-
-  useEffect(() => {
-    setProviderFilterElems(sortFilterDataArr(providerFilterElems));
-  }, [providerFilterElems]);
-
   const onCheckboxProvidersChange = (
     checked: boolean,
     event: React.FormEvent<HTMLInputElement>
@@ -36,41 +28,20 @@ export const HomeGalleryFilterProviders: React.FC<HomeGalleryFilterProvidersProp
     setProviderFilterElems(copy);
   };
 
-  const onSearchChange = (value: string): void => {
-    setProviderSearchBarValue(value);
-  };
-
   return (
     <FormGroup fieldId="provider-selector" label="Providers" hasNoPaddingTop>
-      {providerFilterElems.length > 1 && (
-        <SearchInput
-          className={styles.formGroupElement}
-          data-testid="search-bar-provider"
-          placeholder="Search by provider name"
-          value={providerSearchBarValue}
-          onChange={onSearchChange}
-          onClear={(): void => onSearchChange('')}
-          resultsCount={getFilterResultCount(providerFilterElems, providerSearchBarValue)}
-        />
-      )}
-      <div className={styles.providerBox}>
-        {providerFilterElems
-          .filter((provider) =>
-            provider.value.toLowerCase().includes(providerSearchBarValue.toLowerCase())
-          )
-          .map((provider) => (
-            <div key={provider.value} className={styles.formGroupElement}>
-              <Checkbox
-                data-testid={`provider-${serializeDataTestid(provider.value)}`}
-                isChecked={provider.state}
-                onChange={onCheckboxProvidersChange}
-                id={`types-${provider.value}`}
-                label={`${provider.value} (${provider.freq})`}
-                name={provider.value}
-              />
-            </div>
-          ))}
-      </div>
+      {providerFilterElems.map((provider) => (
+        <div key={provider.value} className={styles.formGroupElement}>
+          <Checkbox
+            data-testid={`provider-${serializeDataTestid(provider.value)}`}
+            isChecked={provider.state}
+            onChange={onCheckboxProvidersChange}
+            id={`types-${provider.value}`}
+            label={`${provider.value} (${provider.freq})`}
+            name={provider.value}
+          />
+        </div>
+      ))}
     </FormGroup>
   );
 };

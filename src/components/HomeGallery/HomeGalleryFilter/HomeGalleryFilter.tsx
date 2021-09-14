@@ -51,16 +51,16 @@ export const HomeGalleryFilter: React.FC<HomeGalleryFilterProps> = ({
           setTypeFilterElems={setTypeFilterElems}
         />
       )}
-      {tagFilterElems.length > 1 && (
-        <HomeGalleryFilterTags
-          tagFilterElems={tagFilterElems}
-          setTagFilterElems={setTagFilterElems}
-        />
-      )}
       {providerFilterElems.length > 1 && (
         <HomeGalleryFilterProviders
           providerFilterElems={providerFilterElems}
           setProviderFilterElems={setProviderFilterElems}
+        />
+      )}
+      {tagFilterElems.length > 1 && (
+        <HomeGalleryFilterTags
+          tagFilterElems={tagFilterElems}
+          setTagFilterElems={setTagFilterElems}
         />
       )}
     </Form>

@@ -65,7 +65,11 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
             onSearchBarChange={onSearchBarChange}
             searchBarValue={searchBarValue}
           />
-          <HomeGalleryGrid devfiles={filteredDevfiles} sourceRepos={sourceRepos} />
+          <HomeGalleryGrid
+            devfiles={filteredDevfiles}
+            sourceRepos={sourceRepos}
+            providers={providers}
+          />
         </GridItem>
       </Grid>
     </>
