@@ -57,11 +57,6 @@ export const HomeGalleryItem: React.FC<HomeGalleryItemProps> = ({
             {sourceRepos.length !== 1 && (
               <Text className={styles.text}>{capitalizeFirstLetter(devfile.sourceRepo)}</Text>
             )}
-            {providers.length > 1 && (
-              <Text className={styles.text}>
-                {capitalizeFirstLetter(devfile.provider ? devfile.provider : '')}
-              </Text>
-            )}
             <Text className={styles.text}>{capitalizeFirstLetter(devfile.type)}</Text>
           </TextContent>
         </div>
@@ -69,6 +64,9 @@ export const HomeGalleryItem: React.FC<HomeGalleryItemProps> = ({
       <CardTitle>
         <TextContent>
           <Text component={TextVariants.h3}>{devfile.displayName}</Text>
+          {providers.length > 1 && devfile.provider !== '' && (
+            <Text component={TextVariants.small}>Provided by: {devfile.provider}</Text>
+          )}
         </TextContent>
       </CardTitle>
       <CardBody className={styles.cardBody}>

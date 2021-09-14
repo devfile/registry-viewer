@@ -64,7 +64,7 @@ export const getDevfileRegistryJSON = async (): Promise<GetDevfileRegistryJSON> 
     displayName: 'Go Runtime',
     description: 'Stack with the latest Go version',
     type: 'stack',
-    tags: ['Go'],
+    tags: ['Go', 'AWS'],
     icon: 'https://raw.githubusercontent.com/devfile-samples/devfile-stack-icons/main/golang.svg',
     projectType: 'go',
     language: 'go',
@@ -73,8 +73,8 @@ export const getDevfileRegistryJSON = async (): Promise<GetDevfileRegistryJSON> 
     },
     resources: ['devfile.yaml'],
     starterProjects: ['go-starter'],
-    sourceRepo: 'Community',
-    provider: 'Red Hat'
+    sourceRepo: 'Test Source Repo',
+    provider: 'AWS'
   };
   let devfile2: Devfile = {
     name: 'java-openliberty Test',
@@ -82,7 +82,7 @@ export const getDevfileRegistryJSON = async (): Promise<GetDevfileRegistryJSON> 
     displayName: 'Open Liberty Maven',
     description: 'Java application stack using Open Liberty runtime',
     type: 'stack',
-    tags: ['Java', 'Maven'],
+    tags: ['Java', 'Maven', 'Red Hat'],
     icon: 'https://raw.githubusercontent.com/OpenLiberty/logos/7fbb132949b9b2589e18c8d5665c1b107028a21d/logomark/svg/OL_logomark.svg',
     projectType: 'openliberty',
     language: 'java',
@@ -91,8 +91,8 @@ export const getDevfileRegistryJSON = async (): Promise<GetDevfileRegistryJSON> 
     },
     resources: ['devfile.yaml'],
     starterProjects: ['user-app'],
-    sourceRepo: 'Test Source Repo',
-    provider: 'AWS'
+    sourceRepo: 'Community',
+    provider: 'Red Hat'
   };
   devfiles = devfiles.concat(devfile1);
   devfiles = devfiles.concat(devfile2);
