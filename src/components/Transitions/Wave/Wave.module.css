@@ -9,6 +9,6 @@
 .wave svg {
   position: relative;
   display: block;
-  width: calc(100% + 1.3px);
-  height: 56px;
+  width: calc(225% + 1.3px);
+  height: 50px;
 }

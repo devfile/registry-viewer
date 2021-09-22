@@ -3,7 +3,9 @@
     "baseUrl": ".",
     "paths": {
       "@src/*": ["src/*"],
-      "@public/*": ["public/*"]
+      "@public/*": ["public/*"],
+      "@config/*": ["config/*"],
+      "@info/*": ["webpage_info/*"]
     },
     "allowJs": false,
     "target": "es5",

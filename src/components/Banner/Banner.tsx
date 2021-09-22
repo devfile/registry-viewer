@@ -1,6 +1,6 @@
 import styles from './Banner.module.css';
 import type { LayoutText } from 'custom-types';
-import _layoutText from '../../../config/devfile-layout-text.json';
+import _layoutText from '@info/layout-text.json';
 import { Text, TextContent, TextVariants } from '@patternfly/react-core';
 import { useRouter } from 'next/router';
 import { Wave } from '@src/components';

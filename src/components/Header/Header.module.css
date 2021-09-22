@@ -3,7 +3,11 @@
   justify-content: space-between;
   align-items: center;
   background-color: var(--pf-global--BackgroundColor--dark-100);
-  padding: 2rem 4rem;
+  padding: 2rem 4rem 3rem;
+}
+
+.navList {
+  justify-content: center;
 }
 
 .titleLink {
@@ -22,4 +26,17 @@
 
 .text {
   color: var(--pf-global--Color--light-200);
+}
+
+@media (max-width: 768px) {
+  .nav {
+    display: grid;
+  }
+}
+
+@media (max-width: 575px) {
+  .title {
+    padding-bottom: 1rem;
+    justify-content: center;
+  }
 }

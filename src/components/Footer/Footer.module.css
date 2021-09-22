@@ -28,6 +28,19 @@
   align-items: center;
 }
 
+.footerGridLinkItem {
+  flex-grow: 1;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: flex-start;
+}
+
 .text {
   color: var(--pf-global--Color--light-200);
+}
+
+@media (max-width: 575px) {
+  .title {
+    padding-bottom: 1rem;
+  }
 }
