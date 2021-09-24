@@ -11,3 +11,5 @@ next-env.d.ts
 
 /public/*.js
 /public/*.js.map
+
+/public/images
