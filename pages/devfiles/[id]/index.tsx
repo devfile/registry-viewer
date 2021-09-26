@@ -47,12 +47,12 @@ const DevfilePage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const [devfiles, devfileErrors] = await getDevfileRegistryJSON();
+  const id = context.params?.id as string;
+  const [source, name] = id.split('+');
 
-  const devfile: Devfile = devfiles.find((devfile: Devfile) => {
-    const id = context.params?.id as string;
-    const [source, name] = id.split('+');
-    return devfile.sourceRepo === source && devfile.name === name;
-  })!;
+  const devfile: Devfile = devfiles.find(
+    (devfile: Devfile) => devfile.sourceRepo === source && devfile.name === name
+  )!;
 
   const [devfileYAML, devfileJSON, yamlErrors] = await getDevfileYAML(devfile);
 

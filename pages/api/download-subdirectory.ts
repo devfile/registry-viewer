@@ -35,7 +35,8 @@ export default async function handler(
     res.status(200);
     res.send(base64Send);
     res.end();
-  } catch (error) {
+  } catch (e) {
+    const error = e as Error;
     if (error.toString().includes('subdirectory does not exist')) {
       res.status(404);
     } else {
