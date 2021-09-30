@@ -87,3 +87,10 @@
   width: 50%;
   margin: 2%;
 }
+
+.longDescription {
+  overflow: scroll;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}

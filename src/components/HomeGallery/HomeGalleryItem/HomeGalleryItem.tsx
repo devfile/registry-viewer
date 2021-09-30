@@ -70,7 +70,9 @@ export const HomeGalleryItem: React.FC<HomeGalleryItemProps> = ({
       </CardTitle>
       <CardBody className={styles.cardBody}>
         <TextContent>
-          <Text component={TextVariants.p}>{devfile.description}</Text>
+          <Text component={TextVariants.p} className={styles.longDescription}>
+            {devfile.description}
+          </Text>
         </TextContent>
       </CardBody>
       <CardFooter>
