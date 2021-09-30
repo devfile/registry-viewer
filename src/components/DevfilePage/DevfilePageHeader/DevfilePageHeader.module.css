@@ -20,6 +20,7 @@
   div .basicInfo {
     width: 100%;
     min-width: 0px;
+    padding-bottom: 0.5rem;
     border-right: 0;
     border-bottom: 2px solid #adabae;
   }
@@ -86,4 +87,9 @@
 .metadata {
   width: 50%;
   margin: 2%;
+}
+
+.copyButton {
+  display: flex;
+  justify-content: space-between;
 }

@@ -32,6 +32,10 @@
   }
 }
 
+.cardHeader {
+  cursor: pointer;
+}
+
 .card {
   width: 75%;
   max-width: 1000px;
@@ -44,6 +48,8 @@
 
 .cardBody {
   display: flex;
+  border-top: 1px solid rgb(175, 175, 175);
+  padding-top: 1rem;
 }
 
 /* project selector classes */

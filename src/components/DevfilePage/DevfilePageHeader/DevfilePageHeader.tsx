@@ -1,12 +1,9 @@
 import styles from './DevfilePageHeader.module.css';
 import { Devfile, FilterElem } from 'custom-types';
 import devfileLogo from '@public/images/devfileLogo.svg';
-import { DevfilePageHeaderTags } from '@src/components';
-import { capitalizeFirstLetter, splitCamelCase } from '@src/util/client';
+import { DevfilePageHeaderTags, DevfilePageHeaderShareButton } from '@src/components';
+import { capitalizeFirstLetter, splitCamelCase, useWindowDimensions } from '@src/util/client';
 import { Brand, Text, TextContent, TextVariants } from '@patternfly/react-core';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useRouter } from 'next/router';
-import { useState, useEffect } from 'react';
 
 /**
  * props for devfile page metadata header
@@ -21,10 +18,6 @@ export interface DevfilePageHeaderProps {
   sourceRepos: FilterElem[];
 }
 
-export interface Origin {
-  origin: string;
-}
-
 /**
  * header that displays basic information and metadata information for respective devfile
  * @param devfile - index information for devfile
@@ -36,66 +29,52 @@ export const DevfilePageHeader: React.FC<DevfilePageHeaderProps> = ({
   sourceRepos
 }: DevfilePageHeaderProps) => {
   const devfileMetaInclude = ['projectType', 'version', 'language', 'provider']; // types to include in metadata from index
-  const router = useRouter();
-  const [url, setUrl] = useState<string>('');
 
-  const origin = async (): Promise<string> => {
-    const res = await fetch('/api/get-absolute-url');
-    const url = (await res.json()) as Origin;
-    return url.origin;
-  };
-
-  useEffect(() => {
-    origin().then((absoluteUrl) => {
-      setUrl(() => absoluteUrl);
-    });
-  }, []);
+  const { width } = useWindowDimensions();
 
   return (
     <div data-testid="dev-page-header" className={styles.headerCard}>
-      <div className={styles.basicInfo}>
-        <div className={styles.brand}>
-          <Brand
-            data-testid="icon"
-            src={devfile.icon || devfileLogo}
-            alt={devfile.icon ? devfile.displayName + ' logo' : 'devfile logo'}
-            className={styles.logo}
-          />
-          <TextContent className={styles.types}>
-            {sourceRepos.length > 1 && (
-              <Text data-testid="source-repo" className={styles.sourceRepo}>
-                {devfile.sourceRepo}
+      <div className={styles.copyButton}>
+        <div className={styles.basicInfo}>
+          <div className={styles.brand}>
+            <Brand
+              data-testid="icon"
+              src={devfile.icon || devfileLogo}
+              alt={devfile.icon ? devfile.displayName + ' logo' : 'devfile logo'}
+              className={styles.logo}
+            />
+            <TextContent className={styles.types}>
+              {sourceRepos.length > 1 && (
+                <Text data-testid="source-repo" className={styles.sourceRepo}>
+                  {devfile.sourceRepo}
+                </Text>
+              )}
+              <Text data-testid="type" className={styles.type}>
+                {capitalizeFirstLetter(devfile.type)}
               </Text>
-            )}
-            <Text data-testid="type" className={styles.type}>
-              {capitalizeFirstLetter(devfile.type)}
-            </Text>
-          </TextContent>
-        </div>
-        <div className={styles.headerCardBody}>
-          <TextContent>
-            <Text
-              data-testid="displayName"
-              component={TextVariants.h2}
-              className={styles.basicText}
-            >
-              {devfile.displayName}
-            </Text>
-            {devfile.description && (
-              <Text data-testid="description" className={styles.basicText}>
-                {devfile.description}
+            </TextContent>
+          </div>
+          <div className={styles.headerCardBody}>
+            <TextContent>
+              <Text
+                data-testid="displayName"
+                component={TextVariants.h2}
+                className={styles.basicText}
+              >
+                {devfile.displayName}
               </Text>
-            )}
-          </TextContent>
-          {devfile?.tags && <DevfilePageHeaderTags tags={devfile.tags} />}
+              {devfile.description && (
+                <Text data-testid="description" className={styles.basicText}>
+                  {devfile.description}
+                </Text>
+              )}
+            </TextContent>
+            {devfile?.tags && <DevfilePageHeaderTags tags={devfile.tags} />}
+          </div>
         </div>
+        {width! <= 860 && <DevfilePageHeaderShareButton />}
       </div>
       <TextContent data-testid="devfile-metadata" className={styles.metadata}>
-        {
-          <CopyToClipboard text={`${url}${router.basePath}${router.asPath}`}>
-            <button>Copy URL to the clipboard</button>
-          </CopyToClipboard>
-        }
         {Object.entries(devfile).map(([key, value]) => {
           if (devfileMetaInclude.includes(key) && value) {
             const label = splitCamelCase(key);
@@ -135,6 +114,7 @@ export const DevfilePageHeader: React.FC<DevfilePageHeaderProps> = ({
           </Text>
         )}
       </TextContent>
+      {width! > 860 && <DevfilePageHeaderShareButton />}
     </div>
   );
 };

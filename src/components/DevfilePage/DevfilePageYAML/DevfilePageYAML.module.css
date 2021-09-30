@@ -12,8 +12,15 @@
 .cardHeader {
   padding: 10px;
   border-bottom: 1px solid rgb(175, 175, 175);
+  display: flex;
+  justify-content: space-between;
 }
 
 .cardBody {
   padding: 0 0 0.75rem 0;
+}
+
+.button:active {
+  background-color: black;
+  color: white;
 }

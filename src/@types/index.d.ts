@@ -105,4 +105,9 @@ declare module 'custom-types' {
     headerLinks: Link[];
     footerLinks: Link[];
   }
+
+  export interface WindowDimensions {
+    width: number | null;
+    height: number | null;
+  }
 }

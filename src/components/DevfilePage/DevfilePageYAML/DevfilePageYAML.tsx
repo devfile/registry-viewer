@@ -1,5 +1,6 @@
 import styles from './DevfilePageYAML.module.css';
-import { Card, CardBody, CardHeader } from '@patternfly/react-core';
+import { Button, Card, CardBody, CardHeader, Text, TextContent } from '@patternfly/react-core';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { LightAsync as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { github as style } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 /**
@@ -22,7 +23,16 @@ export const DevfilePageYAML: React.FC<DevfilePageYAMLProps> = ({
   devfileYAML
 }: DevfilePageYAMLProps) => (
   <Card data-testid="dev-page-yaml" className={styles.yamlCard}>
-    <CardHeader className={styles.cardHeader}>devfile.yaml</CardHeader>
+    <CardHeader className={styles.cardHeader}>
+      <TextContent>
+        <Text>devfile.yaml</Text>
+      </TextContent>
+      <CopyToClipboard text={devfileYAML}>
+        <Button data-testid="download-button" className={styles.button} variant="tertiary">
+          Copy
+        </Button>
+      </CopyToClipboard>
+    </CardHeader>
     <CardBody className={styles.cardBody}>
       <SyntaxHighlighter language="yaml" showLineNumbers style={style}>
         {devfileYAML}
