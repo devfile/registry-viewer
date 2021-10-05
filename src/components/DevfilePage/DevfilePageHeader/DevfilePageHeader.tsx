@@ -32,8 +32,8 @@ export const DevfilePageHeader: React.FC<DevfilePageHeaderProps> = ({
 
   return (
     <div data-testid="dev-page-header" className={styles.headerCard}>
-      <div style={{ position: 'absolute', top: '1rem', right: '1rem' }}>
-        <DevfilePageHeaderShareButton />
+      <div className={styles.linkButton}>
+        <DevfilePageHeaderShareButton devfile={devfile} />
       </div>
       <div className={styles.basicInfo}>
         <div className={styles.brand}>

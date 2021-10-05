@@ -89,3 +89,9 @@
   width: 50%;
   margin: 2%;
 }
+
+.linkButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
