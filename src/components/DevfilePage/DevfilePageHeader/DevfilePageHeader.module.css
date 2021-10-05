@@ -95,3 +95,10 @@
   top: 1rem;
   right: 1rem;
 }
+
+.longDescription {
+  overflow: scroll;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
