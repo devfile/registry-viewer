@@ -1,4 +1,12 @@
 .image {
-  height: 2rem;
-  cursor: pointer;
+  height: 1.5rem;
+}
+
+.button:active {
+  background-color: black;
+  color: white;
+}
+
+.button {
+  padding: 0.5rem 0.5rem 0 !important;
 }

@@ -1,6 +1,6 @@
 import styles from './DevfilePageHeaderShareButton.module.css';
-import shareButton from '@public/images/share.svg';
-import { Brand } from '@patternfly/react-core';
+import link from '@public/images/link.svg';
+import { Brand, Button } from '@patternfly/react-core';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
@@ -26,9 +26,11 @@ export const DevfilePageHeaderShareButton: React.FC = () => {
   }, []);
 
   return (
-    <CopyToClipboard text={`${url}${router.basePath}${router.asPath}`}>
-      <Brand src={shareButton} alt="Share button" className={styles.image} />
-    </CopyToClipboard>
+    <Button data-testid="download-button" className={styles.button} variant="tertiary">
+      <CopyToClipboard text={`${url}${router.basePath}${router.asPath}`}>
+        <Brand src={link} alt="Link button" className={styles.image} />
+      </CopyToClipboard>
+    </Button>
   );
 };
 DevfilePageHeaderShareButton.displayName = 'DevfilePageHeaderShareButton';

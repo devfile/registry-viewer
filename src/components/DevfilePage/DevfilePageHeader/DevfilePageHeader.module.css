@@ -44,6 +44,7 @@
   display: flex;
   padding: 3%;
   background-color: var(--pf-global--BackgroundColor--100);
+  position: relative;
 }
 
 .headerCardBody {
@@ -87,9 +88,4 @@
 .metadata {
   width: 50%;
   margin: 2%;
-}
-
-.copyButton {
-  display: flex;
-  justify-content: space-between;
 }

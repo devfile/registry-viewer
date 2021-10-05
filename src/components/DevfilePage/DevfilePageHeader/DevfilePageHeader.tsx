@@ -2,7 +2,7 @@ import styles from './DevfilePageHeader.module.css';
 import { Devfile, FilterElem } from 'custom-types';
 import devfileLogo from '@public/images/devfileLogo.svg';
 import { DevfilePageHeaderTags, DevfilePageHeaderShareButton } from '@src/components';
-import { capitalizeFirstLetter, splitCamelCase, useWindowDimensions } from '@src/util/client';
+import { capitalizeFirstLetter, splitCamelCase } from '@src/util/client';
 import { Brand, Text, TextContent, TextVariants } from '@patternfly/react-core';
 
 /**
@@ -30,49 +30,47 @@ export const DevfilePageHeader: React.FC<DevfilePageHeaderProps> = ({
 }: DevfilePageHeaderProps) => {
   const devfileMetaInclude = ['projectType', 'version', 'language', 'provider']; // types to include in metadata from index
 
-  const { width } = useWindowDimensions();
-
   return (
     <div data-testid="dev-page-header" className={styles.headerCard}>
-      <div className={styles.copyButton}>
-        <div className={styles.basicInfo}>
-          <div className={styles.brand}>
-            <Brand
-              data-testid="icon"
-              src={devfile.icon || devfileLogo}
-              alt={devfile.icon ? devfile.displayName + ' logo' : 'devfile logo'}
-              className={styles.logo}
-            />
-            <TextContent className={styles.types}>
-              {sourceRepos.length > 1 && (
-                <Text data-testid="source-repo" className={styles.sourceRepo}>
-                  {devfile.sourceRepo}
-                </Text>
-              )}
-              <Text data-testid="type" className={styles.type}>
-                {capitalizeFirstLetter(devfile.type)}
+      <div style={{ position: 'absolute', top: '1rem', right: '1rem' }}>
+        <DevfilePageHeaderShareButton />
+      </div>
+      <div className={styles.basicInfo}>
+        <div className={styles.brand}>
+          <Brand
+            data-testid="icon"
+            src={devfile.icon || devfileLogo}
+            alt={devfile.icon ? devfile.displayName + ' logo' : 'devfile logo'}
+            className={styles.logo}
+          />
+          <TextContent className={styles.types}>
+            {sourceRepos.length > 1 && (
+              <Text data-testid="source-repo" className={styles.sourceRepo}>
+                {devfile.sourceRepo}
               </Text>
-            </TextContent>
-          </div>
-          <div className={styles.headerCardBody}>
-            <TextContent>
-              <Text
-                data-testid="displayName"
-                component={TextVariants.h2}
-                className={styles.basicText}
-              >
-                {devfile.displayName}
-              </Text>
-              {devfile.description && (
-                <Text data-testid="description" className={styles.basicText}>
-                  {devfile.description}
-                </Text>
-              )}
-            </TextContent>
-            {devfile?.tags && <DevfilePageHeaderTags tags={devfile.tags} />}
-          </div>
+            )}
+            <Text data-testid="type" className={styles.type}>
+              {capitalizeFirstLetter(devfile.type)}
+            </Text>
+          </TextContent>
         </div>
-        {width! <= 860 && <DevfilePageHeaderShareButton />}
+        <div className={styles.headerCardBody}>
+          <TextContent>
+            <Text
+              data-testid="displayName"
+              component={TextVariants.h2}
+              className={styles.basicText}
+            >
+              {devfile.displayName}
+            </Text>
+            {devfile.description && (
+              <Text data-testid="description" className={styles.basicText}>
+                {devfile.description}
+              </Text>
+            )}
+          </TextContent>
+          {devfile?.tags && <DevfilePageHeaderTags tags={devfile.tags} />}
+        </div>
       </div>
       <TextContent data-testid="devfile-metadata" className={styles.metadata}>
         {Object.entries(devfile).map(([key, value]) => {
@@ -114,7 +112,6 @@ export const DevfilePageHeader: React.FC<DevfilePageHeaderProps> = ({
           </Text>
         )}
       </TextContent>
-      {width! > 860 && <DevfilePageHeaderShareButton />}
     </div>
   );
 };
