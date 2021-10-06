@@ -37,7 +37,7 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
     filteredDevfiles = filterDevfilesOnProviders(filteredDevfiles, providerFilterElems);
 
     setFilteredDevfiles(filteredDevfiles);
-  }, [tagFilterElems, typeFilterElems, sourceRepoFilterElems, searchBarValue, providerFilterElems]);
+  }, [tagFilterElems, typeFilterElems, sourceRepoFilterElems, providerFilterElems, searchBarValue]);
 
   const onSearchBarChange = (value: string): void => {
     setSearchBarValue(value);
@@ -93,6 +93,10 @@ const filterDevfilesOnSearchBar = (devfiles: Devfile[], searchBarValue: string):
     }
 
     if (isSearchBarValueIn(devfile.description, searchBarValue)) {
+      return true;
+    }
+
+    if (devfile.provider && isSearchBarValueIn(devfile.provider, searchBarValue)) {
       return true;
     }
 
