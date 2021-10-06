@@ -1,12 +1,7 @@
 import type { FilterElem } from 'custom-types';
-import {
-  HomeGalleryFilterSourceRepo,
-  HomeGalleryFilterTags,
-  HomeGalleryFilterTypes
-} from '@src/components';
+import { HomeGalleryFilterElemsSearchBar, HomeGalleryFilterElems } from '@src/components';
 import type { Dispatch, SetStateAction } from 'react';
 import { Form, Text, TextContent, TextVariants } from '@patternfly/react-core';
-import { HomeGalleryFilterProviders } from './HomeGalleryFilterProviders';
 
 export interface HomeGalleryFilterProps {
   tagFilterElems: FilterElem[];
@@ -40,27 +35,36 @@ export const HomeGalleryFilter: React.FC<HomeGalleryFilterProps> = ({
     </TextContent>
     <Form>
       {sourceRepoFilterElems.length > 1 && (
-        <HomeGalleryFilterSourceRepo
-          sourceRepoFilterElems={sourceRepoFilterElems}
-          setSourceRepoFilterElems={setSourceRepoFilterElems}
+        <HomeGalleryFilterElems
+          label="Source Repositories"
+          id="source-repo"
+          filterElems={sourceRepoFilterElems}
+          setFilterElems={setSourceRepoFilterElems}
         />
       )}
       {typeFilterElems.length > 1 && (
-        <HomeGalleryFilterTypes
-          typeFilterElems={typeFilterElems}
-          setTypeFilterElems={setTypeFilterElems}
+        <HomeGalleryFilterElems
+          label="Types"
+          id="type"
+          filterElems={typeFilterElems}
+          setFilterElems={setTypeFilterElems}
+          capitalizeElem={true}
         />
       )}
       {providerFilterElems.length > 1 && (
-        <HomeGalleryFilterProviders
-          providerFilterElems={providerFilterElems}
-          setProviderFilterElems={setProviderFilterElems}
+        <HomeGalleryFilterElems
+          label="Providers"
+          id="provider"
+          filterElems={providerFilterElems}
+          setFilterElems={setProviderFilterElems}
         />
       )}
       {tagFilterElems.length > 1 && (
-        <HomeGalleryFilterTags
-          tagFilterElems={tagFilterElems}
-          setTagFilterElems={setTagFilterElems}
+        <HomeGalleryFilterElemsSearchBar
+          label="Tags"
+          id="tag"
+          filterElems={tagFilterElems}
+          setFilterElems={setTagFilterElems}
         />
       )}
     </Form>
