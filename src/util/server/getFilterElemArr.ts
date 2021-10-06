@@ -2,7 +2,7 @@ import type { Devfile, FilterElem } from 'custom-types';
 
 export const getFilterElemArr = (
   devfiles: Devfile[],
-  property: keyof Pick<Devfile, 'type' | 'tags' | 'sourceRepo'>
+  property: keyof Pick<Devfile, 'type' | 'tags' | 'sourceRepo' | 'provider'>
 ): FilterElem[] => {
   let values = devfiles?.map((devfile) => devfile[property]);
 
