@@ -1,0 +1,139 @@
+diff --git a/pages/index.tsx b/pages/index.tsx
+index 6ebc1ce..7783c34 100644
+--- a/pages/index.tsx
++++ b/pages/index.tsx
+@@ -31,10 +31,10 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
+ 
+   useEffect(() => {
+     let filteredDevfiles = filterDevfilesOnSearchBar(devfiles, searchBarValue);
+-    filteredDevfiles = filterDevfilesOnTags(filteredDevfiles, tagFilterElems);
+-    filteredDevfiles = filterDevfilesOnTypes(filteredDevfiles, typeFilterElems);
+-    filteredDevfiles = filterDevfilesOnSourceRepos(filteredDevfiles, sourceRepoFilterElems);
+-    filteredDevfiles = filterDevfilesOnProviders(filteredDevfiles, providerFilterElems);
++    filteredDevfiles = filterDevfilesOn('tags', filteredDevfiles, tagFilterElems);
++    filteredDevfiles = filterDevfilesOn('type', filteredDevfiles, typeFilterElems);
++    filteredDevfiles = filterDevfilesOn('sourceRepo', filteredDevfiles, sourceRepoFilterElems);
++    filteredDevfiles = filterDevfilesOn('provider', filteredDevfiles, providerFilterElems);
+ 
+     setFilteredDevfiles(filteredDevfiles);
+   }, [tagFilterElems, typeFilterElems, sourceRepoFilterElems, providerFilterElems, searchBarValue]);
+@@ -96,7 +96,7 @@ const filterDevfilesOnSearchBar = (devfiles: Devfile[], searchBarValue: string):
+       return true;
+     }
+ 
+-    if (devfile.provider && isSearchBarValueIn(devfile.provider, searchBarValue)) {
++    if (isSearchBarValueIn(devfile.provider, searchBarValue)) {
+       return true;
+     }
+ 
+@@ -105,68 +105,39 @@ const filterDevfilesOnSearchBar = (devfiles: Devfile[], searchBarValue: string):
+   return devfilesFilteredOnSearchBar;
+ };
+ 
+-const filterDevfilesOnTags = (devfiles: Devfile[], tagFilterElems: FilterElem[]): Devfile[] => {
+-  const tagsSelectedByUser: FilterElem[] = tagFilterElems.filter((tag) => tag.state);
+-
+-  if (!tagsSelectedByUser.length) {
+-    return devfiles;
+-  }
+-
+-  const devfilesFilteredOnTags: Devfile[] = devfiles.filter((devfile: Devfile) =>
+-    devfile.tags?.some((tag) =>
+-      tagsSelectedByUser.some((tagSelectedByUser) => tag === tagSelectedByUser.value)
+-    )
+-  );
+-  return devfilesFilteredOnTags;
+-};
+-
+-const filterDevfilesOnProviders = (
++const filterDevfilesOn = (
++  key: keyof Omit<Devfile, 'links' | 'git'>,
+   devfiles: Devfile[],
+-  providerFilterElems: FilterElem[]
++  filterElems: FilterElem[]
+ ): Devfile[] => {
+-  const providersSelectedByUser: FilterElem[] = providerFilterElems.filter(
+-    (provider) => provider.state
++  const filterElemsSelectedByUser: FilterElem[] = filterElems.filter(
++    (filterElem) => filterElem.state
+   );
+ 
+-  if (!providersSelectedByUser.length) {
++  if (!filterElemsSelectedByUser.length) {
+     return devfiles;
+   }
+ 
+-  const devfilesFilteredOnProviders: Devfile[] = devfiles.filter((devfile: Devfile) =>
+-    providersSelectedByUser.some((provider) => devfile.provider === provider.value)
+-  );
+-  return devfilesFilteredOnProviders;
+-};
+-
+-const filterDevfilesOnTypes = (devfiles: Devfile[], typeFilterElems: FilterElem[]): Devfile[] => {
+-  const typesSelectedByUser: FilterElem[] = typeFilterElems.filter((type) => type.state);
+-
+-  if (!typesSelectedByUser.length) {
+-    return devfiles;
++  let devfilesFilteredOn: Devfile[] = [];
++
++  /**
++   * Check if the key results in a string or string array
++   */
++  if (Array.isArray(devfiles[0][key])) {
++    devfilesFilteredOn = devfiles.filter((devfile: Devfile) =>
++      (devfile[key] as string[])?.some((keyValue) =>
++        filterElemsSelectedByUser.some(
++          (kayValuesSelectedByUser) => keyValue === kayValuesSelectedByUser.value
++        )
++      )
++    );
++  } else {
++    devfilesFilteredOn = devfiles.filter((devfile: Devfile) =>
++      filterElemsSelectedByUser.some((filterElem) => (devfile[key] as string) === filterElem.value)
++    );
+   }
+ 
+-  const devfilesFilteredOnTypes: Devfile[] = devfiles.filter((devfile: Devfile) =>
+-    typesSelectedByUser.some((type) => devfile.type === type.value)
+-  );
+-  return devfilesFilteredOnTypes;
+-};
+-
+-const filterDevfilesOnSourceRepos = (
+-  devfiles: Devfile[],
+-  sourceRepoFilterElems: FilterElem[]
+-): Devfile[] => {
+-  const sourceReposSelectedByUser: FilterElem[] = sourceRepoFilterElems.filter(
+-    (sourceRepo) => sourceRepo.state
+-  );
+-
+-  if (!sourceReposSelectedByUser.length) {
+-    return devfiles;
+-  }
+-
+-  const devfilesFilteredOnSourceRepos: Devfile[] = devfiles.filter((devfile: Devfile) =>
+-    sourceReposSelectedByUser.some((sourceRepo) => devfile.sourceRepo === sourceRepo.value)
+-  );
+-  return devfilesFilteredOnSourceRepos;
++  return devfilesFilteredOn;
+ };
+ 
+ export const getStaticProps: GetStaticProps = async () => {
+diff --git a/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilter.tsx b/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilter.tsx
+index 69d0bcf..ed355c1 100644
+--- a/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilter.tsx
++++ b/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilter.tsx
+@@ -2,11 +2,11 @@ import type { FilterElem } from 'custom-types';
+ import {
+   HomeGalleryFilterSourceRepo,
+   HomeGalleryFilterTags,
+-  HomeGalleryFilterTypes
++  HomeGalleryFilterTypes,
++  HomeGalleryFilterProviders
+ } from '@src/components';
+ import type { Dispatch, SetStateAction } from 'react';
+ import { Form, Text, TextContent, TextVariants } from '@patternfly/react-core';
+-import { HomeGalleryFilterProviders } from './HomeGalleryFilterProviders';
+ 
+ export interface HomeGalleryFilterProps {
+   tagFilterElems: FilterElem[];

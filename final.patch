@@ -1,0 +1,525 @@
+diff --git a/pages/index.tsx b/pages/index.tsx
+index 6ebc1ce..7783c34 100644
+--- a/pages/index.tsx
++++ b/pages/index.tsx
+@@ -31,10 +31,10 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
+ 
+   useEffect(() => {
+     let filteredDevfiles = filterDevfilesOnSearchBar(devfiles, searchBarValue);
+-    filteredDevfiles = filterDevfilesOnTags(filteredDevfiles, tagFilterElems);
+-    filteredDevfiles = filterDevfilesOnTypes(filteredDevfiles, typeFilterElems);
+-    filteredDevfiles = filterDevfilesOnSourceRepos(filteredDevfiles, sourceRepoFilterElems);
+-    filteredDevfiles = filterDevfilesOnProviders(filteredDevfiles, providerFilterElems);
++    filteredDevfiles = filterDevfilesOn('tags', filteredDevfiles, tagFilterElems);
++    filteredDevfiles = filterDevfilesOn('type', filteredDevfiles, typeFilterElems);
++    filteredDevfiles = filterDevfilesOn('sourceRepo', filteredDevfiles, sourceRepoFilterElems);
++    filteredDevfiles = filterDevfilesOn('provider', filteredDevfiles, providerFilterElems);
+ 
+     setFilteredDevfiles(filteredDevfiles);
+   }, [tagFilterElems, typeFilterElems, sourceRepoFilterElems, providerFilterElems, searchBarValue]);
+@@ -96,7 +96,7 @@ const filterDevfilesOnSearchBar = (devfiles: Devfile[], searchBarValue: string):
+       return true;
+     }
+ 
+-    if (devfile.provider && isSearchBarValueIn(devfile.provider, searchBarValue)) {
++    if (isSearchBarValueIn(devfile.provider, searchBarValue)) {
+       return true;
+     }
+ 
+@@ -105,68 +105,39 @@ const filterDevfilesOnSearchBar = (devfiles: Devfile[], searchBarValue: string):
+   return devfilesFilteredOnSearchBar;
+ };
+ 
+-const filterDevfilesOnTags = (devfiles: Devfile[], tagFilterElems: FilterElem[]): Devfile[] => {
+-  const tagsSelectedByUser: FilterElem[] = tagFilterElems.filter((tag) => tag.state);
+-
+-  if (!tagsSelectedByUser.length) {
+-    return devfiles;
+-  }
+-
+-  const devfilesFilteredOnTags: Devfile[] = devfiles.filter((devfile: Devfile) =>
+-    devfile.tags?.some((tag) =>
+-      tagsSelectedByUser.some((tagSelectedByUser) => tag === tagSelectedByUser.value)
+-    )
+-  );
+-  return devfilesFilteredOnTags;
+-};
+-
+-const filterDevfilesOnProviders = (
++const filterDevfilesOn = (
++  key: keyof Omit<Devfile, 'links' | 'git'>,
+   devfiles: Devfile[],
+-  providerFilterElems: FilterElem[]
++  filterElems: FilterElem[]
+ ): Devfile[] => {
+-  const providersSelectedByUser: FilterElem[] = providerFilterElems.filter(
+-    (provider) => provider.state
++  const filterElemsSelectedByUser: FilterElem[] = filterElems.filter(
++    (filterElem) => filterElem.state
+   );
+ 
+-  if (!providersSelectedByUser.length) {
++  if (!filterElemsSelectedByUser.length) {
+     return devfiles;
+   }
+ 
+-  const devfilesFilteredOnProviders: Devfile[] = devfiles.filter((devfile: Devfile) =>
+-    providersSelectedByUser.some((provider) => devfile.provider === provider.value)
+-  );
+-  return devfilesFilteredOnProviders;
+-};
+-
+-const filterDevfilesOnTypes = (devfiles: Devfile[], typeFilterElems: FilterElem[]): Devfile[] => {
+-  const typesSelectedByUser: FilterElem[] = typeFilterElems.filter((type) => type.state);
+-
+-  if (!typesSelectedByUser.length) {
+-    return devfiles;
++  let devfilesFilteredOn: Devfile[] = [];
++
++  /**
++   * Check if the key results in a string or string array
++   */
++  if (Array.isArray(devfiles[0][key])) {
++    devfilesFilteredOn = devfiles.filter((devfile: Devfile) =>
++      (devfile[key] as string[])?.some((keyValue) =>
++        filterElemsSelectedByUser.some(
++          (kayValuesSelectedByUser) => keyValue === kayValuesSelectedByUser.value
++        )
++      )
++    );
++  } else {
++    devfilesFilteredOn = devfiles.filter((devfile: Devfile) =>
++      filterElemsSelectedByUser.some((filterElem) => (devfile[key] as string) === filterElem.value)
++    );
+   }
+ 
+-  const devfilesFilteredOnTypes: Devfile[] = devfiles.filter((devfile: Devfile) =>
+-    typesSelectedByUser.some((type) => devfile.type === type.value)
+-  );
+-  return devfilesFilteredOnTypes;
+-};
+-
+-const filterDevfilesOnSourceRepos = (
+-  devfiles: Devfile[],
+-  sourceRepoFilterElems: FilterElem[]
+-): Devfile[] => {
+-  const sourceReposSelectedByUser: FilterElem[] = sourceRepoFilterElems.filter(
+-    (sourceRepo) => sourceRepo.state
+-  );
+-
+-  if (!sourceReposSelectedByUser.length) {
+-    return devfiles;
+-  }
+-
+-  const devfilesFilteredOnSourceRepos: Devfile[] = devfiles.filter((devfile: Devfile) =>
+-    sourceReposSelectedByUser.some((sourceRepo) => devfile.sourceRepo === sourceRepo.value)
+-  );
+-  return devfilesFilteredOnSourceRepos;
++  return devfilesFilteredOn;
+ };
+ 
+ export const getStaticProps: GetStaticProps = async () => {
+diff --git a/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilter.tsx b/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilter.tsx
+index 69d0bcf..e4b36d2 100644
+--- a/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilter.tsx
++++ b/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilter.tsx
+@@ -1,12 +1,7 @@
+ import type { FilterElem } from 'custom-types';
+-import {
+-  HomeGalleryFilterSourceRepo,
+-  HomeGalleryFilterTags,
+-  HomeGalleryFilterTypes
+-} from '@src/components';
++import { HomeGalleryFilterElemsSearchBar, HomeGalleryFilterElems } from '@src/components';
+ import type { Dispatch, SetStateAction } from 'react';
+ import { Form, Text, TextContent, TextVariants } from '@patternfly/react-core';
+-import { HomeGalleryFilterProviders } from './HomeGalleryFilterProviders';
+ 
+ export interface HomeGalleryFilterProps {
+   tagFilterElems: FilterElem[];
+@@ -40,27 +35,36 @@ export const HomeGalleryFilter: React.FC<HomeGalleryFilterProps> = ({
+     </TextContent>
+     <Form>
+       {sourceRepoFilterElems.length > 1 && (
+-        <HomeGalleryFilterSourceRepo
+-          sourceRepoFilterElems={sourceRepoFilterElems}
+-          setSourceRepoFilterElems={setSourceRepoFilterElems}
++        <HomeGalleryFilterElems
++          label="Source Repositories"
++          id="source-repo"
++          filterElems={sourceRepoFilterElems}
++          setFilterElems={setSourceRepoFilterElems}
+         />
+       )}
+       {typeFilterElems.length > 1 && (
+-        <HomeGalleryFilterTypes
+-          typeFilterElems={typeFilterElems}
+-          setTypeFilterElems={setTypeFilterElems}
++        <HomeGalleryFilterElems
++          label="Types"
++          id="type"
++          filterElems={typeFilterElems}
++          setFilterElems={setTypeFilterElems}
++          capitalizeElem={true}
+         />
+       )}
+       {providerFilterElems.length > 1 && (
+-        <HomeGalleryFilterProviders
+-          providerFilterElems={providerFilterElems}
+-          setProviderFilterElems={setProviderFilterElems}
++        <HomeGalleryFilterElems
++          label="Providers"
++          id="provider"
++          filterElems={providerFilterElems}
++          setFilterElems={setProviderFilterElems}
+         />
+       )}
+       {tagFilterElems.length > 1 && (
+-        <HomeGalleryFilterTags
+-          tagFilterElems={tagFilterElems}
+-          setTagFilterElems={setTagFilterElems}
++        <HomeGalleryFilterElemsSearchBar
++          label="Tags"
++          id="tag"
++          filterElems={tagFilterElems}
++          setFilterElems={setTagFilterElems}
+         />
+       )}
+     </Form>
+diff --git a/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilterProviders.module.css b/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilterProviders.module.css
+deleted file mode 100644
+index 1d0258a..0000000
+--- a/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilterProviders.module.css
++++ /dev/null
+@@ -1,7 +0,0 @@
+-.formGroupElement {
+-  margin-bottom: 0.75rem;
+-}
+-
+-.providerBox {
+-  overflow: auto;
+-}
+diff --git a/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilterProviders.tsx b/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilterProviders.tsx
+deleted file mode 100644
+index d078aa9..0000000
+--- a/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilterProviders.tsx
++++ /dev/null
+@@ -1,48 +0,0 @@
+-import styles from './HomeGalleryFilterProviders.module.css';
+-import type { FilterElem } from 'custom-types';
+-import type { Dispatch, SetStateAction } from 'react';
+-import { serializeDataTestid } from '@src/util/client';
+-import { Checkbox, FormGroup } from '@patternfly/react-core';
+-
+-export interface HomeGalleryFilterProvidersProps {
+-  providerFilterElems: FilterElem[];
+-  setProviderFilterElems: Dispatch<SetStateAction<FilterElem[]>>;
+-}
+-
+-export const HomeGalleryFilterProviders: React.FC<HomeGalleryFilterProvidersProps> = ({
+-  providerFilterElems,
+-  setProviderFilterElems
+-}: HomeGalleryFilterProvidersProps) => {
+-  const onCheckboxProvidersChange = (
+-    checked: boolean,
+-    event: React.FormEvent<HTMLInputElement>
+-  ): void => {
+-    const target: EventTarget = event.target;
+-    const state: boolean = (target as HTMLInputElement).checked;
+-    const value: string = (target as HTMLInputElement).name;
+-
+-    const index: number = providerFilterElems.findIndex((elem) => elem.value === value);
+-
+-    const copy: FilterElem[] = [...providerFilterElems];
+-    copy[index].state = state;
+-    setProviderFilterElems(copy);
+-  };
+-
+-  return (
+-    <FormGroup fieldId="provider-selector" label="Providers" hasNoPaddingTop>
+-      {providerFilterElems.map((provider) => (
+-        <div key={provider.value} className={styles.formGroupElement}>
+-          <Checkbox
+-            data-testid={`provider-${serializeDataTestid(provider.value)}`}
+-            isChecked={provider.state}
+-            onChange={onCheckboxProvidersChange}
+-            id={`types-${provider.value}`}
+-            label={`${provider.value} (${provider.freq})`}
+-            name={provider.value}
+-          />
+-        </div>
+-      ))}
+-    </FormGroup>
+-  );
+-};
+-HomeGalleryFilterProviders.displayName = 'HomeGalleryFilterProviders';
+diff --git a/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilterSourceRepo.module.css b/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilterSourceRepo.module.css
+deleted file mode 100644
+index 36d365b..0000000
+--- a/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilterSourceRepo.module.css
++++ /dev/null
+@@ -1,3 +0,0 @@
+-.formGroupElement {
+-  margin-bottom: 0.75rem;
+-}
+diff --git a/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilterSourceRepo.tsx b/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilterSourceRepo.tsx
+deleted file mode 100644
+index 92d4cd3..0000000
+--- a/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilterSourceRepo.tsx
++++ /dev/null
+@@ -1,48 +0,0 @@
+-import styles from './HomeGalleryFilterSourceRepo.module.css';
+-import type { FilterElem } from 'custom-types';
+-import type { Dispatch, SetStateAction } from 'react';
+-import { serializeDataTestid } from '@src/util/client';
+-import { Checkbox, FormGroup } from '@patternfly/react-core';
+-
+-export interface HomeGalleryFilterSourceRepoProps {
+-  sourceRepoFilterElems: FilterElem[];
+-  setSourceRepoFilterElems: Dispatch<SetStateAction<FilterElem[]>>;
+-}
+-
+-export const HomeGalleryFilterSourceRepo: React.FC<HomeGalleryFilterSourceRepoProps> = ({
+-  sourceRepoFilterElems,
+-  setSourceRepoFilterElems
+-}: HomeGalleryFilterSourceRepoProps) => {
+-  const onCheckboxSourceRepoChange = (
+-    checked: boolean,
+-    event: React.FormEvent<HTMLInputElement>
+-  ): void => {
+-    const target: EventTarget = event.target;
+-    const state: boolean = (target as HTMLInputElement).checked;
+-    const value: string = (target as HTMLInputElement).name;
+-
+-    const index: number = sourceRepoFilterElems.findIndex((elem) => elem.value === value);
+-
+-    const copy: FilterElem[] = [...sourceRepoFilterElems];
+-    copy[index].state = state;
+-    setSourceRepoFilterElems(copy);
+-  };
+-
+-  return (
+-    <FormGroup fieldId="source-repo-selector" label="Source Repositories" hasNoPaddingTop>
+-      {sourceRepoFilterElems.map((sourceRepo) => (
+-        <div key={sourceRepo.value} className={styles.formGroupElement}>
+-          <Checkbox
+-            data-testid={`source-repo-${serializeDataTestid(sourceRepo.value)}`}
+-            isChecked={sourceRepo.state}
+-            onChange={onCheckboxSourceRepoChange}
+-            id={`source-repo-${sourceRepo.value}`}
+-            label={`${sourceRepo.value} (${sourceRepo.freq})`}
+-            name={sourceRepo.value}
+-          />
+-        </div>
+-      ))}
+-    </FormGroup>
+-  );
+-};
+-HomeGalleryFilterSourceRepo.displayName = 'HomeGalleryFilterSourceRepo';
+diff --git a/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilterTags.module.css b/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilterTags.module.css
+deleted file mode 100644
+index 2326fd7..0000000
+--- a/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilterTags.module.css
++++ /dev/null
+@@ -1,8 +0,0 @@
+-.formGroupElement {
+-  margin-bottom: 0.75rem;
+-}
+-
+-.tagBox {
+-  height: 20rem;
+-  overflow: auto;
+-}
+diff --git a/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilterTags.tsx b/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilterTags.tsx
+deleted file mode 100644
+index e039bdf..0000000
+--- a/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilterTags.tsx
++++ /dev/null
+@@ -1,75 +0,0 @@
+-import styles from './HomeGalleryFilterTags.module.css';
+-import type { FilterElem } from 'custom-types';
+-import type { Dispatch, SetStateAction } from 'react';
+-import { serializeDataTestid } from '@src/util/client';
+-import { Checkbox, FormGroup, SearchInput } from '@patternfly/react-core';
+-import { useState, useEffect } from 'react';
+-import { getFilterResultCount, sortFilterDataArr } from './utils';
+-
+-export interface HomeGalleryFilterTagsProps {
+-  tagFilterElems: FilterElem[];
+-  setTagFilterElems: Dispatch<SetStateAction<FilterElem[]>>;
+-}
+-
+-export const HomeGalleryFilterTags: React.FC<HomeGalleryFilterTagsProps> = ({
+-  tagFilterElems,
+-  setTagFilterElems
+-}: HomeGalleryFilterTagsProps) => {
+-  const [tagSearchBarValue, setTagSearchBarValue] = useState('');
+-
+-  useEffect(() => {
+-    setTagFilterElems(sortFilterDataArr(tagFilterElems));
+-  }, [tagFilterElems]);
+-
+-  const onCheckboxTagsChange = (
+-    checked: boolean,
+-    event: React.FormEvent<HTMLInputElement>
+-  ): void => {
+-    const target: EventTarget = event.target;
+-    const state: boolean = (target as HTMLInputElement).checked;
+-    const value: string = (target as HTMLInputElement).name;
+-
+-    const index: number = tagFilterElems.findIndex((elem) => elem.value === value);
+-
+-    const copy: FilterElem[] = [...tagFilterElems];
+-    copy[index].state = state;
+-    setTagFilterElems(copy);
+-  };
+-
+-  const onSearchChange = (value: string): void => {
+-    setTagSearchBarValue(value);
+-  };
+-
+-  return (
+-    <FormGroup fieldId="tag-selector" label="Tags" hasNoPaddingTop>
+-      {tagFilterElems.length > 1 && (
+-        <SearchInput
+-          className={styles.formGroupElement}
+-          data-testid="search-bar-tag"
+-          placeholder="Search by tag name"
+-          value={tagSearchBarValue}
+-          onChange={onSearchChange}
+-          onClear={(): void => onSearchChange('')}
+-          resultsCount={getFilterResultCount(tagFilterElems, tagSearchBarValue)}
+-        />
+-      )}
+-      <div className={styles.tagBox}>
+-        {tagFilterElems
+-          .filter((tag) => tag.value.toLowerCase().includes(tagSearchBarValue.toLowerCase()))
+-          .map((tag) => (
+-            <div key={tag.value} className={styles.formGroupElement}>
+-              <Checkbox
+-                data-testid={`tag-${serializeDataTestid(tag.value)}`}
+-                isChecked={tag.state}
+-                onChange={onCheckboxTagsChange}
+-                id={`types-${tag.value}`}
+-                label={`${tag.value} (${tag.freq})`}
+-                name={tag.value}
+-              />
+-            </div>
+-          ))}
+-      </div>
+-    </FormGroup>
+-  );
+-};
+-HomeGalleryFilterTags.displayName = 'HomeGalleryFilterTags';
+diff --git a/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilterTypes.module.css b/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilterTypes.module.css
+deleted file mode 100644
+index 36d365b..0000000
+--- a/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilterTypes.module.css
++++ /dev/null
+@@ -1,3 +0,0 @@
+-.formGroupElement {
+-  margin-bottom: 0.75rem;
+-}
+diff --git a/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilterTypes.tsx b/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilterTypes.tsx
+deleted file mode 100644
+index cc36bbc..0000000
+--- a/src/components/HomeGallery/HomeGalleryFilter/HomeGalleryFilterTypes.tsx
++++ /dev/null
+@@ -1,48 +0,0 @@
+-import styles from './HomeGalleryFilterTypes.module.css';
+-import type { FilterElem } from 'custom-types';
+-import type { Dispatch, SetStateAction } from 'react';
+-import { capitalizeFirstLetter, serializeDataTestid } from '@src/util/client';
+-import { Checkbox, FormGroup } from '@patternfly/react-core';
+-
+-export interface HomeGalleryFilterTypesProps {
+-  typeFilterElems: FilterElem[];
+-  setTypeFilterElems: Dispatch<SetStateAction<FilterElem[]>>;
+-}
+-
+-export const HomeGalleryFilterTypes: React.FC<HomeGalleryFilterTypesProps> = ({
+-  typeFilterElems,
+-  setTypeFilterElems
+-}: HomeGalleryFilterTypesProps) => {
+-  const onCheckboxTypesChange = (
+-    checked: boolean,
+-    event: React.FormEvent<HTMLInputElement>
+-  ): void => {
+-    const target: EventTarget = event.target;
+-    const state: boolean = (target as HTMLInputElement).checked;
+-    const value: string = (target as HTMLInputElement).name;
+-
+-    const index: number = typeFilterElems.findIndex((elem) => elem.value === value);
+-
+-    const copy: FilterElem[] = [...typeFilterElems];
+-    copy[index].state = state;
+-    setTypeFilterElems(copy);
+-  };
+-
+-  return (
+-    <FormGroup fieldId="type-selector" label="Types" hasNoPaddingTop>
+-      {typeFilterElems.map((type) => (
+-        <div key={type.value} className={styles.formGroupElement}>
+-          <Checkbox
+-            data-testid={`type-${serializeDataTestid(type.value)}`}
+-            isChecked={type.state}
+-            onChange={onCheckboxTypesChange}
+-            id={`types-${type.value}`}
+-            label={`${capitalizeFirstLetter(type.value)} (${type.freq})`}
+-            name={type.value}
+-          />
+-        </div>
+-      ))}
+-    </FormGroup>
+-  );
+-};
+-HomeGalleryFilterTypes.displayName = 'HomeGalleryFilterTypes';
+diff --git a/src/components/HomeGallery/HomeGalleryFilter/index.ts b/src/components/HomeGallery/HomeGalleryFilter/index.ts
+index d99bcbc..66986a7 100644
+--- a/src/components/HomeGallery/HomeGalleryFilter/index.ts
++++ b/src/components/HomeGallery/HomeGalleryFilter/index.ts
+@@ -1,5 +1,3 @@
+ export * from './HomeGalleryFilter';
+-export * from './HomeGalleryFilterSourceRepo';
+-export * from './HomeGalleryFilterTags';
+-export * from './HomeGalleryFilterTypes';
+-export * from './HomeGalleryFilterProviders';
++export * from './HomeGalleryFilterElems';
++export * from './HomeGalleryFilterElemsSearchBar';
+diff --git a/src/components/HomeGallery/HomeGalleryFilter/utils.ts b/src/components/HomeGallery/HomeGalleryFilter/utils.ts
+deleted file mode 100644
+index 3930e0f..0000000
+--- a/src/components/HomeGallery/HomeGalleryFilter/utils.ts
++++ /dev/null
+@@ -1,22 +0,0 @@
+-import type { FilterElem } from 'custom-types';
+-
+-export const getFilterResultCount = (filterElemArr: FilterElem[], searchBarValue: string): number =>
+-  filterElemArr.filter((filterElem) =>
+-    filterElem.value.toLowerCase().includes(searchBarValue.toLowerCase())
+-  ).length;
+-
+-export const sortFilterDataArr = (providersStateWithFreq: FilterElem[]): FilterElem[] => {
+-  const copy: FilterElem[] = providersStateWithFreq.sort((a, b) => {
+-    if (a.state === b.state) {
+-      return a.value.localeCompare(b.value, 'en', { sensitivity: 'accent' });
+-    }
+-
+-    if (a.state && !b.state) {
+-      return -1;
+-    }
+-
+-    return 1;
+-  });
+-
+-  return copy;
+-};
+diff --git a/src/util/client/index.ts b/src/util/client/index.ts
+index 73c3c31..95adba5 100644
+--- a/src/util/client/index.ts
++++ b/src/util/client/index.ts
+@@ -1,3 +1,4 @@
+ export * from './downloadHelperFuncs';
++export * from './filterElemFunc';
+ export * from './getCSSStyles';
+ export * from './stringFuncs';
