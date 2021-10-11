@@ -29,6 +29,10 @@ function checkDefined(layoutText) {
   if (!layoutText.footerLinks) {
     throw TypeError(`${configFileString} has no "footerLinks" property`);
   }
+
+  if (!layoutText.logo) {
+    throw TypeError(`${configFileString} has no "logo" property`);
+  }
 }
 
 function checkPropertyTypes(layoutText) {
@@ -50,6 +54,10 @@ function checkPropertyTypes(layoutText) {
 
   if (!Array.isArray(layoutText.footerLinks)) {
     throw TypeError(`${configFileString} "footerLinks" property is not an array`);
+  }
+
+  if (typeof layoutText.logo !== 'string') {
+    throw TypeError(`${configFileString} "logo" property is not a string`);
   }
 }
 

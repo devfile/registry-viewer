@@ -104,6 +104,7 @@ declare module 'custom-types' {
     bannerBody: string;
     headerLinks: Link[];
     footerLinks: Link[];
+    logo: string;
   }
 
   export interface WindowDimensions {

@@ -91,6 +91,7 @@ export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
   return (
     <Card data-testid="dev-page-projects" isExpanded={expanded} className={styles.card}>
       <CardHeader
+        data-testid="toggle-button"
         onClick={(): void => setExpanded(!expanded)}
         isToggleRightAligned
         className={styles.cardHeader}
@@ -98,8 +99,7 @@ export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
           id: 'toggle-button',
           'aria-label': 'Details',
           'aria-labelledby': 'titleId toggle-button',
-          'aria-expanded': expanded,
-          'data-testid': 'toggle-button'
+          'aria-expanded': expanded
         }}
       >
         <CardTitle>Starter Projects</CardTitle>
