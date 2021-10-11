@@ -164,6 +164,8 @@ The environment variable `DEVFILE_VIEWER_ROOT` controls the registry viewer's ba
 
 The environment variable `DEVFILE_COMMUNITY_HOST` controls whether the registry viewer uses the community registry. Note: Defaults to `true` and any value assigned will be `false`.
 
+The environment variable `DEVFILE_BANNER` controls whether the registry viewer banner is displayed. Note: Defaults to `true` and any value assigned will be `false`.
+
 ## Contributing
 
 Contributions are welcome!
