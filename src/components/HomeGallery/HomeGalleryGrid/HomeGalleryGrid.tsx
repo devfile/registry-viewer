@@ -8,6 +8,7 @@ import { Gallery } from '@patternfly/react-core';
 export interface HomeGalleryGridProps {
   devfiles: Devfile[];
   sourceRepos: FilterElem[];
+  providers: FilterElem[];
 }
 
 /**
@@ -17,12 +18,13 @@ export interface HomeGalleryGridProps {
  */
 export const HomeGalleryGrid: React.FC<HomeGalleryGridProps> = ({
   devfiles,
-  sourceRepos
+  sourceRepos,
+  providers
 }: HomeGalleryGridProps) => (
   <Gallery className={styles.devfileGalleryGrid}>
     {devfiles.map((devfile) => (
       <Link key={serializeURL(devfile)} href={`/devfiles/${serializeURL(devfile)}`} passHref>
-        <HomeGalleryItem devfile={devfile} sourceRepos={sourceRepos} />
+        <HomeGalleryItem devfile={devfile} sourceRepos={sourceRepos} providers={providers} />
       </Link>
     ))}
   </Gallery>

@@ -24,7 +24,7 @@ export const HomeGallerySearchBar: React.FC<HomeSearchBarProps> = ({
     <SearchInput
       data-testid="search-bar-devfile"
       className={styles.searchBarInput}
-      placeholder="Search by name, tag, or description"
+      placeholder="Search by name, tag, provider or description"
       value={searchBarValue}
       onChange={onSearchBarChange}
       onClear={(): void => onSearchBarChange('')}

@@ -1,9 +1,5 @@
 import type { FilterElem } from 'custom-types';
-import {
-  HomeGalleryFilterSourceRepo,
-  HomeGalleryFilterTags,
-  HomeGalleryFilterTypes
-} from '@src/components';
+import { HomeGalleryFilterElemsSearchBar, HomeGalleryFilterElems } from '@src/components';
 import type { Dispatch, SetStateAction } from 'react';
 import { Form, Text, TextContent, TextVariants } from '@patternfly/react-core';
 
@@ -11,9 +7,11 @@ export interface HomeGalleryFilterProps {
   tagFilterElems: FilterElem[];
   typeFilterElems: FilterElem[];
   sourceRepoFilterElems: FilterElem[];
+  providerFilterElems: FilterElem[];
   setTagFilterElems: Dispatch<SetStateAction<FilterElem[]>>;
   setTypeFilterElems: Dispatch<SetStateAction<FilterElem[]>>;
   setSourceRepoFilterElems: Dispatch<SetStateAction<FilterElem[]>>;
+  setProviderFilterElems: Dispatch<SetStateAction<FilterElem[]>>;
 }
 
 /**
@@ -25,9 +23,11 @@ export const HomeGalleryFilter: React.FC<HomeGalleryFilterProps> = ({
   tagFilterElems,
   typeFilterElems,
   sourceRepoFilterElems,
+  providerFilterElems,
   setTagFilterElems,
   setTypeFilterElems,
-  setSourceRepoFilterElems
+  setSourceRepoFilterElems,
+  setProviderFilterElems
 }: HomeGalleryFilterProps) => (
   <>
     <TextContent>
@@ -35,21 +35,36 @@ export const HomeGalleryFilter: React.FC<HomeGalleryFilterProps> = ({
     </TextContent>
     <Form>
       {sourceRepoFilterElems.length > 1 && (
-        <HomeGalleryFilterSourceRepo
-          sourceRepoFilterElems={sourceRepoFilterElems}
-          setSourceRepoFilterElems={setSourceRepoFilterElems}
+        <HomeGalleryFilterElems
+          label="Source Repositories"
+          id="source-repo"
+          filterElems={sourceRepoFilterElems}
+          setFilterElems={setSourceRepoFilterElems}
         />
       )}
       {typeFilterElems.length > 1 && (
-        <HomeGalleryFilterTypes
-          typeFilterElems={typeFilterElems}
-          setTypeFilterElems={setTypeFilterElems}
+        <HomeGalleryFilterElems
+          label="Types"
+          id="type"
+          filterElems={typeFilterElems}
+          setFilterElems={setTypeFilterElems}
+          capitalizeElem={true}
+        />
+      )}
+      {providerFilterElems.length > 1 && (
+        <HomeGalleryFilterElems
+          label="Providers"
+          id="provider"
+          filterElems={providerFilterElems}
+          setFilterElems={setProviderFilterElems}
         />
       )}
       {tagFilterElems.length > 1 && (
-        <HomeGalleryFilterTags
-          tagFilterElems={tagFilterElems}
-          setTagFilterElems={setTagFilterElems}
+        <HomeGalleryFilterElemsSearchBar
+          label="Tags"
+          id="tag"
+          filterElems={tagFilterElems}
+          setFilterElems={setTagFilterElems}
         />
       )}
     </Form>

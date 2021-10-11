@@ -18,6 +18,7 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
   tags,
   types,
   sourceRepos,
+  providers,
   errors
 }: InferGetStaticPropsType<GetStaticProps>) => {
   const [searchBarValue, setSearchBarValue] = useState<string>('');
@@ -26,15 +27,17 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
   const [tagFilterElems, setTagFilterElems] = useState<FilterElem[]>(tags);
   const [typeFilterElems, setTypeFilterElems] = useState<FilterElem[]>(types);
   const [sourceRepoFilterElems, setSourceRepoFilterElems] = useState<FilterElem[]>(sourceRepos);
+  const [providerFilterElems, setProviderFilterElems] = useState<FilterElem[]>(providers);
 
   useEffect(() => {
     let filteredDevfiles = filterDevfilesOnSearchBar(devfiles, searchBarValue);
-    filteredDevfiles = filterDevfilesOnTags(filteredDevfiles, tagFilterElems);
-    filteredDevfiles = filterDevfilesOnTypes(filteredDevfiles, typeFilterElems);
-    filteredDevfiles = filterDevfilesOnSourceRepos(filteredDevfiles, sourceRepoFilterElems);
+    filteredDevfiles = filterDevfilesOn('tags', filteredDevfiles, tagFilterElems);
+    filteredDevfiles = filterDevfilesOn('type', filteredDevfiles, typeFilterElems);
+    filteredDevfiles = filterDevfilesOn('sourceRepo', filteredDevfiles, sourceRepoFilterElems);
+    filteredDevfiles = filterDevfilesOn('provider', filteredDevfiles, providerFilterElems);
 
     setFilteredDevfiles(filteredDevfiles);
-  }, [tagFilterElems, typeFilterElems, sourceRepoFilterElems, searchBarValue]);
+  }, [tagFilterElems, typeFilterElems, sourceRepoFilterElems, providerFilterElems, searchBarValue]);
 
   const onSearchBarChange = (value: string): void => {
     setSearchBarValue(value);
@@ -49,9 +52,11 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
             tagFilterElems={tagFilterElems}
             typeFilterElems={typeFilterElems}
             sourceRepoFilterElems={sourceRepoFilterElems}
+            providerFilterElems={providerFilterElems}
             setTagFilterElems={setTagFilterElems}
             setTypeFilterElems={setTypeFilterElems}
             setSourceRepoFilterElems={setSourceRepoFilterElems}
+            setProviderFilterElems={setProviderFilterElems}
           />
         </GridItem>
         <GridItem xl2={10} xl={9} lg={8} md={6} sm={12} span={12}>
@@ -60,7 +65,11 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
             onSearchBarChange={onSearchBarChange}
             searchBarValue={searchBarValue}
           />
-          <HomeGalleryGrid devfiles={filteredDevfiles} sourceRepos={sourceRepos} />
+          <HomeGalleryGrid
+            devfiles={filteredDevfiles}
+            sourceRepos={sourceRepos}
+            providers={providers}
+          />
         </GridItem>
       </Grid>
     </>
@@ -87,55 +96,48 @@ const filterDevfilesOnSearchBar = (devfiles: Devfile[], searchBarValue: string):
       return true;
     }
 
+    if (isSearchBarValueIn(devfile.provider, searchBarValue)) {
+      return true;
+    }
+
     return isSearchBarValueInTag(devfile.tags, searchBarValue);
   });
   return devfilesFilteredOnSearchBar;
 };
 
-const filterDevfilesOnTags = (devfiles: Devfile[], tagFilterElems: FilterElem[]): Devfile[] => {
-  const tagsSelectedByUser: FilterElem[] = tagFilterElems.filter((tag) => tag.state);
-
-  if (!tagsSelectedByUser.length) {
-    return devfiles;
-  }
-
-  const devfilesFilteredOnTags: Devfile[] = devfiles.filter((devfile: Devfile) =>
-    devfile.tags?.some((tag) =>
-      tagsSelectedByUser.some((tagSelectedByUser) => tag === tagSelectedByUser.value)
-    )
-  );
-  return devfilesFilteredOnTags;
-};
-
-const filterDevfilesOnTypes = (devfiles: Devfile[], typeFilterElems: FilterElem[]): Devfile[] => {
-  const typesSelectedByUser: FilterElem[] = typeFilterElems.filter((type) => type.state);
-
-  if (!typesSelectedByUser.length) {
-    return devfiles;
-  }
-
-  const devfilesFilteredOnTypes: Devfile[] = devfiles.filter((devfile: Devfile) =>
-    typesSelectedByUser.some((type) => devfile.type === type.value)
-  );
-  return devfilesFilteredOnTypes;
-};
-
-const filterDevfilesOnSourceRepos = (
+const filterDevfilesOn = (
+  key: keyof Omit<Devfile, 'links' | 'git'>,
   devfiles: Devfile[],
-  sourceRepoFilterElems: FilterElem[]
+  filterElems: FilterElem[]
 ): Devfile[] => {
-  const sourceReposSelectedByUser: FilterElem[] = sourceRepoFilterElems.filter(
-    (sourceRepo) => sourceRepo.state
+  const filterElemsSelectedByUser: FilterElem[] = filterElems.filter(
+    (filterElem) => filterElem.state
   );
 
-  if (!sourceReposSelectedByUser.length) {
+  if (!filterElemsSelectedByUser.length) {
     return devfiles;
   }
 
-  const devfilesFilteredOnSourceRepos: Devfile[] = devfiles.filter((devfile: Devfile) =>
-    sourceReposSelectedByUser.some((sourceRepo) => devfile.sourceRepo === sourceRepo.value)
-  );
-  return devfilesFilteredOnSourceRepos;
+  let devfilesFilteredOn: Devfile[] = [];
+
+  /**
+   * Check if the key results in a string or string array
+   */
+  if (Array.isArray(devfiles[0][key])) {
+    devfilesFilteredOn = devfiles.filter((devfile: Devfile) =>
+      (devfile[key] as string[])?.some((keyValue) =>
+        filterElemsSelectedByUser.some(
+          (kayValuesSelectedByUser) => keyValue === kayValuesSelectedByUser.value
+        )
+      )
+    );
+  } else {
+    devfilesFilteredOn = devfiles.filter((devfile: Devfile) =>
+      filterElemsSelectedByUser.some((filterElem) => (devfile[key] as string) === filterElem.value)
+    );
+  }
+
+  return devfilesFilteredOn;
 };
 
 export const getStaticProps: GetStaticProps = async () => {
@@ -150,6 +152,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const tags = getFilterElemArr(devfiles, 'tags');
   const types = getFilterElemArr(devfiles, 'type');
   const sourceRepos = getFilterElemArr(devfiles, 'sourceRepo');
+  const providers = getFilterElemArr(devfiles, 'provider');
 
   return {
     props: {
@@ -157,6 +160,7 @@ export const getStaticProps: GetStaticProps = async () => {
       tags,
       types,
       sourceRepos,
+      providers,
       errors
     },
     // Next.js will attempt to re-generate the page:
