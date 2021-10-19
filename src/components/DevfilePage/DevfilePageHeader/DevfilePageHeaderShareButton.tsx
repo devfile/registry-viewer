@@ -40,7 +40,7 @@ export const DevfilePageHeaderShareButton: React.FC<DevfilePageHeaderShareButton
   }, []);
 
   return (
-    <Button data-testid="share-link-button" className={styles.button} variant="tertiary">
+    <Button data-testid="share-link-button" className={styles.button}>
       <CopyToClipboard text={url}>
         <Brand src={link} alt="Link button" className={styles.image} />
       </CopyToClipboard>

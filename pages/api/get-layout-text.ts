@@ -4,10 +4,6 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { is } from 'typescript-is';
 
-export interface ReqBody {
-  sourceRepo: string;
-}
-
 /**
  * request handler for getting the layout text
  * @param req - request body

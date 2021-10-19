@@ -3,10 +3,13 @@
 }
 
 .button:active {
-  background-color: black;
-  color: white;
+  color: rgb(175, 175, 175) !important;
+  background-color: rgb(175, 175, 175) !important;
 }
 
 .button {
   padding: 0.5rem 0.5rem 0 !important;
+  border: 1px solid rgb(175, 175, 175);
+  color: var(--pf-c-button--m-tertiary--Color) !important;
+  background-color: var(--pf-c-button--m-tertiary--BackgroundColor) !important;
 }

@@ -26,7 +26,7 @@ export const DevfilePageYAML: React.FC<DevfilePageYAMLProps> = ({
         <Text>devfile.yaml</Text>
       </TextContent>
       <CopyToClipboard text={devfileYAML}>
-        <Button data-testid="copy-devfile-button" className={styles.button} variant="tertiary">
+        <Button data-testid="copy-devfile-button" className={styles.button}>
           <Brand src={copy} alt="Copy button" className={styles.image} />
         </Button>
       </CopyToClipboard>

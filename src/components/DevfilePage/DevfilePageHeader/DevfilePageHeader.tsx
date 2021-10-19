@@ -32,29 +32,29 @@ export const DevfilePageHeader: React.FC<DevfilePageHeaderProps> = ({
 
   return (
     <div data-testid="dev-page-header" className={styles.headerCard}>
+      <div className={styles.devfileInfo}>
+        <TextContent className={styles.types}>
+          {sourceRepos.length > 1 && (
+            <Text data-testid="source-repo" className={styles.sourceRepo}>
+              {devfile.sourceRepo}
+            </Text>
+          )}
+          <Text data-testid="type" className={styles.type}>
+            {capitalizeFirstLetter(devfile.type)}
+          </Text>
+        </TextContent>
+      </div>
       <div className={styles.linkButton}>
         <DevfilePageHeaderShareButton devfile={devfile} />
       </div>
       <div className={styles.basicInfo}>
-        <div className={styles.brand}>
-          <Brand
-            data-testid="icon"
-            src={devfile.icon || devfileLogo}
-            alt={devfile.icon ? devfile.displayName + ' logo' : 'devfile logo'}
-            className={styles.logo}
-          />
-          <TextContent className={styles.types}>
-            {sourceRepos.length > 1 && (
-              <Text data-testid="source-repo" className={styles.sourceRepo}>
-                {devfile.sourceRepo}
-              </Text>
-            )}
-            <Text data-testid="type" className={styles.type}>
-              {capitalizeFirstLetter(devfile.type)}
-            </Text>
-          </TextContent>
-        </div>
-        <div className={styles.headerCardBody}>
+        <Brand
+          data-testid="icon"
+          src={devfile.icon || devfileLogo}
+          alt={devfile.icon ? devfile.displayName + ' logo' : 'devfile logo'}
+          className={styles.brand}
+        />
+        <div>
           <TextContent>
             <Text
               data-testid="displayName"
@@ -64,10 +64,7 @@ export const DevfilePageHeader: React.FC<DevfilePageHeaderProps> = ({
               {devfile.displayName}
             </Text>
             {devfile.description && (
-              <Text
-                data-testid="description"
-                className={styles.basicText + ' ' + styles.longDescription}
-              >
+              <Text data-testid="description" className={styles.longDescription}>
                 {devfile.description}
               </Text>
             )}
@@ -75,6 +72,7 @@ export const DevfilePageHeader: React.FC<DevfilePageHeaderProps> = ({
           {devfile?.tags && <DevfilePageHeaderTags tags={devfile.tags} />}
         </div>
       </div>
+      <div className={styles.border} />
       <TextContent data-testid="devfile-metadata" className={styles.metadata}>
         {Object.entries(devfile).map(([key, value]) => {
           if (devfileMetaInclude.includes(key) && value) {
