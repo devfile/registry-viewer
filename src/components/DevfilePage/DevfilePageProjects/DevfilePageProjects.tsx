@@ -91,14 +91,15 @@ export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
   return (
     <Card data-testid="dev-page-projects" isExpanded={expanded} className={styles.card}>
       <CardHeader
-        onExpand={(): void => setExpanded(!expanded)}
+        data-testid="toggle-button"
+        onClick={(): void => setExpanded(!expanded)}
         isToggleRightAligned
+        className={styles.cardHeader}
         toggleButtonProps={{
           id: 'toggle-button',
           'aria-label': 'Details',
           'aria-labelledby': 'titleId toggle-button',
-          'aria-expanded': expanded,
-          'data-testid': 'toggle-button'
+          'aria-expanded': expanded
         }}
       >
         <CardTitle>Starter Projects</CardTitle>
@@ -111,22 +112,19 @@ export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
               className={styles.select}
               onMouseLeave={(): void => setCurrentlyHoveredProject(null)}
             >
-              {
-                /* starter projects list */
-                starterProjects.map((project) => (
-                  <div
-                    key={project.name}
-                    data-testid={`projects-selector-item-${project.name}`}
-                    onMouseDown={(): void => setSelectedProject(project)}
-                    onMouseEnter={(): void => setCurrentlyHoveredProject(project)}
-                    className={
-                      selectedProject.name === project.name ? styles.selected : styles.project
-                    }
-                  >
-                    {project.name}
-                  </div>
-                ))
-              }
+              {starterProjects.map((project) => (
+                <div
+                  key={project.name}
+                  data-testid={`projects-selector-item-${project.name}`}
+                  onMouseDown={(): void => setSelectedProject(project)}
+                  onMouseEnter={(): void => setCurrentlyHoveredProject(project)}
+                  className={
+                    selectedProject.name === project.name ? styles.selected : styles.project
+                  }
+                >
+                  {project.name}
+                </div>
+              ))}
             </div>
             <div className={styles.display}>
               <DevfilePageProjectDisplay project={currentlyHoveredProject || selectedProject} />

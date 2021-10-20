@@ -1,5 +1,5 @@
 .yamlCard {
-  width: 75%;
+  width: 75vw;
   max-width: 1000px;
   margin: auto;
   margin-top: 30px;
@@ -10,10 +10,32 @@
 }
 
 .cardHeader {
-  padding: 10px;
+  padding: 1.5rem !important;
   border-bottom: 1px solid rgb(175, 175, 175);
+  display: flex;
+  justify-content: space-between;
 }
 
 .cardBody {
   padding: 0 0 0.75rem 0;
+}
+
+.image {
+  height: 1.5rem;
+}
+
+.button:active {
+  color: rgb(175, 175, 175) !important;
+  background-color: rgb(225, 225, 225) !important;
+}
+
+.button {
+  padding: 0.5rem 0.5rem 0 !important;
+  border: 1px solid rgb(175, 175, 175);
+  color: var(--pf-c-button--m-tertiary--Color) !important;
+  background-color: var(--pf-c-button--m-tertiary--BackgroundColor) !important;
+}
+
+.text {
+  margin-right: 0.5rem;
 }

@@ -3,7 +3,7 @@
 const fs = require(`fs`);
 const path = require(`path`);
 
-const configFileString = 'The config file "./config/devfile-layout-text.json"';
+const configFileString = 'The config file "./webpage_info/layout-text.json"';
 
 function checkDefined(layoutText) {
   if (!layoutText) {
@@ -29,6 +29,10 @@ function checkDefined(layoutText) {
   if (!layoutText.footerLinks) {
     throw TypeError(`${configFileString} has no "footerLinks" property`);
   }
+
+  if (!layoutText.logo) {
+    throw TypeError(`${configFileString} has no "logo" property`);
+  }
 }
 
 function checkPropertyTypes(layoutText) {
@@ -50,6 +54,10 @@ function checkPropertyTypes(layoutText) {
 
   if (!Array.isArray(layoutText.footerLinks)) {
     throw TypeError(`${configFileString} "footerLinks" property is not an array`);
+  }
+
+  if (typeof layoutText.logo !== 'string') {
+    throw TypeError(`${configFileString} "logo" property is not a string`);
   }
 }
 
@@ -79,7 +87,7 @@ function checkArrayPropertyTypes(arr, arrName) {
 }
 
 function main() {
-  const filePath = path.join(process.cwd(), 'config', 'devfile-layout-text.json');
+  const filePath = path.join(process.cwd(), 'webpage_info', 'layout-text.json');
   const layoutTextUnparsed = fs.readFileSync(filePath);
   const layoutText = JSON.parse(layoutTextUnparsed);
 

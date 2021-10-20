@@ -1,8 +1,8 @@
 import styles from './DevfilePageHeader.module.css';
 import { Devfile, FilterElem } from 'custom-types';
 import devfileLogo from '@public/images/devfileLogo.svg';
-import { DevfilePageHeaderTags } from '@src/components';
-import { capitalizeFirstLetter } from '@src/util/client';
+import { DevfilePageHeaderTags, DevfilePageHeaderShareButton } from '@src/components';
+import { capitalizeFirstLetter, splitCamelCase } from '@src/util/client';
 import { Brand, Text, TextContent, TextVariants } from '@patternfly/react-core';
 
 /**
@@ -32,26 +32,29 @@ export const DevfilePageHeader: React.FC<DevfilePageHeaderProps> = ({
 
   return (
     <div data-testid="dev-page-header" className={styles.headerCard}>
-      <div className={styles.basicInfo}>
-        <div className={styles.brand}>
-          <Brand
-            data-testid="icon"
-            src={devfile.icon || devfileLogo}
-            alt={devfile.icon ? devfile.displayName + ' logo' : 'devfile logo'}
-            className={styles.logo}
-          />
-          <TextContent className={styles.types}>
-            {sourceRepos.length > 1 && (
-              <Text data-testid="source-repo" className={styles.sourceRepo}>
-                {devfile.sourceRepo}
-              </Text>
-            )}
-            <Text data-testid="type" className={styles.type}>
-              {capitalizeFirstLetter(devfile.type)}
+      <div className={styles.devfileInfo}>
+        <TextContent className={styles.types}>
+          {sourceRepos.length > 1 && (
+            <Text data-testid="source-repo" className={styles.sourceRepo}>
+              {devfile.sourceRepo}
             </Text>
-          </TextContent>
-        </div>
-        <div className={styles.headerCardBody}>
+          )}
+          <Text data-testid="type" className={styles.type}>
+            {capitalizeFirstLetter(devfile.type)}
+          </Text>
+        </TextContent>
+      </div>
+      <div className={styles.linkButton}>
+        <DevfilePageHeaderShareButton devfile={devfile} />
+      </div>
+      <div className={styles.basicInfo}>
+        <Brand
+          data-testid="icon"
+          src={devfile.icon || devfileLogo}
+          alt={devfile.icon ? devfile.displayName + ' logo' : 'devfile logo'}
+          className={styles.brand}
+        />
+        <div>
           <TextContent>
             <Text
               data-testid="displayName"
@@ -61,10 +64,7 @@ export const DevfilePageHeader: React.FC<DevfilePageHeaderProps> = ({
               {devfile.displayName}
             </Text>
             {devfile.description && (
-              <Text
-                data-testid="description"
-                className={styles.basicText + ' ' + styles.longDescription}
-              >
+              <Text data-testid="description" className={styles.longDescription}>
                 {devfile.description}
               </Text>
             )}
@@ -72,22 +72,21 @@ export const DevfilePageHeader: React.FC<DevfilePageHeaderProps> = ({
           {devfile?.tags && <DevfilePageHeaderTags tags={devfile.tags} />}
         </div>
       </div>
+      <div className={styles.border} />
       <TextContent data-testid="devfile-metadata" className={styles.metadata}>
         {Object.entries(devfile).map(([key, value]) => {
           if (devfileMetaInclude.includes(key) && value) {
-            let label = key.replace(/([a-z](?=[A-Z]))/g, '$1 '); // split camel case up
-            label = label[0].toUpperCase() + label.substring(1);
+            const label = splitCamelCase(key);
             return (
               <Text data-testid={key} key={key}>
-                <strong>{label + ': '}</strong>
+                <strong>{`${capitalizeFirstLetter(label)}: `}</strong>
                 {value}
               </Text>
             );
           }
         })}
         {devfile.type === 'stack' // include website if stack; include git if sample
-          ? devfileMetadata &&
-            devfileMetadata.website && (
+          ? devfileMetadata?.website && (
               <Text data-testid="website">
                 <strong>Website: </strong>
                 <a href={devfileMetadata.website} target="_blank" rel="noreferrer">
@@ -106,7 +105,7 @@ export const DevfilePageHeader: React.FC<DevfilePageHeaderProps> = ({
                 </a>
               </Text>
             )}
-        {devfileMetadata && devfileMetadata.supportUrl && (
+        {devfileMetadata?.supportUrl && (
           <Text data-testid="support-information">
             <a href={devfileMetadata.supportUrl} target="_blank" rel="noreferrer">
               Support Information

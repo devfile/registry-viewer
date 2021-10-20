@@ -1,68 +1,40 @@
-@media (max-width: 500px) {
-  div .basicInfo {
-    display: block;
-  }
-  div .brand {
-    width: 100%;
-    display: flex;
-  }
-  div .brand img {
-    width: 60px;
-    margin-right: 1rem;
-  }
-}
-
-@media (max-width: 860px) {
-  div .headerCard {
-    display: block;
-  }
-
-  div .basicInfo {
-    width: 100%;
-    min-width: 0px;
-    border-right: 0;
-    border-bottom: 2px solid #adabae;
-  }
-  div .metadata {
-    width: 100%;
-    word-wrap: break-word;
-  }
-}
-
 .headerCard {
   width: 75vw;
   max-width: 1000px;
   margin: auto;
   margin-top: 30px;
   margin-bottom: 30px;
+  padding: 4rem;
   -moz-box-shadow: var(--pf-global--BoxShadow--sm);
   -webkit-box-shadow: var(--pf-global--BoxShadow--sm);
   box-shadow: var(--pf-global--BoxShadow--sm);
   border-radius: 1rem;
   border: 1px solid rgb(175, 175, 175);
   display: flex;
-  padding: 3%;
+  justify-content: space-between;
   background-color: var(--pf-global--BackgroundColor--100);
+  position: relative;
 }
 
-.headerCardBody {
-  margin: auto;
+.border {
+  border-right: 2px solid rgb(175, 175, 175);
 }
 
 .basicInfo {
+  width: 25rem;
   display: flex;
-  min-width: 20rem;
-  width: 60%;
-  border-right: 2px solid #adabae;
+}
+
+.metadata {
+  width: 25rem;
 }
 
 .brand {
-  padding: 1rem;
-  width: 30%;
-  margin: auto;
-}
-.logo {
-  width: 80%;
+  width: auto;
+  height: auto;
+  max-height: 10rem;
+  max-width: 10rem;
+  margin-right: 1rem;
 }
 
 .sourceRepo {
@@ -72,25 +44,89 @@
   margin-left: auto;
   margin-right: auto;
 }
+
 .type {
   padding: 0;
   color: #adabae;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .basicText {
   margin-bottom: 1rem;
 }
 
-.metadata {
-  width: 50%;
-  margin: 2%;
+.linkButton {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+}
+
+.devfileInfo {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
 }
 
 .longDescription {
-  overflow: scroll;
+  overflow: auto;
   display: -webkit-box;
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 1250px) {
+  .basicInfo {
+    width: 20rem;
+  }
+
+  .metadata {
+    width: 20rem;
+  }
+}
+
+@media (max-width: 1100px) {
+  .basicInfo {
+    width: 18rem;
+  }
+
+  .metadata {
+    width: 18rem;
+  }
+}
+
+@media (max-width: 1000px) {
+  .basicInfo {
+    width: 16.5rem;
+  }
+
+  .metadata {
+    width: 16.5rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .headerCard {
+    display: block;
+  }
+
+  .basicInfo {
+    width: auto;
+    border-bottom: 2px solid rgb(175, 175, 175);
+    padding-bottom: 1rem;
+  }
+
+  .metadata {
+    padding-top: 1rem;
+    width: auto;
+  }
+
+  .border {
+    border-right: none;
+  }
+}
+
+@media (max-width: 575px) {
+  .basicInfo {
+    display: block;
+  }
 }
