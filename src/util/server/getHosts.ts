@@ -24,14 +24,24 @@ export const getENVHosts = (): HostList => {
 
   if (envHosts?.length) {
     envHosts.forEach((envHost) => {
-      const [hostName, sourceType, hostLocation] = envHost.split('>');
+      const [hostName, sourceType, hostLocation, publicURL] = envHost.split('>');
 
-      hosts = {
-        ...hosts,
-        [hostName]: {
-          [sourceType]: hostLocation
-        }
-      };
+      if (publicURL) {
+        hosts = {
+          ...hosts,
+          [hostName]: {
+            [sourceType]: hostLocation,
+            publicURL
+          }
+        };
+      } else {
+        hosts = {
+          ...hosts,
+          [hostName]: {
+            [sourceType]: hostLocation
+          }
+        };
+      }
     });
   }
 

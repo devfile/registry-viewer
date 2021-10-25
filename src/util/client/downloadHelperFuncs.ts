@@ -1,4 +1,5 @@
 import type { Git, Project } from 'custom-types';
+import { apiWrapper } from '@src/util/client';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 
@@ -30,7 +31,7 @@ export async function downloadSubdirectory(url: string, subdirectory: string): P
     url,
     subdirectory
   };
-  const res = await fetch('/api/download-subdirectory', {
+  const res = await fetch(apiWrapper('/api/download-subdirectory'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)
@@ -48,7 +49,7 @@ export async function downloadSubdirectory(url: string, subdirectory: string): P
     const blob = await zip.generateAsync({ type: 'blob' });
     saveAs(blob, `${subdirectory}.zip`);
   } catch (error) {
-    throw new Error(error.text);
+    throw new Error((error as Error).message);
   }
 }
 

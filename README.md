@@ -81,6 +81,8 @@ Notes:
 - There are two types of source types, url and local.
   - url is for specifying a remote hosts.
   - local is for specifying a local hosts. NOTE: Local MUST have `index.json` under the root path specified, an example is below.
+- The public url property is optional. If no public url is specified the default link for the share button will be the "url" property.
+- The link for the share button will not work if "local" is specified.
 
 `/devfiles`
 
@@ -136,11 +138,12 @@ Configure the registry viewer through environment the variable.
 Notes about environment variable:
 
 - The value assigned to the environment variable must be surrounded by quotes.
-- Each source MUST contain a name for the source repository, a source type (url or local), and a location and is split by ">". i.e. `name>type>location`
-- Multiple sources are be split by "|". i.e. `name>type>location|name>type>location`
+- Each source MUST contain a name for the source repository, a source type (url or local), a location, and if applicable a public url.
+- A source is split by ">". i.e. `name>type>location>publicURL`
+- Multiple sources are be split by "|". i.e. `name>type>location>publicURL|name>type>location`
 
 ```
-DEVFILE_REGISTRY_HOSTS="example1>url>https://registry.devfile.io|example2>local>/devfiles"
+DEVFILE_REGISTRY_HOSTS="example1>url>localhost:8080>https://registry.devfile.io|example2>local>/devfiles"
 ```
 
 Configure the registry viewer through config file.
@@ -153,7 +156,15 @@ Configure the registry viewer through config file.
     "url": "https://registry.devfile.io"
   },
   "Example2": {
+    "url": "localhost:8080",
+    "publicURL": "https://registry.devfile.io"
+  },
+  "Example3": {
     "local": "/devfiles"
+  },
+  "Example4": {
+    "local": "/devfiles",
+    "publicURL": "https://registry.devfile.io"
   }
 }
 ```
