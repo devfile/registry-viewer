@@ -38,6 +38,7 @@ declare module 'custom-types' {
 
   export interface HostURL extends HostBase {
     url: string;
+    alias?: string;
   }
 
   export type Host = HostLocal | HostURL | HostBase;

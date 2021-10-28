@@ -32,7 +32,7 @@ export default async function handler(
   Object.entries(hosts).forEach(([hostSourceRepo, host]) => {
     if (hostSourceRepo === sourceRepo) {
       if (is<HostURL>(host)) {
-        res.json({ origin: host.url });
+        res.json({ origin: host.alias || host.url });
         res.status(200);
         res.end();
         return;

@@ -1,6 +1,7 @@
 import styles from './DevfilePageHeaderShareButton.module.css';
 import type { Devfile } from 'custom-types';
 import link from '@public/images/link.svg';
+import { apiWrapper } from '@src/util/client';
 import { Brand, Button } from '@patternfly/react-core';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useState, useEffect } from 'react';
@@ -19,7 +20,7 @@ export const DevfilePageHeaderShareButton: React.FC<DevfilePageHeaderShareButton
   const [url, setUrl] = useState<string>('');
 
   const origin = async (): Promise<string> => {
-    const res = await fetch('/api/get-remote-registry', {
+    const res = await fetch(apiWrapper('/api/get-remote-registry'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ sourceRepo: devfile.sourceRepo })
@@ -35,7 +36,9 @@ export const DevfilePageHeaderShareButton: React.FC<DevfilePageHeaderShareButton
 
   useEffect(() => {
     origin().then((hostUrl) => {
-      setUrl(() => `${hostUrl}/devfiles/${devfile.name}`);
+      if (hostUrl) {
+        setUrl(() => `${hostUrl}/devfiles/${devfile.name}`);
+      }
     });
   }, []);
 
