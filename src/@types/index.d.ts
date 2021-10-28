@@ -29,9 +29,8 @@ declare module 'custom-types' {
     freq: number;
   }
 
-  interface HostBase {
-    publicURL?: string;
-  }
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface HostBase {}
 
   export interface HostLocal extends HostBase {
     local: string;
@@ -39,6 +38,7 @@ declare module 'custom-types' {
 
   export interface HostURL extends HostBase {
     url: string;
+    alias?: string;
   }
 
   export type Host = HostLocal | HostURL | HostBase;
