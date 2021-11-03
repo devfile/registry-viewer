@@ -19,7 +19,7 @@ import { mount } from 'enzyme';
  *     git.remotes: defined, undefined
  */
 
-const sourceRepos: FilterElem[] = [{ value: 'Community', state: false, freq: 1 }];
+const registries: FilterElem[] = [{ value: 'Community', state: false, freq: 1 }];
 
 const baseDevfile: Devfile = {
   name: 'java-maven',
@@ -27,7 +27,7 @@ const baseDevfile: Devfile = {
   type: 'stack',
   projectType: 'maven',
   language: 'java',
-  sourceRepo: 'Community'
+  registry: 'Community'
 };
 
 const propStackValues: {
@@ -75,7 +75,7 @@ const propStackValues: {
       language: 'java',
       resources: ['resource1', 'resource2', 'resource3'],
       starterProjects: ['starter-projects1', 'starter-projects2', 'starter-projects3'],
-      sourceRepo: 'github'
+      registry: 'github'
     },
     devfileMetadata: { website: 'https://registry.devfile.io' }
   }
@@ -104,7 +104,7 @@ describe('<Header />', () => {
   const numOfInheritedIDs = 2; // IDs of text and brand components are passed to children
 
   const wrapper = mount(
-    <DevfilePageHeader devfile={propStackValues[0].devfile} sourceRepos={sourceRepos} />
+    <DevfilePageHeader devfile={propStackValues[0].devfile} registries={registries} />
   );
 
   // check content in header except website (for stacks) and git repo (for samples)

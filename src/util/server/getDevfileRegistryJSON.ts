@@ -4,26 +4,36 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { is } from 'typescript-is';
 
-export const getRemoteJSON = async (hostName: string, jsonLocation: string): Promise<Devfile[]> => {
-  const res = await fetch(`${jsonLocation}/index/all?icon=base64`);
-  const devfilesWithoutSource = (await res.json()) as Devfile[];
-  const devfilesWithSource = devfilesWithoutSource.map((devfile: Devfile) => {
-    devfile.sourceRepo = hostName;
+export const getRemoteJSON = async (
+  registryName: string,
+  url: string,
+  alias: string | undefined
+): Promise<Devfile[]> => {
+  const res = await fetch(`${url}/index/all?icon=base64`);
+  const devfilesWithoutName = (await res.json()) as Devfile[];
+  const devfiles = devfilesWithoutName.map((devfile: Devfile) => {
+    devfile.registry = registryName;
+    devfile.registryLink = alias
+      ? `${alias}/devfiles/${devfile.name}`
+      : `${url}/devfiles/${devfile.name}`;
     return devfile;
   });
-  return devfilesWithSource;
+  return devfiles;
 };
 
-export const getLocalJSON = async (hostName: string, jsonLocation: string): Promise<Devfile[]> => {
-  const devfileRelPath = jsonLocation.split('/');
+export const getLocalJSON = async (
+  registryName: string,
+  localLocation: string
+): Promise<Devfile[]> => {
+  const devfileRelPath = localLocation.split('/');
   const devfileAbsPath = path.join(process.cwd(), ...devfileRelPath, 'index.json');
   const devfilesUnparsed = await fs.readFile(devfileAbsPath, 'utf8');
-  const devfilesWithoutSource = JSON.parse(devfilesUnparsed) as Devfile[];
-  const devfilesWithSource = devfilesWithoutSource.map((devfile: Devfile) => {
-    devfile.sourceRepo = hostName;
+  const devfilesWithoutName = JSON.parse(devfilesUnparsed) as Devfile[];
+  const devfiles = devfilesWithoutName.map((devfile: Devfile) => {
+    devfile.registry = registryName;
     return devfile;
   });
-  return devfilesWithSource;
+  return devfiles;
 };
 
 export const getDevfileRegistryJSON = async (): Promise<GetDevfileRegistryJSON> => {
@@ -32,20 +42,20 @@ export const getDevfileRegistryJSON = async (): Promise<GetDevfileRegistryJSON> 
   const [devfiles, devfileError] = await asyncTryCatch(async () => {
     let devfiles: Devfile[] = [];
     await Promise.all(
-      Object.entries(hosts).map(async ([hostName, hostLocation]) => {
+      Object.entries(hosts).map(async ([registryName, registry]) => {
         let extractedDevfiles: Devfile[] = [];
-        if (is<HostURL>(hostLocation)) {
-          extractedDevfiles = await getRemoteJSON(hostName, hostLocation.url);
+        if (is<HostURL>(registry)) {
+          extractedDevfiles = await getRemoteJSON(registryName, registry.url, registry.alias);
         }
-        if (is<HostLocal>(hostLocation)) {
-          extractedDevfiles = await getLocalJSON(hostName, hostLocation.local);
+        if (is<HostLocal>(registry)) {
+          extractedDevfiles = await getLocalJSON(registryName, registry.local);
         }
 
         if (is<Devfile[]>(extractedDevfiles)) {
           devfiles = devfiles.concat(extractedDevfiles);
         } else {
           throw TypeError(
-            `${hostName} cannot be assigned to type Devfile[]. (A devfile is most likely missing a required parameter)`
+            `${registryName} cannot be assigned to type Devfile[]. (A devfile is most likely missing a required parameter)`
           );
         }
       })

@@ -28,7 +28,7 @@ export const getDevfileYAML = async (devfile: Devfile): Promise<GetDevfileYAML> 
   const [hosts, hostErrors] = await getHosts();
 
   for (const [hostName, hostLocation] of Object.entries(hosts)) {
-    if (hostName === devfile.sourceRepo) {
+    if (hostName === devfile.registry) {
       if (is<HostURL>(hostLocation)) {
         devfileYAML = await getRemoteYAML(devfile.name, hostLocation.url);
       }

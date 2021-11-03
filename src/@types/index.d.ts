@@ -8,6 +8,7 @@ declare module 'custom-types' {
     tags?: string[];
     icon?: string;
     projectType: string;
+    provider?: string;
     language: string;
     links?: {
       self: string;
@@ -19,8 +20,10 @@ declare module 'custom-types' {
         [key: string]: string;
       };
     };
-    sourceRepo: string;
-    provider?: string;
+
+    // Properties specific to the registry viewer
+    registry: string;
+    registryLink?: string;
   }
 
   export interface FilterElem {

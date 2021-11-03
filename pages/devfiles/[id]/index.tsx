@@ -28,7 +28,7 @@ const DevfilePage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
   devfile,
   devfileYAML,
   devfileJSON,
-  sourceRepos,
+  registries,
   errors
 }: InferGetStaticPropsType<typeof getStaticProps>) => (
   <div className={styles.devfilePage}>
@@ -36,7 +36,7 @@ const DevfilePage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
     <DevfilePageHeader
       devfileMetadata={devfileJSON?.metadata}
       devfile={devfile}
-      sourceRepos={sourceRepos}
+      registries={registries}
     />
     {devfileJSON?.starterProjects?.length && devfile.type === 'stack' && (
       <DevfilePageProjects starterProjects={devfileJSON.starterProjects} />
@@ -51,21 +51,21 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const [source, name] = id.split('+');
 
   const devfile: Devfile = devfiles.find(
-    (devfile: Devfile) => devfile.sourceRepo === source && devfile.name === name
+    (devfile: Devfile) => devfile.registry === source && devfile.name === name
   )!;
 
   const [devfileYAML, devfileJSON, yamlErrors] = await getDevfileYAML(devfile);
 
   const errors = [...devfileErrors, ...yamlErrors];
 
-  const sourceRepos = getFilterElemArr(devfiles, 'sourceRepo');
+  const registries = getFilterElemArr(devfiles, 'registry');
 
   return {
     props: {
       devfile,
       devfileYAML,
       devfileJSON,
-      sourceRepos,
+      registries,
       errors
     },
     // Next.js will attempt to re-generate the page:

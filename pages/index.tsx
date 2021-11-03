@@ -17,7 +17,7 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
   devfiles,
   tags,
   types,
-  sourceRepos,
+  registries,
   providers,
   errors
 }: InferGetStaticPropsType<GetStaticProps>) => {
@@ -26,18 +26,18 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
 
   const [tagFilterElems, setTagFilterElems] = useState<FilterElem[]>(tags);
   const [typeFilterElems, setTypeFilterElems] = useState<FilterElem[]>(types);
-  const [sourceRepoFilterElems, setSourceRepoFilterElems] = useState<FilterElem[]>(sourceRepos);
+  const [registryFilterElems, setRegistryFilterElems] = useState<FilterElem[]>(registries);
   const [providerFilterElems, setProviderFilterElems] = useState<FilterElem[]>(providers);
 
   useEffect(() => {
     let filteredDevfiles = filterDevfilesOnSearchBar(devfiles, searchBarValue);
     filteredDevfiles = filterDevfilesOn('tags', filteredDevfiles, tagFilterElems);
     filteredDevfiles = filterDevfilesOn('type', filteredDevfiles, typeFilterElems);
-    filteredDevfiles = filterDevfilesOn('sourceRepo', filteredDevfiles, sourceRepoFilterElems);
+    filteredDevfiles = filterDevfilesOn('registry', filteredDevfiles, registryFilterElems);
     filteredDevfiles = filterDevfilesOn('provider', filteredDevfiles, providerFilterElems);
 
     setFilteredDevfiles(filteredDevfiles);
-  }, [tagFilterElems, typeFilterElems, sourceRepoFilterElems, providerFilterElems, searchBarValue]);
+  }, [tagFilterElems, typeFilterElems, registryFilterElems, providerFilterElems, searchBarValue]);
 
   const onSearchBarChange = (value: string): void => {
     setSearchBarValue(value);
@@ -51,11 +51,11 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
           <HomeGalleryFilter
             tagFilterElems={tagFilterElems}
             typeFilterElems={typeFilterElems}
-            sourceRepoFilterElems={sourceRepoFilterElems}
+            registryFilterElems={registryFilterElems}
             providerFilterElems={providerFilterElems}
             setTagFilterElems={setTagFilterElems}
             setTypeFilterElems={setTypeFilterElems}
-            setSourceRepoFilterElems={setSourceRepoFilterElems}
+            setRegistryFilterElems={setRegistryFilterElems}
             setProviderFilterElems={setProviderFilterElems}
           />
         </GridItem>
@@ -67,7 +67,7 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
           />
           <HomeGalleryGrid
             devfiles={filteredDevfiles}
-            sourceRepos={sourceRepos}
+            registries={registries}
             providers={providers}
           />
         </GridItem>
@@ -151,7 +151,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
   const tags = getFilterElemArr(devfiles, 'tags');
   const types = getFilterElemArr(devfiles, 'type');
-  const sourceRepos = getFilterElemArr(devfiles, 'sourceRepo');
+  const registries = getFilterElemArr(devfiles, 'registry');
   const providers = getFilterElemArr(devfiles, 'provider');
 
   return {
@@ -159,7 +159,7 @@ export const getStaticProps: GetStaticProps = async () => {
       devfiles,
       tags,
       types,
-      sourceRepos,
+      registries,
       providers,
       errors
     },
