@@ -11,7 +11,7 @@ export const capitalizeFirstLetter = (value: string): string =>
  * $\{devfile.sourceRepo\}+$\{devfile.name\}
  */
 export const serializeURL = (devfile: Devfile): string =>
-  `${devfile.sourceRepo.replace(/\+/g, '')}+${devfile.name.replace(/\+/g, '')}`;
+  `${devfile.registry.replace(/\+/g, '')}+${devfile.name.replace(/\+/g, '')}`;
 
 /**
  * Serializes the devfile data-testid (Removes any . and space (' ') symbols)

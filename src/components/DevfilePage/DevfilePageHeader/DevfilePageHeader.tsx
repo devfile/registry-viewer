@@ -15,7 +15,7 @@ export interface DevfilePageHeaderProps {
   devfileMetadata?: {
     [key: string]: string;
   };
-  sourceRepos: FilterElem[];
+  registries: FilterElem[];
 }
 
 /**
@@ -26,7 +26,7 @@ export interface DevfilePageHeaderProps {
 export const DevfilePageHeader: React.FC<DevfilePageHeaderProps> = ({
   devfile,
   devfileMetadata,
-  sourceRepos
+  registries
 }: DevfilePageHeaderProps) => {
   const devfileMetaInclude = ['projectType', 'version', 'language', 'provider']; // types to include in metadata from index
 
@@ -34,9 +34,9 @@ export const DevfilePageHeader: React.FC<DevfilePageHeaderProps> = ({
     <div data-testid="dev-page-header" className={styles.headerCard}>
       <div className={styles.devfileInfo}>
         <TextContent className={styles.types}>
-          {sourceRepos.length > 1 && (
-            <Text data-testid="source-repo" className={styles.sourceRepo}>
-              {devfile.sourceRepo}
+          {registries.length > 1 && (
+            <Text data-testid="registry" className={styles.registry}>
+              {devfile.registry}
             </Text>
           )}
           <Text data-testid="type" className={styles.type}>
