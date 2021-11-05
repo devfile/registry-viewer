@@ -29,7 +29,7 @@ export const HomeGalleryFilterElemsSearchBar: React.FC<HomeGalleryFilterElemsSea
 
   useEffect(() => {
     setFilterElems(sortFilterElems(filterElems));
-  }, [filterElems]);
+  }, [filterElems, setFilterElems]);
 
   const onCheckboxChange = (checked: boolean, event: React.FormEvent<HTMLInputElement>): void => {
     const target: EventTarget = event.target;

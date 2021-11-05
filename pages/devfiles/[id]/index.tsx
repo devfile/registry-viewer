@@ -8,7 +8,7 @@ import {
   DevfilePageYAML,
   ErrorBanner
 } from '@src/components';
-import { InferGetStaticPropsType, GetStaticProps, GetStaticPaths } from 'next';
+import { InferGetStaticPropsType, GetStaticProps, GetStaticPaths, NextPage } from 'next';
 
 interface Path {
   params: { id: string };
@@ -24,7 +24,7 @@ interface Path {
  * @param devfileText - text of devfile YAML, null when sample
  * @param devfileJSON -  json representation of devfile YAML, null when sample
  */
-const DevfilePage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
+const DevfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   devfile,
   devfileYAML,
   devfileJSON,

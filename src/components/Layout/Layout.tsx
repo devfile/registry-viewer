@@ -1,6 +1,19 @@
 import styles from './Layout.module.css';
 import { Footer, Meta, Header, Banner } from '@src/components';
+import { useEffect } from 'react';
+import Router from 'next/router';
 import { Page, PageSection } from '@patternfly/react-core';
+
+export const useAnalytics = (): void => {
+  useEffect(() => {
+    const handleRouteChange = (url: string): void => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      requestAnimationFrame(() => (window as any).analytics.page(url));
+    };
+    Router.events.on('routeChangeComplete', handleRouteChange);
+    return (): void => Router.events.off('routeChangeComplete', handleRouteChange);
+  }, []);
+};
 
 export interface LayoutProps {
   children: React.ReactNode;

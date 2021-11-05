@@ -6,14 +6,14 @@ import {
   HomeGallerySearchBar,
   ErrorBanner
 } from '@src/components';
-import { InferGetStaticPropsType, GetStaticProps } from 'next';
+import { InferGetStaticPropsType, GetStaticProps, NextPage } from 'next';
 import { useState, useEffect } from 'react';
 import { Grid, GridItem } from '@patternfly/react-core';
 
 /**
  * Renders the {@link HomePage}
  */
-const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
+const HomePage: NextPage<InferGetStaticPropsType<GetStaticProps>> = ({
   devfiles,
   tags,
   types,
@@ -37,7 +37,14 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
     filteredDevfiles = filterDevfilesOn('provider', filteredDevfiles, providerFilterElems);
 
     setFilteredDevfiles(filteredDevfiles);
-  }, [tagFilterElems, typeFilterElems, registryFilterElems, providerFilterElems, searchBarValue]);
+  }, [
+    tagFilterElems,
+    typeFilterElems,
+    registryFilterElems,
+    providerFilterElems,
+    searchBarValue,
+    devfiles
+  ]);
 
   const onSearchBarChange = (value: string): void => {
     setSearchBarValue(value);
