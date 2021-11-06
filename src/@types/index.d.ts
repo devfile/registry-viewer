@@ -115,4 +115,8 @@ declare module 'custom-types' {
     width: number | null;
     height: number | null;
   }
+
+  export interface PublicRuntimeConfig {
+    analyticsWriteKey: string;
+  }
 }

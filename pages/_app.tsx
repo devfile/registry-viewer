@@ -1,35 +1,41 @@
 // Patternfly import needs to be first or the css will not be imported
 import '@patternfly/react-core/dist/styles/base.css';
+import type { PublicRuntimeConfig } from 'custom-types';
 import { Layout } from '@src/components';
-import Script from 'next/script';
-import type { AppProps } from 'next/app';
-import * as snippet from '@segment/snippet';
+import { isClient } from '@src/util/client';
+import { AppProps } from 'next/app';
+import { useRouter } from 'next/router';
+import getConfig from 'next/config';
+import { NextPage } from 'next';
+import { useEffect } from 'react';
+import Analytics from 'analytics-node';
 
-const { ANALYTICS_WRITE_KEY, NODE_ENV } = process.env;
+const { publicRuntimeConfig } = getConfig();
+const { analyticsWriteKey } = publicRuntimeConfig as PublicRuntimeConfig;
 
 /**
- * Renders the {@link App}
+ * Renders the {@link MyApp}
  */
-const App: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
-  const renderSnippet = (): string => {
-    const options: snippet.Options = {
-      apiKey: ANALYTICS_WRITE_KEY,
-      page: true
-    };
+const MyApp: NextPage<AppProps> = ({ Component, pageProps }: AppProps) => {
+  const router = useRouter();
 
-    if (NODE_ENV === 'development') {
-      return snippet.max(options);
+  // Client renders page
+  useEffect(() => {
+    if (isClient() && analyticsWriteKey) {
+      const analytics = new Analytics(analyticsWriteKey);
+
+      analytics.page({
+        userId: '0',
+        name: router.asPath
+      });
     }
-
-    return snippet.min(options);
-  };
+  }, [router.asPath]);
 
   return (
     <Layout>
-      <Script id="telemetry" dangerouslySetInnerHTML={{ __html: renderSnippet() }} />
       <Component {...pageProps} />
     </Layout>
   );
 };
 
-export default App;
+export default MyApp;
