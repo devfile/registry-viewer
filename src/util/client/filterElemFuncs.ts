@@ -2,10 +2,10 @@ import type { FilterElem } from 'custom-types';
 
 export const getFilterElemsActiveCount = (
   filterElems: FilterElem[],
-  searchBarValue: string
+  searchBarValue: string,
 ): number =>
   filterElems.filter((filterElem) =>
-    filterElem.value.toLowerCase().includes(searchBarValue.toLowerCase())
+    filterElem.value.toLowerCase().includes(searchBarValue.toLowerCase()),
   ).length;
 
 export const sortFilterElems = (filterElems: FilterElem[]): FilterElem[] => {

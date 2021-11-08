@@ -31,15 +31,15 @@ export const getENVHosts = (): HostList => {
           ...hosts,
           [hostName]: {
             [sourceType]: hostLocation,
-            alias
-          }
+            alias,
+          },
         };
       } else {
         hosts = {
           ...hosts,
           [hostName]: {
-            [sourceType]: hostLocation
-          }
+            [sourceType]: hostLocation,
+          },
         };
       }
     });
@@ -47,7 +47,7 @@ export const getENVHosts = (): HostList => {
 
   if (!is<HostList>(hosts)) {
     throw TypeError(
-      'The environment variable DEVFILE_REGISTRY_HOSTS can only accept "url" or "local"'
+      'The environment variable DEVFILE_REGISTRY_HOSTS can only accept "url" or "local"',
     );
   }
 
@@ -56,7 +56,7 @@ export const getENVHosts = (): HostList => {
 
 export const getHosts = async (): Promise<GetHosts> => {
   const [configHosts, configError] = await asyncTryCatch(
-    async () => await getConfigFileHosts('/config/devfile-registry-hosts.json')
+    async () => await getConfigFileHosts('/config/devfile-registry-hosts.json'),
   );
   const [envHosts, envError] = await asyncTryCatch(async () => await getENVHosts());
 
@@ -66,8 +66,8 @@ export const getHosts = async (): Promise<GetHosts> => {
     hosts = {
       ...hosts,
       Community: {
-        url: 'https://registry.stage.devfile.io'
-      }
+        url: 'https://registry.stage.devfile.io',
+      },
     };
   }
 

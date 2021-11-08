@@ -1,5 +1,5 @@
 import styles from './DevfilePageHeader.module.css';
-import { Devfile, FilterElem } from 'custom-types';
+import { Devfile, FilterElem, DefaultProps } from 'custom-types';
 import devfileLogo from '@public/images/devfileLogo.svg';
 import { DevfilePageHeaderTags, DevfilePageHeaderShareButton } from '@src/components';
 import { capitalizeFirstLetter, splitCamelCase } from '@src/util/client';
@@ -10,7 +10,7 @@ import { Brand, Text, TextContent, TextVariants } from '@patternfly/react-core';
  * @param devfile - devfile index information
  * @param metadata - metadata from
  */
-export interface DevfilePageHeaderProps {
+export interface DevfilePageHeaderProps extends DefaultProps {
   devfile: Devfile;
   devfileMetadata?: {
     [key: string]: string;
@@ -26,7 +26,7 @@ export interface DevfilePageHeaderProps {
 export const DevfilePageHeader: React.FC<DevfilePageHeaderProps> = ({
   devfile,
   devfileMetadata,
-  registries
+  registries,
 }: DevfilePageHeaderProps) => {
   const devfileMetaInclude = ['projectType', 'version', 'language', 'provider']; // types to include in metadata from index
 

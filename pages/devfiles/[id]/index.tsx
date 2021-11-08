@@ -6,7 +6,7 @@ import {
   DevfilePageProjects,
   DevfilePageHeader,
   DevfilePageYAML,
-  ErrorBanner
+  ErrorBanner,
 } from '@src/components';
 import { InferGetStaticPropsType, GetStaticProps, GetStaticPaths, NextPage } from 'next';
 
@@ -29,7 +29,7 @@ const DevfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   devfileYAML,
   devfileJSON,
   registries,
-  errors
+  errors,
 }: InferGetStaticPropsType<typeof getStaticProps>) => (
   <div className={styles.devfilePage}>
     <ErrorBanner errors={errors} />
@@ -39,9 +39,9 @@ const DevfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
       registries={registries}
     />
     {devfileJSON?.starterProjects?.length && devfile.type === 'stack' && (
-      <DevfilePageProjects starterProjects={devfileJSON.starterProjects} />
+      <DevfilePageProjects devfile={devfile} starterProjects={devfileJSON.starterProjects} />
     )}
-    {devfileYAML && <DevfilePageYAML devfileYAML={devfileYAML} />}
+    {devfileYAML && <DevfilePageYAML devfile={devfile} devfileYAML={devfileYAML} />}
   </div>
 );
 
@@ -51,7 +51,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const [source, name] = id.split('+');
 
   const devfile: Devfile = devfiles.find(
-    (devfile: Devfile) => devfile.registry === source && devfile.name === name
+    (devfile: Devfile) => devfile.registry === source && devfile.name === name,
   )!;
 
   const [devfileYAML, devfileJSON, yamlErrors] = await getDevfileYAML(devfile);
@@ -66,12 +66,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
       devfileYAML,
       devfileJSON,
       registries,
-      errors
+      errors,
     },
     // Next.js will attempt to re-generate the page:
     // - When a request comes in
     // - At most once every 15 seconds
-    revalidate: 15
+    revalidate: 15,
   };
 };
 
@@ -83,7 +83,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   return {
     paths,
-    fallback: 'blocking'
+    fallback: 'blocking',
   };
 };
 

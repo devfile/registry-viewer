@@ -1,6 +1,6 @@
-import type { TryCatch } from 'custom-types';
+import type { TypeWithErrorReturn } from 'custom-types';
 
-export function tryCatch<T>(func: () => T): TryCatch<T> {
+export function tryCatch<T>(func: () => T): TypeWithErrorReturn<T | null> {
   try {
     const data = func() || null;
     return [data, null];
@@ -8,11 +8,13 @@ export function tryCatch<T>(func: () => T): TryCatch<T> {
     // Warning for server-side
     // eslint-disable-next-line no-console
     console.error(err);
-    return [null, err];
+    return [null, err as Error];
   }
 }
 
-export async function asyncTryCatch<T>(func: () => Promise<T>): Promise<TryCatch<T>> {
+export async function asyncTryCatch<T>(
+  func: () => Promise<T>,
+): Promise<TypeWithErrorReturn<T | null>> {
   try {
     const data = (await func()) || null;
     return [data, null];
@@ -20,6 +22,6 @@ export async function asyncTryCatch<T>(func: () => Promise<T>): Promise<TryCatch
     // Warning for server-side
     // eslint-disable-next-line no-console
     console.error(err);
-    return [null, err];
+    return [null, err as Error];
   }
 }

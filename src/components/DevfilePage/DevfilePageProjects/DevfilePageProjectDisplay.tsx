@@ -1,8 +1,8 @@
 import styles from './DevfilePageProjectDisplay.module.css';
-import type { Project } from 'custom-types';
+import type { Project, DefaultProps } from 'custom-types';
 import { Text, TextContent } from '@patternfly/react-core';
 
-export interface DevfilePageProjectDisplayProps {
+export interface DevfilePageProjectDisplayProps extends DefaultProps {
   project: Project;
 }
 
@@ -13,7 +13,7 @@ export interface DevfilePageProjectDisplayProps {
  * @returns
  */
 export const DevfilePageProjectDisplay: React.FC<DevfilePageProjectDisplayProps> = ({
-  project
+  project,
 }: DevfilePageProjectDisplayProps) => (
   <TextContent>
     <Text data-testid="display-hovered-project-name" className={styles.displayedName}>

@@ -7,7 +7,7 @@ import { is } from 'typescript-is';
 export const getRemoteJSON = async (
   registryName: string,
   url: string,
-  alias: string | undefined
+  alias: string | undefined,
 ): Promise<Devfile[]> => {
   const res = await fetch(`${url}/index/all?icon=base64`);
   const devfilesWithoutName = (await res.json()) as Devfile[];
@@ -23,7 +23,7 @@ export const getRemoteJSON = async (
 
 export const getLocalJSON = async (
   registryName: string,
-  localLocation: string
+  localLocation: string,
 ): Promise<Devfile[]> => {
   const devfileRelPath = localLocation.split('/');
   const devfileAbsPath = path.join(process.cwd(), ...devfileRelPath, 'index.json');
@@ -55,10 +55,10 @@ export const getDevfileRegistryJSON = async (): Promise<GetDevfileRegistryJSON> 
           devfiles = devfiles.concat(extractedDevfiles);
         } else {
           throw TypeError(
-            `${registryName} cannot be assigned to type Devfile[]. (A devfile is most likely missing a required parameter)`
+            `${registryName} cannot be assigned to type Devfile[]. (A devfile is most likely missing a required parameter)`,
           );
         }
-      })
+      }),
     );
 
     return devfiles;

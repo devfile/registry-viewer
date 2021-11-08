@@ -16,14 +16,14 @@ describe('<HeaderTags />', () => {
 
   test('tags prop set to null, check that HeaderTags is null', () => {
     wrapper.setProps({
-      tags: null
+      tags: null,
     });
 
     expect(wrapper.type()).toEqual(null);
   });
   test('tags prop set to empty list, check that HeaderTags is null', () => {
     wrapper.setProps({
-      tags: new Array(0)
+      tags: new Array(0),
     });
 
     expect(wrapper.type()).toEqual(null);
@@ -31,7 +31,7 @@ describe('<HeaderTags />', () => {
 
   test('number of tags is equal to set numOfVisibleTags, no popup', () => {
     wrapper.setProps({
-      tags: Array.from(new Array(numOfVisibleTags), (value, index) => 'tag' + index)
+      tags: Array.from(new Array(numOfVisibleTags), (value, index) => 'tag' + index),
     });
     // Check popup isn't generated
     expect(wrapper.find(Popover).length).toBe(0);
@@ -44,7 +44,7 @@ describe('<HeaderTags />', () => {
 
     const tags = Array.from(
       new Array(numOfVisibleTags + numOfPopupTags),
-      (_, index) => 'tag' + index
+      (_, index) => 'tag' + index,
     );
     wrapper.setProps({ tags });
 

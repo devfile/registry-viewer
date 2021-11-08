@@ -4,11 +4,11 @@ const withPlugins = require('next-compose-plugins');
 const withPWA = require('next-pwa');
 const withImages = require('next-images');
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true'
+  enabled: process.env.ANALYZE === 'true',
 });
 const withTM = require('next-transpile-modules')([
   '@patternfly/react-core',
-  '@patternfly/react-styles'
+  '@patternfly/react-styles',
 ]);
 
 module.exports = withPlugins([withTM, withImages, withBundleAnalyzer, withPWA], {
@@ -19,9 +19,9 @@ module.exports = withPlugins([withTM, withImages, withBundleAnalyzer, withPWA], 
       loader: 'ts-loader',
       options: {
         getCustomTransformers: (program) => ({
-          before: [typescriptIsTransformer(program)]
-        })
-      }
+          before: [typescriptIsTransformer(program)],
+        }),
+      },
     });
     return config;
   },
@@ -32,9 +32,9 @@ module.exports = withPlugins([withTM, withImages, withBundleAnalyzer, withPWA], 
     // The issue pertains to the registry and registry viewer being on the same docker image?
     // disable: process.env.NODE_ENV === 'development',
     register: true,
-    dest: 'public'
+    dest: 'public',
   },
   publicRuntimeConfig: {
-    analyticsWriteKey: process.env.ANALYTICS_WRITE_KEY || ''
-  }
+    analyticsWriteKey: process.env.ANALYTICS_WRITE_KEY || '',
+  },
 });

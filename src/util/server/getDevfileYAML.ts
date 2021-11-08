@@ -8,7 +8,7 @@ import { load as yamlToJSON } from 'js-yaml';
 
 export const getRemoteYAML = async (devfileName: string, yamlLocation: string): Promise<string> => {
   const res = await fetch(`${yamlLocation}/devfiles/${devfileName}`, {
-    headers: { 'Accept-Type': 'text/plain' }
+    headers: { 'Accept-Type': 'text/plain' },
   });
   const devfileYAML = (await res.text()) as string;
   return devfileYAML;

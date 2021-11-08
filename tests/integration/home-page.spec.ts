@@ -68,8 +68,8 @@ describe('Home page tests on desktop', () => {
         cy.get('[data-testid^=tag-]').should(
           'have.length',
           tagsStateWithFreq.filter((tagData) =>
-            tagData.value.toLowerCase().includes(text.toLowerCase())
-          ).length
+            tagData.value.toLowerCase().includes(text.toLowerCase()),
+          ).length,
         );
       });
     });
@@ -104,18 +104,18 @@ const filterDevfilesOnSearchBar = (devfiles: Devfile[], searchBarValue: string):
 const filterDevfilesOnTags = (devfiles: Devfile[], tagsStateWithFreq: FilterElem[]): Devfile[] => {
   const devfilesFilteredOnTags: Devfile[] = devfiles.filter((devfile: Devfile) =>
     devfile.tags?.some((tag) =>
-      tagsStateWithFreq.some((tagStateWithFreq) => tag === tagStateWithFreq.value)
-    )
+      tagsStateWithFreq.some((tagStateWithFreq) => tag === tagStateWithFreq.value),
+    ),
   );
   return devfilesFilteredOnTags;
 };
 
 const filterDevfilesOnTypes = (
   devfiles: Devfile[],
-  typesStateWithFreq: FilterElem[]
+  typesStateWithFreq: FilterElem[],
 ): Devfile[] => {
   const devfilesFilteredOnTypes: Devfile[] = devfiles.filter((devfile: Devfile) =>
-    typesStateWithFreq.some((typeStateWithFreq) => devfile.type === typeStateWithFreq.value)
+    typesStateWithFreq.some((typeStateWithFreq) => devfile.type === typeStateWithFreq.value),
   );
   return devfilesFilteredOnTypes;
 };

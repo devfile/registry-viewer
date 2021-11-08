@@ -29,12 +29,12 @@ export class UnsupportedLinkError extends Error {
 export async function downloadSubdirectory(url: string, subdirectory: string): Promise<void> {
   const data = {
     url,
-    subdirectory
+    subdirectory,
   };
   const res = await fetch(apiWrapper('/api/download-subdirectory'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   });
 
   const status = res.status;

@@ -8,5 +8,5 @@ expect.addSnapshotSerializer(createSerializer({ mode: 'deep' }));
 fetchMock.enableMocks();
 
 configure({
-  adapter: new Adapter()
+  adapter: new Adapter(),
 });

@@ -27,7 +27,7 @@ const baseDevfile: Devfile = {
   type: 'stack',
   projectType: 'maven',
   language: 'java',
-  registry: 'Community'
+  registry: 'Community',
 };
 
 const propStackValues: {
@@ -39,7 +39,7 @@ const propStackValues: {
 }[] = [
   {
     name: 'devfile with no metadata',
-    devfile: baseDevfile
+    devfile: baseDevfile,
   },
   {
     // eslint-disable-next-line quotes
@@ -51,12 +51,12 @@ const propStackValues: {
       tags: [],
       icon: '',
       links: {
-        self: 'devfile-catalog/java-maven:latest'
+        self: 'devfile-catalog/java-maven:latest',
       },
       resources: [],
-      starterProjects: []
+      starterProjects: [],
     },
-    devfileMetadata: { notWebsite: 'not-website' }
+    devfileMetadata: { notWebsite: 'not-website' },
   },
   {
     name: 'devfile with description, icon, and extra information and metadata that includes a website',
@@ -68,17 +68,17 @@ const propStackValues: {
       type: 'stack',
       projectType: 'wildfly',
       links: {
-        self: 'a different link'
+        self: 'a different link',
       },
       tags: ['tag1', 'tag2', 'tag3'],
       icon: 'https://raw.githubusercontent.com/maysunfaisal/node-bulletin-board-2/main/nodejs-icon.png',
       language: 'java',
       resources: ['resource1', 'resource2', 'resource3'],
       starterProjects: ['starter-projects1', 'starter-projects2', 'starter-projects3'],
-      registry: 'github'
+      registry: 'github',
     },
-    devfileMetadata: { website: 'https://registry.devfile.io' }
-  }
+    devfileMetadata: { website: 'https://registry.devfile.io' },
+  },
 ];
 
 const propSampleValues: { name: string; devfile: Devfile }[] = [
@@ -90,11 +90,11 @@ const propSampleValues: { name: string; devfile: Devfile }[] = [
       type: 'sample',
       git: {
         remotes: {
-          remote: 'https://www.youtube.com/watch?v=JCrnRLV5slc'
-        }
-      }
-    }
-  }
+          remote: 'https://www.youtube.com/watch?v=JCrnRLV5slc',
+        },
+      },
+    },
+  },
 ];
 
 describe('<Header />', () => {
@@ -104,7 +104,7 @@ describe('<Header />', () => {
   const numOfInheritedIDs = 2; // IDs of text and brand components are passed to children
 
   const wrapper = mount(
-    <DevfilePageHeader devfile={propStackValues[0].devfile} registries={registries} />
+    <DevfilePageHeader devfile={propStackValues[0].devfile} registries={registries} />,
   );
 
   // check content in header except website (for stacks) and git repo (for samples)
@@ -112,7 +112,7 @@ describe('<Header />', () => {
     const idToComponentWrappers: Record<string, ReactWrapper> = {};
     devfileKeys.forEach(
       (key) =>
-        (idToComponentWrappers[key] = wrapper.findWhere((n) => n.prop('data-testid') === key))
+        (idToComponentWrappers[key] = wrapper.findWhere((n) => n.prop('data-testid') === key)),
     );
 
     function getWrapperText(id: string): string {
@@ -124,7 +124,7 @@ describe('<Header />', () => {
 
     expect(idToComponentWrappers.icon.length).toBe(numOfInheritedIDs);
     expect(wrapper.find(Brand).prop('alt')).toBe(
-      devfile.icon ? devfile.displayName + ' logo' : 'devfile logo'
+      devfile.icon ? devfile.displayName + ' logo' : 'devfile logo',
     );
     expect(wrapper.find(Brand).prop('src')).toBe(devfile.icon || devfileLogo);
 
@@ -132,7 +132,7 @@ describe('<Header />', () => {
     expect(getWrapperText('displayName')).toBe(devfile.displayName);
 
     expect(idToComponentWrappers.description.length).toBe(
-      devfile.description ? numOfInheritedIDs : 0
+      devfile.description ? numOfInheritedIDs : 0,
     );
     if (devfile.description) {
       expect(getWrapperText('description').includes(devfile.description)).toBeTruthy();
@@ -150,7 +150,7 @@ describe('<Header />', () => {
       expect(idToComponentWrappers[id].length).toBe(numOfInheritedIDs);
       expect(getWrapperText(id)).toBe(label + ': ' + expectedValue);
       expect(idToComponentWrappers[id].parent().first().prop('data-testid')).toBe(
-        'devfile-metadata'
+        'devfile-metadata',
       );
     }
 

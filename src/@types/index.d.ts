@@ -26,6 +26,9 @@ declare module 'custom-types' {
     registryLink?: string;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  export interface DefaultProps {}
+
   export interface FilterElem {
     value: string;
     state: boolean;
@@ -50,7 +53,7 @@ declare module 'custom-types' {
     [sourceRepo: string]: Host;
   }
 
-  export type TryCatch<T> = [T | null, Error | null];
+  export type TypeWithErrorReturn<T> = [T, null] | [null, Error];
 
   export type devfileYAML = string | null;
 

@@ -1,9 +1,9 @@
-import type { FilterElem } from 'custom-types';
+import type { FilterElem, DefaultProps } from 'custom-types';
 import { HomeGalleryFilterElemsSearchBar, HomeGalleryFilterElems } from '@src/components';
 import type { Dispatch, SetStateAction } from 'react';
 import { Form, Text, TextContent, TextVariants } from '@patternfly/react-core';
 
-export interface HomeGalleryFilterProps {
+export interface HomeGalleryFilterProps extends DefaultProps {
   tagFilterElems: FilterElem[];
   typeFilterElems: FilterElem[];
   registryFilterElems: FilterElem[];
@@ -27,7 +27,7 @@ export const HomeGalleryFilter: React.FC<HomeGalleryFilterProps> = ({
   setTagFilterElems,
   setTypeFilterElems,
   setRegistryFilterElems,
-  setProviderFilterElems
+  setProviderFilterElems,
 }: HomeGalleryFilterProps) => (
   <>
     <TextContent>

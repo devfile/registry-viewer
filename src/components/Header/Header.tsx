@@ -1,5 +1,5 @@
 import styles from './Header.module.css';
-import type { LayoutText } from 'custom-types';
+import type { LayoutText, DefaultProps } from 'custom-types';
 import _layoutText from '@info/layout-text.json';
 import { getLayoutText } from '@src/util/client';
 import {
@@ -11,12 +11,12 @@ import {
   TextVariants,
   Brand,
   Grid,
-  GridItem
+  GridItem,
 } from '@patternfly/react-core';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 
-export const Header: React.FC = () => {
+export const Header: React.FC<DefaultProps> = () => {
   const [layoutText, setLayoutText] = useState<LayoutText>(_layoutText);
 
   useEffect(() => {

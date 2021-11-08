@@ -6,11 +6,11 @@ module.exports = {
   testPathIgnorePatterns: ['/node_modules/', '/.next/'],
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': '<rootDir>/node_modules/babel-jest',
-    '\\.svg$': '<rootDir>/tests/mocks/svgMock.js'
+    '\\.svg$': '<rootDir>/tests/mocks/svgMock.js',
   },
   transformIgnorePatterns: ['/node_modules/', '\\.(css|scss|sass)$'],
   verbose: true,
   moduleNameMapper: {
-    '\\.(css|scss|sass)$': 'identity-obj-proxy'
-  }
+    '\\.(css|scss|sass)$': 'identity-obj-proxy',
+  },
 };

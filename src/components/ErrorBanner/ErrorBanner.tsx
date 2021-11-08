@@ -1,7 +1,8 @@
 import styles from './ErrorBanner.module.css';
+import { DefaultProps } from 'custom-types';
 import { Banner, Text, TextContent, TextVariants } from '@patternfly/react-core';
 
-export interface ErrorBannerProps {
+export interface ErrorBannerProps extends DefaultProps {
   errors: string[];
 }
 

@@ -65,22 +65,22 @@ function checkArrayPropertyTypes(arr, arrName) {
   arr.forEach((elem) => {
     if (!elem.name) {
       throw TypeError(
-        `${configFileString} "${arrName}" array has an element with no "name" property`
+        `${configFileString} "${arrName}" array has an element with no "name" property`,
       );
     }
     if (!elem.link) {
       throw TypeError(
-        `${configFileString} "${arrName}" array has an element with no "link" property`
+        `${configFileString} "${arrName}" array has an element with no "link" property`,
       );
     }
     if (typeof elem.name !== 'string') {
       throw TypeError(
-        `${configFileString} "${arrName}" array has an element with "name" property not as a string`
+        `${configFileString} "${arrName}" array has an element with "name" property not as a string`,
       );
     }
     if (typeof elem.link !== 'string') {
       throw TypeError(
-        `${configFileString} "${arrName}" array has an element with "link" property not as a string`
+        `${configFileString} "${arrName}" array has an element with "link" property not as a string`,
       );
     }
   });
