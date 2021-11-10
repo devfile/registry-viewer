@@ -14,6 +14,7 @@ import {
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { LightAsync as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { github as style } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
+import { useRouter } from 'next/router';
 
 export interface DevfilePageYAMLProps extends DefaultProps {
   devfile: Devfile;
@@ -24,16 +25,18 @@ export const DevfilePageYAML: React.FC<DevfilePageYAMLProps> = ({
   devfile,
   devfileYAML,
 }: DevfilePageYAMLProps) => {
+  const router = useRouter();
   const analytics = getAnalytics();
 
   const onClick = (): void => {
     if (analytics) {
       analytics.track({
-        userId: '0',
+        userId: 'registry-viewer',
         event: 'Copy Devfile Button Clicked',
         properties: {
           devfile: devfile.name,
         },
+        context: { ip: '0.0.0.0', locale: router.locale },
       });
     }
   };

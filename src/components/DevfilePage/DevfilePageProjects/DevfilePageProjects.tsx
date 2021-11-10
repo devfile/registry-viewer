@@ -17,6 +17,7 @@ import {
   TextVariants,
 } from '@patternfly/react-core';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 
 /**
  * type for errorAlert variable in {@link DevPageProjects}
@@ -67,6 +68,7 @@ export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
 
   const [errorAlert, setErrorAlert] = useState<null | ErrorAlert>(null);
 
+  const router = useRouter();
   const analytics = getAnalytics();
 
   async function triggerDownload(project: Project): Promise<void> {
@@ -74,12 +76,13 @@ export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
 
     if (analytics) {
       analytics.track({
-        userId: '0',
+        userId: 'registry-viewer',
         event: 'Starter Project Downloaded',
         properties: {
           devfile: devfile.name,
           starterProject: project.name,
         },
+        context: { ip: '0.0.0.0', locale: router.locale },
       });
     }
 

@@ -19,11 +19,12 @@ const MyApp: NextPage<AppProps> = ({ Component, pageProps }: AppProps) => {
 
     if (analytics) {
       analytics.page({
-        userId: '0',
+        userId: 'registry-viewer',
         name: router.asPath,
+        context: { ip: '0.0.0.0', locale: router.locale },
       });
     }
-  }, [router.asPath]);
+  }, [router.asPath, router.locale]);
 
   return (
     <Layout>
