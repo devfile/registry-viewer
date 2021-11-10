@@ -1,6 +1,8 @@
 /**
- * The function takes a locale and returns a region
+ * Takes a locale and returns a region
+ *
  * @param locale - router.locale from useRouter()
+ *
  * @returns the 2 letter region name
  */
 export const getUserRegion = (locale: string | undefined): string | undefined => {

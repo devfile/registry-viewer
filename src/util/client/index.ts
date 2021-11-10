@@ -1,3 +1,7 @@
+/**
+ * Functions that will only run client side
+ * Sort in alphabetical order
+ */
 export * from './apiWrapper';
 export * from './downloadHelperFuncs';
 export * from './filterElemFuncs';

@@ -6,7 +6,8 @@ export interface GetLayoutText {
 }
 
 /**
- * Function that queries for the layout text
+ * Queries for the layout text
+ *
  * @returns a layoutText object
  */
 export const getLayoutText = async (): Promise<LayoutText> => {

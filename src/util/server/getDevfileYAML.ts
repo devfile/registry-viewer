@@ -6,21 +6,44 @@ import { is } from 'typescript-is';
 // @ts-expect-error js-yaml has no type definitions
 import { load as yamlToJSON } from 'js-yaml';
 
-export const getRemoteYAML = async (devfileName: string, yamlLocation: string): Promise<string> => {
-  const res = await fetch(`${yamlLocation}/devfiles/${devfileName}`, {
+/**
+ * Gets the devfile json from a devfile registry endpoint
+ *
+ * @param devfileName - the devfile name
+ * @param url - the url of the devfile registry endpoint
+ *
+ * @returns the devfile YAML
+ */
+export const getRemoteYAML = async (devfileName: string, url: string): Promise<string> => {
+  const res = await fetch(`${url}/devfiles/${devfileName}`, {
     headers: { 'Accept-Type': 'text/plain' },
   });
   const devfileYAML = (await res.text()) as string;
   return devfileYAML;
 };
 
-export const getLocalYAML = async (devfileName: string, yamlLocation: string): Promise<string> => {
-  const devfileYAMLRelPath = `${yamlLocation}/${devfileName}/devfile.yaml`.split('/');
+/**
+ * Get the devfile YAML from a local directory
+ *
+ * @param devfileName - the devfile name
+ * @param directory - the local directory location
+ *
+ * @returns the devfile YAML
+ */
+export const getLocalYAML = async (devfileName: string, directory: string): Promise<string> => {
+  const devfileYAMLRelPath = `${directory}/${devfileName}/devfile.yaml`.split('/');
   const devfileYAMLAbsPath = path.join(process.cwd(), ...devfileYAMLRelPath);
   const devfileYAML = (await fs.readFile(devfileYAMLAbsPath, 'utf8')) as string;
   return devfileYAML;
 };
 
+/**
+ * Gets the devfile YAML from remote and local locations
+ *
+ * @param devfile - the devfile you want the YAML for
+ *
+ * @returns a array (tuple) with the devfile YAML as the first element and the potential errors as the second element
+ */
 export const getDevfileYAML = async (devfile: Devfile): Promise<GetDevfileYAML> => {
   let devfileYAML = null;
   let devfileJSON = null;

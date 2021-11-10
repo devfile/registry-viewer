@@ -1,5 +1,14 @@
 import type { Devfile, FilterElem } from 'custom-types';
 
+/**
+ * Generates a sorted FilterElem array based on the specified property
+ * The sort is based on the value
+ *
+ * @param devfiles - the list of devfiles to create the FilterElem
+ * @param property - the property to create the FilterElem
+ *
+ * @returns the sorted FilterElem array
+ */
 export const getFilterElemArr = (
   devfiles: Devfile[],
   property: keyof Pick<Devfile, 'type' | 'tags' | 'registry' | 'provider'>,

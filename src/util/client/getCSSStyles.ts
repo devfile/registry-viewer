@@ -12,6 +12,8 @@ export const colors: ColorMap[] = [
 
 /**
  * Get the fill color for the transition components
+ * @param fill - the type of color
+ * @returns a css fill property for the transition components
  */
 export const getFillStyle = (fill: Color): React.CSSProperties => ({
   fill: `var(${colors.find((e) => e.name === fill)!.value})`,
@@ -29,6 +31,12 @@ export const transformY: React.CSSProperties = { transform: 'scaleY(-1)' };
 
 /**
  * Get the transition styles for the transition components
+ *
+ * @param backgroundColor - the type of color
+ * @param flipX - default is no flip on the x axis
+ * @param flipY - default is no flip on the y axis
+ *
+ * @returns the transition styles
  */
 export const getTransitionStyles = (
   backgroundColor: Color,
