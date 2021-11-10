@@ -3,7 +3,7 @@ import type { Devfile, DefaultProps } from 'custom-types';
 import link from '@public/images/link.svg';
 import { Brand, Button } from '@patternfly/react-core';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { getAnalytics } from '@src/util/client';
+import { getAnalytics, getUserRegion } from '@src/util/client';
 import { useRouter } from 'next/router';
 
 export interface Origin {
@@ -21,6 +21,8 @@ export const DevfilePageHeaderShareButton: React.FC<DevfilePageHeaderShareButton
   const analytics = getAnalytics();
 
   const onClick = (): void => {
+    const location = getUserRegion(router.locale);
+
     if (analytics) {
       analytics.track({
         userId: 'registry-viewer',
@@ -29,7 +31,7 @@ export const DevfilePageHeaderShareButton: React.FC<DevfilePageHeaderShareButton
           devfile: devfile.name,
           url: devfile.registryLink || '',
         },
-        context: { ip: '0.0.0.0', locale: router.locale },
+        context: { ip: '0.0.0.0', locale: router.locale, location },
       });
     }
   };

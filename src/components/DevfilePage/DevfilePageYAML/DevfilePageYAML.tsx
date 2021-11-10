@@ -1,6 +1,6 @@
 import styles from './DevfilePageYAML.module.css';
 import type { DefaultProps, Devfile } from 'custom-types';
-import { getAnalytics } from '@src/util/client';
+import { getAnalytics, getUserRegion } from '@src/util/client';
 import copy from '@public/images/copy.svg';
 import {
   Brand,
@@ -29,6 +29,8 @@ export const DevfilePageYAML: React.FC<DevfilePageYAMLProps> = ({
   const analytics = getAnalytics();
 
   const onClick = (): void => {
+    const location = getUserRegion(router.locale);
+
     if (analytics) {
       analytics.track({
         userId: 'registry-viewer',
@@ -36,7 +38,7 @@ export const DevfilePageYAML: React.FC<DevfilePageYAMLProps> = ({
         properties: {
           devfile: devfile.name,
         },
-        context: { ip: '0.0.0.0', locale: router.locale },
+        context: { ip: '0.0.0.0', locale: router.locale, location },
       });
     }
   };

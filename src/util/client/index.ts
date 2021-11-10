@@ -3,6 +3,7 @@ export * from './downloadHelperFuncs';
 export * from './filterElemFuncs';
 export * from './getAnalytics';
 export * from './getCSSStyles';
+export * from './getUserRegion';
 export * from './getLayoutText';
 export * from './isClient';
 export * from './stringFuncs';

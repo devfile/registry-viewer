@@ -1,7 +1,7 @@
 import styles from './DevfilePageProjects.module.css';
 import type { Project, DefaultProps, Devfile } from 'custom-types';
 import { DevfilePageProjectDisplay } from '@src/components';
-import { download, UnsupportedLinkError, getAnalytics } from '@src/util/client';
+import { download, UnsupportedLinkError, getAnalytics, getUserRegion } from '@src/util/client';
 import {
   Alert,
   AlertActionLink,
@@ -75,6 +75,8 @@ export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
     setDownloading(true);
 
     if (analytics) {
+      const location = getUserRegion(router.locale);
+
       analytics.track({
         userId: 'registry-viewer',
         event: 'Starter Project Downloaded',
@@ -82,7 +84,7 @@ export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
           devfile: devfile.name,
           starterProject: project.name,
         },
-        context: { ip: '0.0.0.0', locale: router.locale },
+        context: { ip: '0.0.0.0', locale: router.locale, location },
       });
     }
 
