@@ -29,7 +29,7 @@ export const DevfilePageYAML: React.FC<DevfilePageYAMLProps> = ({
   const analytics = getAnalytics();
 
   const onClick = (): void => {
-    const location = getUserRegion(router.locale);
+    const region = getUserRegion(router.locale);
 
     if (analytics) {
       analytics.track({
@@ -38,7 +38,7 @@ export const DevfilePageYAML: React.FC<DevfilePageYAMLProps> = ({
         properties: {
           devfile: devfile.name,
         },
-        context: { ip: '0.0.0.0', locale: router.locale, location },
+        context: { ip: '0.0.0.0', location: { country: region } },
       });
     }
   };

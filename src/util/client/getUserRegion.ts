@@ -6,12 +6,23 @@
  * @returns the 2 letter region name
  */
 export const getUserRegion = (locale: string | undefined): string | undefined => {
-  if (typeof locale === 'string') {
-    // Match everything after the last occurrence of -
-    const region = locale.match(/[^-]*$/);
+  let region: string | undefined;
 
-    return region![0];
+  // Match everything after the first occurrence of "-"
+  const regex = new RegExp(/-([\s\S]*)$/);
+
+  if (typeof locale === 'string') {
+    // .match(regex) returns an array and we want the first match
+    region = locale.match(regex)![0];
   }
 
-  return undefined;
+  // If the locales property is not set try to use the language property
+  region = region || navigator.language.match(regex)![0];
+
+  if (typeof region === 'string') {
+    // Slice the "-" off the front
+    region = region.slice(1);
+  }
+
+  return region;
 };

@@ -16,13 +16,13 @@ const MyApp: NextPage<AppProps> = ({ Component, pageProps }: AppProps) => {
   // Client renders page
   useEffect(() => {
     const analytics = getAnalytics();
-    const location = getUserRegion(router.locale);
+    const region = getUserRegion(router.locale);
 
     if (analytics) {
       analytics.page({
         userId: 'registry-viewer',
         name: router.asPath,
-        context: { ip: '0.0.0.0', locale: router.locale, location },
+        context: { ip: '0.0.0.0', location: { country: region } },
       });
     }
   }, [router.asPath, router.locale]);

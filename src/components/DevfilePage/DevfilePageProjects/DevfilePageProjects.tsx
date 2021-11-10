@@ -75,7 +75,7 @@ export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
     setDownloading(true);
 
     if (analytics) {
-      const location = getUserRegion(router.locale);
+      const region = getUserRegion(router.locale);
 
       analytics.track({
         userId: 'registry-viewer',
@@ -84,7 +84,7 @@ export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
           devfile: devfile.name,
           starterProject: project.name,
         },
-        context: { ip: '0.0.0.0', locale: router.locale, location },
+        context: { ip: '0.0.0.0', location: { country: region } },
       });
     }
 

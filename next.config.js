@@ -28,8 +28,10 @@ module.exports = withPlugins([withTM, withImages, withBundleAnalyzer, withPWA], 
   basePath: process.env.DEVFILE_VIEWER_ROOT ? process.env.DEVFILE_VIEWER_ROOT : '',
   pwa: {
     disable: true,
-    // Delete the line above and uncomment the line below if the pwa issue is fixed.
-    // The issue pertains to the registry and registry viewer being on the same docker image?
+    /**
+     * Uncomment the line below if the pwa issue is fixed.
+     * The issue pertains to the registry and registry viewer being on the same docker image?
+     */
     // disable: process.env.NODE_ENV === 'development',
     register: true,
     dest: 'public',
