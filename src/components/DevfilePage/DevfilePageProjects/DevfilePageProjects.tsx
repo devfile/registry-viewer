@@ -18,6 +18,7 @@ import {
 } from '@patternfly/react-core';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import getConfig from 'next/config';
 
 /**
  * type for errorAlert variable in {@link DevPageProjects}
@@ -76,9 +77,10 @@ export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
 
     if (analytics) {
       const region = getUserRegion(router.locale);
+      const { publicRuntimeConfig } = getConfig();
 
       analytics.track({
-        userId: 'registry-viewer',
+        userId: publicRuntimeConfig.segmentUserId,
         event: 'Starter Project Downloaded',
         properties: {
           devfile: devfile.name,

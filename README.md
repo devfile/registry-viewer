@@ -76,7 +76,7 @@ yarn start
 
 Notes:
 
-- For devfile hosts (environment variable or config file) specify a remote url or a local folder structure and `index.json` that follows the `devfile/api` spec.
+- For devfile hosts (environment variable or config file) specify a remote url or a local directory structure and `index.json` that follows the `devfile/api` spec.
 - You can have infinitely many sources as long as the name for the source repository is different.
 - There are two types of source types, url and local.
   - url is for specifying a remote hosts.
@@ -168,11 +168,15 @@ Configure the registry viewer through config file.
 
 ## Environment Variables
 
+You can add local environment variables by creating an `.env.local` file in the root registry viewer directory to store the environment variables.
+
 The environment variable `DEVFILE_VIEWER_ROOT` controls the registry viewer's base path. Note: Defaults to `/`.
 
 The environment variable `DEVFILE_COMMUNITY_HOST` controls whether the registry viewer uses the community registry. Note: Defaults to `true` and any value assigned will be `false`.
 
 The environment variable `DEVFILE_BANNER` controls whether the registry viewer banner is displayed. Note: Defaults to `true` and any value assigned will be `false`.
+
+The environment variable `ANALYTICS_WRITE_KEY` is the Segment write key. Note: Defaults to `null`.
 
 ## Contributing
 

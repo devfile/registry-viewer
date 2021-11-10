@@ -1,12 +1,12 @@
-name: Lint
+name: Jest
 
 on:
   pull_request:
     branches: [main]
 
 jobs:
-  run-linters:
-    name: Run linters
+  jest-run:
+    name: Jest
     runs-on: ubuntu-latest
 
     steps:
@@ -21,5 +21,5 @@ jobs:
       - name: Install Node.js dependencies
         run: yarn install --ignore-optional
 
-      - name: Run Prettier
-        run: yarn lint
+      - name: Run Jest
+        run: yarn test:jest

@@ -1,17 +1,25 @@
 module.exports = {
   collectCoverageFrom: ['**/*.{js,jsx,ts,tsx}', '!**/*.d.ts', '!**/node_modules/**'],
+  testMatch: ['**/__tests__/**/*.{js,ts}?(x)', '**/*.test.{js,ts}?(x)'],
   moduleNameMapper: {
     /* Handle CSS imports (with CSS modules)
     https://jestjs.io/docs/webpack#mocking-css-modules */
     '^.+\\.module\\.(css|sass|scss)$': 'identity-obj-proxy',
 
     // Handle CSS imports (without CSS modules)
-    '^.+\\.(css|sass|scss)$': '<rootDir>/__mocks__/styleMock.js',
+    '^.+\\.(css|sass|scss)$': '<rootDir>/__tests__/mocks/styleMock.js',
 
     /* Handle image imports
     https://jestjs.io/docs/webpack#handling-static-assets */
-    '^.+\\.(jpg|jpeg|png|gif|webp|avif|svg)$': '<rootDir>/__mocks__/fileMock.js',
+    '^.+\\.(jpg|jpeg|png|gif|webp|avif|svg)$': '<rootDir>/__tests__/mocks/fileMock.js',
+
+    /* Handle compilerOptions.paths in ./tsconfig */
+    '@src(.*)': '<rootDir>/src/$1',
+    '@public(.*)': '<rootDir>/public/$1',
+    '@config(.*)': '<rootDir>/config/$1',
+    '@info(.*)': '<rootDir>/webpage_info/$1',
   },
+  modulePaths: ['<rootDir>'],
   testPathIgnorePatterns: [
     '<rootDir>/node_modules/',
     '<rootDir>/.next/',

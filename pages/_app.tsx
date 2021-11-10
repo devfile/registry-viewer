@@ -6,6 +6,7 @@ import { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
 import { NextPage } from 'next';
 import { useEffect } from 'react';
+import getConfig from 'next/config';
 
 /**
  * Renders the {@link MyApp}
@@ -17,10 +18,11 @@ const MyApp: NextPage<AppProps> = ({ Component, pageProps }: AppProps) => {
   useEffect(() => {
     const analytics = getAnalytics();
     const region = getUserRegion(router.locale);
+    const { publicRuntimeConfig } = getConfig();
 
     if (analytics) {
       analytics.page({
-        userId: 'registry-viewer',
+        userId: publicRuntimeConfig.segmentUserId,
         name: router.asPath,
         context: { ip: '0.0.0.0', location: { country: region } },
       });

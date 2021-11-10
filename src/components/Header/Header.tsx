@@ -26,7 +26,7 @@ export const Header: React.FC<DefaultProps> = () => {
   }, []);
 
   return (
-    <header>
+    <header data-testid="component-header">
       <Grid className={styles.nav}>
         <GridItem span={12} sm={6}>
           <Link href="/">
