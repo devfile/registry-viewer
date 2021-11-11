@@ -20,11 +20,7 @@ module.exports = {
     '@info(.*)': '<rootDir>/webpage_info/$1',
   },
   modulePaths: ['<rootDir>'],
-  testPathIgnorePatterns: [
-    '<rootDir>/node_modules/',
-    '<rootDir>/.next/',
-    '<rootDir>/tests/integration',
-  ],
+  testPathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/.next/', '<rootDir>/__tests__'],
   testEnvironment: 'jsdom',
   transform: {
     /* Use babel-jest to transpile tests with the next/babel preset

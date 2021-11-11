@@ -19,7 +19,7 @@ jobs:
           node-version: 14
 
       - name: Install Node.js dependencies
-        run: yarn install --ignore-optional
+        run: yarn install
 
       - name: Run Jest
         run: yarn test:jest
