@@ -6,6 +6,7 @@ on:
 
 jobs:
   dispatch:
+    name: Push Changes
     strategy:
       matrix:
         repo: ['devfile/registry-support']

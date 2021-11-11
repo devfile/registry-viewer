@@ -1,4 +1,4 @@
-name: Jest
+name: Run Scripts
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
 
 jobs:
   jest-run:
-    name: Jest
+    name: Run Scripts
     runs-on: ubuntu-latest
 
     steps:
@@ -23,3 +23,6 @@ jobs:
 
       - name: Run Jest
         run: yarn test:jest
+      
+      - name: Run Prettier
+        run: yarn lint
