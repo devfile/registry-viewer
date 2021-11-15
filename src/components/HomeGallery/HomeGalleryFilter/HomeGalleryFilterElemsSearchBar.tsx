@@ -1,16 +1,16 @@
 import styles from './HomeGalleryFilterElemsSearchBar.module.css';
-import type { FilterElem } from 'custom-types';
+import type { FilterElem, DefaultProps } from 'custom-types';
 import type { Dispatch, SetStateAction } from 'react';
 import {
   serializeDataTestid,
   getFilterElemsActiveCount,
   sortFilterElems,
-  capitalizeFirstLetter
+  capitalizeFirstLetter,
 } from '@src/util/client';
 import { Checkbox, FormGroup, SearchInput } from '@patternfly/react-core';
 import { useState, useEffect } from 'react';
 
-export interface HomeGalleryFilterElemsSearchBarProps {
+export interface HomeGalleryFilterElemsSearchBarProps extends DefaultProps {
   label: string;
   id: string;
   filterElems: FilterElem[];
@@ -23,13 +23,13 @@ export const HomeGalleryFilterElemsSearchBar: React.FC<HomeGalleryFilterElemsSea
   id,
   filterElems,
   setFilterElems,
-  capitalizeElem
+  capitalizeElem,
 }: HomeGalleryFilterElemsSearchBarProps) => {
   const [searchBarValue, setSearchBarValue] = useState('');
 
   useEffect(() => {
     setFilterElems(sortFilterElems(filterElems));
-  }, [filterElems]);
+  }, [filterElems, setFilterElems]);
 
   const onCheckboxChange = (checked: boolean, event: React.FormEvent<HTMLInputElement>): void => {
     const target: EventTarget = event.target;
@@ -66,7 +66,7 @@ export const HomeGalleryFilterElemsSearchBar: React.FC<HomeGalleryFilterElemsSea
       <div className={styles.box}>
         {filterElems
           .filter((filterElem) =>
-            filterElem.value.toLowerCase().includes(searchBarValue.toLowerCase())
+            filterElem.value.toLowerCase().includes(searchBarValue.toLowerCase()),
           )
           .map((filterElem) => (
             <div key={filterElem.value} className={styles.formGroupElement}>

@@ -4,10 +4,19 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { is } from 'typescript-is';
 
+/**
+ * Gets the devfile JSON from a devfile registry endpoint
+ *
+ * @param registryName - the name of the devfile registry endpoint
+ * @param url - the url of the devfile registry endpoint
+ * @param alias - the alias of the devfile registry endpoint if {@link url} is localhost
+ *
+ * @returns a devfile array
+ */
 export const getRemoteJSON = async (
   registryName: string,
   url: string,
-  alias: string | undefined
+  alias: string | undefined,
 ): Promise<Devfile[]> => {
   const res = await fetch(`${url}/index/all?icon=base64`);
   const devfilesWithoutName = (await res.json()) as Devfile[];
@@ -21,11 +30,16 @@ export const getRemoteJSON = async (
   return devfiles;
 };
 
-export const getLocalJSON = async (
-  registryName: string,
-  localLocation: string
-): Promise<Devfile[]> => {
-  const devfileRelPath = localLocation.split('/');
+/**
+ * Gets the devfile JSON from a local directory
+ *
+ * @param registryName - the name of the local devfile directory
+ * @param directory - the local directory location
+ *
+ * @returns a devfile array
+ */
+export const getLocalJSON = async (registryName: string, directory: string): Promise<Devfile[]> => {
+  const devfileRelPath = directory.split('/');
   const devfileAbsPath = path.join(process.cwd(), ...devfileRelPath, 'index.json');
   const devfilesUnparsed = await fs.readFile(devfileAbsPath, 'utf8');
   const devfilesWithoutName = JSON.parse(devfilesUnparsed) as Devfile[];
@@ -36,6 +50,11 @@ export const getLocalJSON = async (
   return devfiles;
 };
 
+/**
+ * Gets the devfile JSON from remote and local locations
+ *
+ * @returns a array (tuple) with the devfile array as the first element and the potential errors as the second element
+ */
 export const getDevfileRegistryJSON = async (): Promise<GetDevfileRegistryJSON> => {
   const [hosts, hostErrors] = await getHosts();
 
@@ -55,10 +74,10 @@ export const getDevfileRegistryJSON = async (): Promise<GetDevfileRegistryJSON> 
           devfiles = devfiles.concat(extractedDevfiles);
         } else {
           throw TypeError(
-            `${registryName} cannot be assigned to type Devfile[]. (A devfile is most likely missing a required parameter)`
+            `${registryName} cannot be assigned to type Devfile[]. (A devfile is most likely missing a required parameter)`,
           );
         }
-      })
+      }),
     );
 
     return devfiles;

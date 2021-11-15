@@ -6,7 +6,7 @@ export {};
 
 module.exports = (
   on: Cypress.PluginEvents,
-  config: Cypress.PluginConfigOptions
+  config: Cypress.PluginConfigOptions,
 ): Cypress.PluginConfigOptions => {
   require('@cypress/code-coverage/task')(on, config);
   return config;

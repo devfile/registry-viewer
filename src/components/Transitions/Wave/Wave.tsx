@@ -1,8 +1,8 @@
 import styles from './Wave.module.css';
-import type { Transition } from 'custom-types';
+import type { Transition, DefaultProps } from 'custom-types';
 import { getFillStyle, getTransitionStyles } from '@src/util/client';
 
-export type WaveProps = Transition;
+export type WaveProps = Transition & DefaultProps;
 
 export const Wave: React.FC<WaveProps> = ({ fill, backgroundColor, flipX, flipY }: WaveProps) => {
   const fillStyle = getFillStyle(fill);

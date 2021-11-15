@@ -11,7 +11,7 @@ import { is } from 'typescript-is';
  */
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ): Promise<Response | void> {
   const filePath = path.join(process.cwd(), 'webpage_info', 'layout-text.json');
   const layoutTextUnparsed = await fs.readFile(filePath, 'utf8');

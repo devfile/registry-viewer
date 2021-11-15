@@ -1,7 +1,14 @@
+/**
+ * Functions that will only run client side
+ * Sort in alphabetical order
+ */
 export * from './apiWrapper';
 export * from './downloadHelperFuncs';
 export * from './filterElemFuncs';
+export * from './getAnalytics';
 export * from './getCSSStyles';
+export * from './getUserRegion';
 export * from './getLayoutText';
+export * from './isClient';
 export * from './stringFuncs';
 export * from './useWindowsDimensions';

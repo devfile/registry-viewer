@@ -1,10 +1,11 @@
 import styles from './DevfilePageHeaderTags.module.css';
+import type { DefaultProps } from 'custom-types';
 import { Label, Popover } from '@patternfly/react-core';
 
 /**
  *  props for {@link DevfilePageHeaderTags}
  */
-export interface DevfilePageHeaderTagsProps {
+export interface DevfilePageHeaderTagsProps extends DefaultProps {
   tags: string[];
 }
 /**
@@ -13,7 +14,7 @@ export interface DevfilePageHeaderTagsProps {
  * @param tags - list of tags to populate devfile page
  */
 export const DevfilePageHeaderTags: React.FC<DevfilePageHeaderTagsProps> = ({
-  tags
+  tags,
 }: DevfilePageHeaderTagsProps) => {
   const numOfVisibleTags = 8;
   return (
@@ -24,7 +25,7 @@ export const DevfilePageHeaderTags: React.FC<DevfilePageHeaderTagsProps> = ({
             <Label color="blue" className={styles.tag} key={tag}>
               {tag}
             </Label>
-          )
+          ),
       )}
 
       {tags.length > numOfVisibleTags && (
@@ -39,7 +40,7 @@ export const DevfilePageHeaderTags: React.FC<DevfilePageHeaderTagsProps> = ({
                     <Label color="blue" className={styles.tag} key={tag}>
                       {tag}
                     </Label>
-                  )
+                  ),
               )}
             </div>
           }

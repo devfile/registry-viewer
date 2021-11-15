@@ -1,5 +1,5 @@
 import styles from './Banner.module.css';
-import type { LayoutText } from 'custom-types';
+import type { LayoutText, DefaultProps } from 'custom-types';
 import _layoutText from '@info/layout-text.json';
 import { Wave } from '@src/components';
 import { getLayoutText } from '@src/util/client';
@@ -7,7 +7,7 @@ import { Text, TextContent, TextVariants } from '@patternfly/react-core';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 
-export const Banner: React.FC = () => {
+export const Banner: React.FC<DefaultProps> = () => {
   const router = useRouter();
   const [layoutText, setLayoutText] = useState<LayoutText>(_layoutText);
 

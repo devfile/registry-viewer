@@ -1,12 +1,12 @@
 import styles from './Footer.module.css';
-import type { LayoutText } from 'custom-types';
+import type { LayoutText, DefaultProps } from 'custom-types';
 import { Wave } from '@src/components';
 import _layoutText from '@info/layout-text.json';
 import { getLayoutText } from '@src/util/client';
 import { Grid, GridItem, Text, TextContent, TextVariants, Brand } from '@patternfly/react-core';
 import { useState, useEffect } from 'react';
 
-export const Footer: React.FC = () => {
+export const Footer: React.FC<DefaultProps> = () => {
   const [layoutText, setLayoutText] = useState<LayoutText>(_layoutText);
 
   useEffect(() => {

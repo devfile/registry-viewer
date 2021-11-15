@@ -1,11 +1,11 @@
 import styles from './HomeGalleryGrid.module.css';
-import type { Devfile, FilterElem } from 'custom-types';
+import type { Devfile, FilterElem, DefaultProps } from 'custom-types';
 import { HomeGalleryItemWrapper as HomeGalleryItem } from '@src/components';
 import { serializeURL } from '@src/util/client';
 import Link from 'next/link';
 import { Gallery } from '@patternfly/react-core';
 
-export interface HomeGalleryGridProps {
+export interface HomeGalleryGridProps extends DefaultProps {
   devfiles: Devfile[];
   registries: FilterElem[];
   providers: FilterElem[];
@@ -19,7 +19,7 @@ export interface HomeGalleryGridProps {
 export const HomeGalleryGrid: React.FC<HomeGalleryGridProps> = ({
   devfiles,
   registries,
-  providers
+  providers,
 }: HomeGalleryGridProps) => (
   <Gallery className={styles.devfileGalleryGrid}>
     {devfiles.map((devfile) => (

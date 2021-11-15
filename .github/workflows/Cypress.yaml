@@ -8,6 +8,8 @@ on:
 
 jobs:
   cypress-run:
+    name: Cypress
+
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

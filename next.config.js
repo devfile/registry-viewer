@@ -4,11 +4,11 @@ const withPlugins = require('next-compose-plugins');
 const withPWA = require('next-pwa');
 const withImages = require('next-images');
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true'
+  enabled: process.env.ANALYZE === 'true',
 });
 const withTM = require('next-transpile-modules')([
   '@patternfly/react-core',
-  '@patternfly/react-styles'
+  '@patternfly/react-styles',
 ]);
 
 module.exports = withPlugins([withTM, withImages, withBundleAnalyzer, withPWA], {
@@ -19,19 +19,25 @@ module.exports = withPlugins([withTM, withImages, withBundleAnalyzer, withPWA], 
       loader: 'ts-loader',
       options: {
         getCustomTransformers: (program) => ({
-          before: [typescriptIsTransformer(program)]
-        })
-      }
+          before: [typescriptIsTransformer(program)],
+        }),
+      },
     });
     return config;
   },
   basePath: process.env.DEVFILE_VIEWER_ROOT ? process.env.DEVFILE_VIEWER_ROOT : '',
   pwa: {
     disable: true,
-    // Delete the line above and uncomment the line below if the pwa issue is fixed.
-    // The issue pertains to the registry and registry viewer being on the same docker image?
+    /**
+     * Uncomment the line below if the pwa issue is fixed.
+     * The issue pertains to the registry and registry viewer being on the same docker image?
+     */
     // disable: process.env.NODE_ENV === 'development',
     register: true,
-    dest: 'public'
-  }
+    dest: 'public',
+  },
+  publicRuntimeConfig: {
+    analyticsWriteKey: process.env.ANALYTICS_WRITE_KEY || '',
+    segmentUserId: 'registry-viewer',
+  },
 });

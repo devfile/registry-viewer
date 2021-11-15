@@ -45,7 +45,7 @@ package-lock.json
 /stacks
 
 #specifically dockerignore
-tests
+**/__tests__
 .vscode
 .github
 cypress

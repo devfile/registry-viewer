@@ -13,8 +13,8 @@ const getENVHosts = (): HostList => {
       hosts = {
         ...hosts,
         [hostName]: {
-          [sourceType]: hostLocation
-        }
+          [sourceType]: hostLocation,
+        },
       };
     });
   }

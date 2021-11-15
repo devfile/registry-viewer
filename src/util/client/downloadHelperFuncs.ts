@@ -3,9 +3,13 @@ import { apiWrapper } from '@src/util/client';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 
+/**
+ * Error for unsupported links
+ */
 export class UnsupportedLinkError extends Error {
   /**
-   * error constructor with message 'Unsupported link: {@link link}'
+   * Error constructor with message 'Unsupported link: {@link link}'
+   *
    * @param link - unsupported link
    */
   public constructor(link: string) {
@@ -16,25 +20,22 @@ export class UnsupportedLinkError extends Error {
 }
 
 /**
- * download subdirectory from root folder
- *
+ * Download subdirectory from root folder
  *
  * @param url - zip url
  * @param subdirectory - name of subdirectory to extract from zip
  *
- * @throws Error
- *    thrown if error in download
- *
+ * @throws {@link Error} - thrown if error in download
  */
 export async function downloadSubdirectory(url: string, subdirectory: string): Promise<void> {
   const data = {
     url,
-    subdirectory
+    subdirectory,
   };
   const res = await fetch(apiWrapper('/api/download-subdirectory'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   });
 
   const status = res.status;
@@ -54,15 +55,12 @@ export async function downloadSubdirectory(url: string, subdirectory: string): P
 }
 
 /**
- * extract zip url from project git source
+ * Extract zip url from project git source
  *
  * @param git - git source of project, assumes github url of root directory of project
  *
- * @throws {@link TypeError}
- *      thrown if git remotes isn't configured properly
- *
- * @throws {@link UnsupportedLinkException}
- *      thrown if git repo is supported on an unsupported site
+ * @throws {@link TypeError} - thrown if git remotes isn't configured properly
+ * @throws {@link UnsupportedLinkException} - thrown if git repo is supported on an unsupported site
  */
 export function getURLForGit(git: Git): string {
   let url = '';
@@ -77,11 +75,11 @@ export function getURLForGit(git: Git): string {
     throw new TypeError('Invalid git remotes');
   }
 
-  if (url.match(new RegExp('[.]git$'))) {
+  if (url.match(/[.]git$/)) {
     url = url.slice(0, url.length - 4);
   }
 
-  if (url.match(new RegExp('github[.]com'))) {
+  if (url.match(/github[.]com/)) {
     url = `${url.replace('github.com', 'api.github.com/repos')}/zipball/`; // remove '.git' from link and convert to api zip link
   } else {
     throw new UnsupportedLinkError(url);
@@ -94,16 +92,13 @@ export function getURLForGit(git: Git): string {
 }
 
 /**
- * download project as a zip file as specified version and subdirectory
+ * Download project as a zip file as specified version and subdirectory
+ *
  * @param project - project to download
  *
- * @throws {@link TypeError}
- *      thrown if git remotes isn't configured properly or if no url locations are found
- *
- * @throws {@link UnsupportedLinkError}
- *      thrown if git repo is supported on an unsupported site
- * @throws {@link Error}
- *      thrown if git repo is supported on an unsupported site
+ * @throws {@link TypeError} - thrown if git remotes isn't configured properly or if no url locations are found
+ * @throws {@link UnsupportedLinkError} - thrown if git repo is supported on an unsupported site
+ * @throws {@link Error} - thrown if git repo is supported on an unsupported site
  */
 export async function download(project: Project): Promise<void> {
   let url: string;

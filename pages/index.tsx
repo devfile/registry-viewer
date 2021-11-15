@@ -1,25 +1,26 @@
 import type { Devfile, FilterElem } from 'custom-types';
 import { getDevfileRegistryJSON, getFilterElemArr } from '@src/util/server';
+import { getAnalytics } from '@src/util/client';
 import {
   HomeGalleryFilter,
   HomeGalleryGrid,
   HomeGallerySearchBar,
-  ErrorBanner
+  ErrorBanner,
 } from '@src/components';
-import { InferGetStaticPropsType, GetStaticProps } from 'next';
+import { InferGetStaticPropsType, GetStaticProps, NextPage } from 'next';
 import { useState, useEffect } from 'react';
 import { Grid, GridItem } from '@patternfly/react-core';
 
 /**
  * Renders the {@link HomePage}
  */
-const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
+const HomePage: NextPage<InferGetStaticPropsType<GetStaticProps>> = ({
   devfiles,
   tags,
   types,
   registries,
   providers,
-  errors
+  errors,
 }: InferGetStaticPropsType<GetStaticProps>) => {
   const [searchBarValue, setSearchBarValue] = useState<string>('');
   const [filteredDevfiles, setFilteredDevfiles] = useState<Devfile[]>(devfiles);
@@ -37,7 +38,14 @@ const HomePage: React.FC<InferGetStaticPropsType<GetStaticProps>> = ({
     filteredDevfiles = filterDevfilesOn('provider', filteredDevfiles, providerFilterElems);
 
     setFilteredDevfiles(filteredDevfiles);
-  }, [tagFilterElems, typeFilterElems, registryFilterElems, providerFilterElems, searchBarValue]);
+  }, [
+    tagFilterElems,
+    typeFilterElems,
+    registryFilterElems,
+    providerFilterElems,
+    searchBarValue,
+    devfiles,
+  ]);
 
   const onSearchBarChange = (value: string): void => {
     setSearchBarValue(value);
@@ -108,10 +116,10 @@ const filterDevfilesOnSearchBar = (devfiles: Devfile[], searchBarValue: string):
 const filterDevfilesOn = (
   key: keyof Omit<Devfile, 'links' | 'git'>,
   devfiles: Devfile[],
-  filterElems: FilterElem[]
+  filterElems: FilterElem[],
 ): Devfile[] => {
   const filterElemsSelectedByUser: FilterElem[] = filterElems.filter(
-    (filterElem) => filterElem.state
+    (filterElem) => filterElem.state,
   );
 
   if (!filterElemsSelectedByUser.length) {
@@ -127,13 +135,13 @@ const filterDevfilesOn = (
     devfilesFilteredOn = devfiles.filter((devfile: Devfile) =>
       (devfile[key] as string[])?.some((keyValue) =>
         filterElemsSelectedByUser.some(
-          (kayValuesSelectedByUser) => keyValue === kayValuesSelectedByUser.value
-        )
-      )
+          (kayValuesSelectedByUser) => keyValue === kayValuesSelectedByUser.value,
+        ),
+      ),
     );
   } else {
     devfilesFilteredOn = devfiles.filter((devfile: Devfile) =>
-      filterElemsSelectedByUser.some((filterElem) => (devfile[key] as string) === filterElem.value)
+      filterElemsSelectedByUser.some((filterElem) => (devfile[key] as string) === filterElem.value),
     );
   }
 
@@ -145,14 +153,18 @@ export const getStaticProps: GetStaticProps = async () => {
 
   const devfiles = unsortedDevfiles.sort((a, b) =>
     a.displayName.localeCompare(b.displayName, 'en', {
-      sensitivity: 'accent'
-    })
+      sensitivity: 'accent',
+    }),
   );
 
   const tags = getFilterElemArr(devfiles, 'tags');
   const types = getFilterElemArr(devfiles, 'type');
   const registries = getFilterElemArr(devfiles, 'registry');
   const providers = getFilterElemArr(devfiles, 'provider');
+
+  const analytics = getAnalytics();
+  // Java objects need to be stringified before returning getStaticProps
+  const _analytics = JSON.stringify(analytics);
 
   return {
     props: {
@@ -161,12 +173,13 @@ export const getStaticProps: GetStaticProps = async () => {
       types,
       registries,
       providers,
-      errors
+      errors,
+      _analytics,
     },
     // Next.js will attempt to re-generate the page:
     // - When a request comes in
     // - At most once every 15 seconds
-    revalidate: 15
+    revalidate: 15,
   };
 };
 

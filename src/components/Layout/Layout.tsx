@@ -1,8 +1,9 @@
 import styles from './Layout.module.css';
+import type { DefaultProps } from 'custom-types';
 import { Footer, Meta, Header, Banner } from '@src/components';
 import { Page, PageSection } from '@patternfly/react-core';
 
-export interface LayoutProps {
+export interface LayoutProps extends DefaultProps {
   children: React.ReactNode;
 }
 

@@ -1,10 +1,10 @@
 import styles from './HomeGalleryFilterElems.module.css';
-import type { FilterElem } from 'custom-types';
+import type { FilterElem, DefaultProps } from 'custom-types';
 import type { Dispatch, SetStateAction } from 'react';
 import { serializeDataTestid, capitalizeFirstLetter } from '@src/util/client';
 import { Checkbox, FormGroup } from '@patternfly/react-core';
 
-export interface HomeGalleryFilterElemsProps {
+export interface HomeGalleryFilterElemsProps extends DefaultProps {
   label: string;
   id: string;
   filterElems: FilterElem[];
@@ -17,7 +17,7 @@ export const HomeGalleryFilterElems: React.FC<HomeGalleryFilterElemsProps> = ({
   id,
   filterElems,
   setFilterElems,
-  capitalizeElem
+  capitalizeElem,
 }: HomeGalleryFilterElemsProps) => {
   const onCheckboxChange = (checked: boolean, event: React.FormEvent<HTMLInputElement>): void => {
     const target: EventTarget = event.target;

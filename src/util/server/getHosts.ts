@@ -4,6 +4,20 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { is } from 'typescript-is';
 
+/**
+ * The default host
+ */
+const Community = {
+  url: 'https://registry.stage.devfile.io',
+};
+
+/**
+ * Gets the hosts from the config file
+ *
+ * @param fileRelPath - the config file directory
+ *
+ * @returns a HostList
+ */
 export const getConfigFileHosts = async (fileRelPath: string): Promise<HostList> => {
   const splitRelFilePath = fileRelPath.split('/');
   const absFilePath = path.join(process.cwd(), ...splitRelFilePath);
@@ -17,6 +31,11 @@ export const getConfigFileHosts = async (fileRelPath: string): Promise<HostList>
   return hosts;
 };
 
+/**
+ *  Gets the hosts from the environment variable DEVFILE_REGISTRY_HOSTS
+ *
+ * @returns a HostList
+ */
 export const getENVHosts = (): HostList => {
   const envHosts = process.env.DEVFILE_REGISTRY_HOSTS?.split('|').filter((host) => host !== '');
 
@@ -31,15 +50,15 @@ export const getENVHosts = (): HostList => {
           ...hosts,
           [hostName]: {
             [sourceType]: hostLocation,
-            alias
-          }
+            alias,
+          },
         };
       } else {
         hosts = {
           ...hosts,
           [hostName]: {
-            [sourceType]: hostLocation
-          }
+            [sourceType]: hostLocation,
+          },
         };
       }
     });
@@ -47,16 +66,21 @@ export const getENVHosts = (): HostList => {
 
   if (!is<HostList>(hosts)) {
     throw TypeError(
-      'The environment variable DEVFILE_REGISTRY_HOSTS can only accept "url" or "local"'
+      'The environment variable DEVFILE_REGISTRY_HOSTS can only accept "url" or "local"',
     );
   }
 
   return hosts;
 };
 
+/**
+ * Gets the hosts from the config file and the environment variable DEVFILE_REGISTRY_HOSTS
+ *
+ * @returns a array (tuple) with the HostList as the first element and the potential errors as the second element
+ */
 export const getHosts = async (): Promise<GetHosts> => {
   const [configHosts, configError] = await asyncTryCatch(
-    async () => await getConfigFileHosts('/config/devfile-registry-hosts.json')
+    async () => await getConfigFileHosts('/config/devfile-registry-hosts.json'),
   );
   const [envHosts, envError] = await asyncTryCatch(async () => await getENVHosts());
 
@@ -65,9 +89,7 @@ export const getHosts = async (): Promise<GetHosts> => {
   if (!process.env.DEVFILE_COMMUNITY_HOST) {
     hosts = {
       ...hosts,
-      Community: {
-        url: 'https://registry.stage.devfile.io'
-      }
+      Community,
     };
   }
 

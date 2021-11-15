@@ -1,7 +1,8 @@
 import styles from './HomeGallerySearchBar.module.css';
+import type { DefaultProps } from 'custom-types';
 import { SearchInput, Text, TextContent, TextVariants } from '@patternfly/react-core';
 
-export interface HomeSearchBarProps {
+export interface HomeSearchBarProps extends DefaultProps {
   devfileCount: number;
   onSearchBarChange: (value: string) => void;
   searchBarValue: string;
@@ -15,7 +16,7 @@ export interface HomeSearchBarProps {
 export const HomeGallerySearchBar: React.FC<HomeSearchBarProps> = ({
   devfileCount,
   onSearchBarChange,
-  searchBarValue
+  searchBarValue,
 }: HomeSearchBarProps) => (
   <div className={styles.searchBar}>
     <TextContent className={styles.searchBarText}>

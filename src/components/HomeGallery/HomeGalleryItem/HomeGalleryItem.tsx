@@ -1,5 +1,5 @@
 import styles from './HomeGalleryItem.module.css';
-import type { Devfile, FilterElem } from 'custom-types';
+import type { Devfile, FilterElem, DefaultProps } from 'custom-types';
 import devfileLogo from '@public/images/devfileLogo.svg';
 import { capitalizeFirstLetter } from '@src/util/client';
 import {
@@ -13,10 +13,12 @@ import {
   CardTitle,
   CardBody,
   CardFooter,
-  CardHeader
+  CardHeader,
 } from '@patternfly/react-core';
 
-export interface HomeGalleryItemProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+export interface HomeGalleryItemProps
+  extends React.AnchorHTMLAttributes<HTMLAnchorElement>,
+    DefaultProps {
   devfile: Devfile;
   registries: FilterElem[];
   providers: FilterElem[];
@@ -31,7 +33,7 @@ export const HomeGalleryItem: React.FC<HomeGalleryItemProps> = ({
   devfile,
   registries,
   providers,
-  onClick
+  onClick,
 }: HomeGalleryItemProps) => {
   const maxTags = 3;
 

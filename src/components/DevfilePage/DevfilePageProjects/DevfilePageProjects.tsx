@@ -1,7 +1,7 @@
 import styles from './DevfilePageProjects.module.css';
-import type { Project } from 'custom-types';
+import type { Project, DefaultProps, Devfile } from 'custom-types';
 import { DevfilePageProjectDisplay } from '@src/components';
-import { download, UnsupportedLinkError } from '@src/util/client';
+import { download, UnsupportedLinkError, getAnalytics, getUserRegion } from '@src/util/client';
 import {
   Alert,
   AlertActionLink,
@@ -14,9 +14,11 @@ import {
   Button,
   Text,
   TextContent,
-  TextVariants
+  TextVariants,
 } from '@patternfly/react-core';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
+import getConfig from 'next/config';
 
 /**
  * type for errorAlert variable in {@link DevPageProjects}
@@ -39,7 +41,8 @@ export interface ErrorAlert {
  *
  * @param starterProjects - list of starter projects
  */
-export interface DevfilePageProjectsProps {
+export interface DevfilePageProjectsProps extends DefaultProps {
+  devfile: Devfile;
   starterProjects: Project[];
 }
 
@@ -55,7 +58,8 @@ export interface DevfilePageProjectsProps {
  */
 
 export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
-  starterProjects
+  devfile,
+  starterProjects,
 }: DevfilePageProjectsProps) => {
   const [expanded, setExpanded] = useState<boolean>(false);
   const [downloading, setDownloading] = useState<boolean>(false);
@@ -65,26 +69,48 @@ export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
 
   const [errorAlert, setErrorAlert] = useState<null | ErrorAlert>(null);
 
+  const router = useRouter();
+  const analytics = getAnalytics();
+
   async function triggerDownload(project: Project): Promise<void> {
     setDownloading(true);
-    await download(project).catch((error) => {
+
+    if (analytics) {
+      const region = getUserRegion(router.locale);
+      const { publicRuntimeConfig } = getConfig();
+
+      analytics.track({
+        userId: publicRuntimeConfig.segmentUserId,
+        event: 'Starter Project Downloaded',
+        properties: {
+          devfile: devfile.name,
+          starterProject: project.name,
+        },
+        context: { ip: '0.0.0.0', location: { country: region } },
+      });
+    }
+
+    try {
+      await download(project);
+    } catch (error) {
       if (error instanceof UnsupportedLinkError) {
         setErrorAlert({
           name: 'Unsupported Link',
           error: error.toString(),
           message: error.message,
-          alertType: 'warning'
+          alertType: 'warning',
         });
       } else {
         setErrorAlert({
           name: 'Download Error',
-          error: error.toString(),
+          error: (error as Error).toString(),
           message:
             'Internal error has occurred during download. Please try again or report as issue. \n',
-          alertType: 'danger'
+          alertType: 'danger',
         });
       }
-    });
+    }
+
     setDownloading(false);
   }
 
@@ -99,7 +125,7 @@ export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
           id: 'toggle-button',
           'aria-label': 'Details',
           'aria-labelledby': 'titleId toggle-button',
-          'aria-expanded': expanded
+          'aria-expanded': expanded,
         }}
       >
         <CardTitle>Starter Projects</CardTitle>
@@ -151,8 +177,8 @@ export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
                       window.open(
                         `https://github.com/devfile/api/issues/new?assignees=&labels=&template=bug_report.md&title=Registry+Viewer+${errorAlert.name.replace(
                           ' ',
-                          '+'
-                        )}`
+                          '+',
+                        )}`,
                       )
                     }
                   >

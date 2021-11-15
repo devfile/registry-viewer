@@ -6,9 +6,9 @@ import {
   DevfilePageProjects,
   DevfilePageHeader,
   DevfilePageYAML,
-  ErrorBanner
+  ErrorBanner,
 } from '@src/components';
-import { InferGetStaticPropsType, GetStaticProps, GetStaticPaths } from 'next';
+import { InferGetStaticPropsType, GetStaticProps, GetStaticPaths, NextPage } from 'next';
 
 interface Path {
   params: { id: string };
@@ -24,12 +24,12 @@ interface Path {
  * @param devfileText - text of devfile YAML, null when sample
  * @param devfileJSON -  json representation of devfile YAML, null when sample
  */
-const DevfilePage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
+const DevfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   devfile,
   devfileYAML,
   devfileJSON,
   registries,
-  errors
+  errors,
 }: InferGetStaticPropsType<typeof getStaticProps>) => (
   <div className={styles.devfilePage}>
     <ErrorBanner errors={errors} />
@@ -39,9 +39,9 @@ const DevfilePage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({
       registries={registries}
     />
     {devfileJSON?.starterProjects?.length && devfile.type === 'stack' && (
-      <DevfilePageProjects starterProjects={devfileJSON.starterProjects} />
+      <DevfilePageProjects devfile={devfile} starterProjects={devfileJSON.starterProjects} />
     )}
-    {devfileYAML && <DevfilePageYAML devfileYAML={devfileYAML} />}
+    {devfileYAML && <DevfilePageYAML devfile={devfile} devfileYAML={devfileYAML} />}
   </div>
 );
 
@@ -51,7 +51,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const [source, name] = id.split('+');
 
   const devfile: Devfile = devfiles.find(
-    (devfile: Devfile) => devfile.registry === source && devfile.name === name
+    (devfile: Devfile) => devfile.registry === source && devfile.name === name,
   )!;
 
   const [devfileYAML, devfileJSON, yamlErrors] = await getDevfileYAML(devfile);
@@ -66,12 +66,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
       devfileYAML,
       devfileJSON,
       registries,
-      errors
+      errors,
     },
     // Next.js will attempt to re-generate the page:
     // - When a request comes in
     // - At most once every 15 seconds
-    revalidate: 15
+    revalidate: 15,
   };
 };
 
@@ -83,7 +83,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   return {
     paths,
-    fallback: 'blocking'
+    fallback: 'blocking',
   };
 };
 

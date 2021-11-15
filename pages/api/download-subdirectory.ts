@@ -7,7 +7,7 @@ import JSZip from 'jszip';
  */
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ): Promise<Response | void> {
   try {
     const data = req.body;

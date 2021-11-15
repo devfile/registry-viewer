@@ -19,7 +19,8 @@
     "plugin:cypress/recommended",
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:react/recommended"
+    "plugin:react/recommended",
+    "next"
   ],
   "parserOptions": {
     "project": "./tsconfig.json",

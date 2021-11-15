@@ -35,7 +35,7 @@ export const compareCardLength = (length: number): void => {
 export const iterateThroughFilter = (
   filterType: string,
   filterElemsStateWithFreq: FilterElem[],
-  callback: FilterElemsCallback
+  callback: FilterElemsCallback,
 ): void => {
   cy.get(`[data-testid^=${filterType}-]`).should('have.length', filterElemsStateWithFreq.length);
 
@@ -47,14 +47,14 @@ export const iterateThroughFilter = (
     for (let i = 0; i + numFilterElemsSelected <= filterElemsStateWithFreq.length; i++) {
       const selectedFilterElems: FilterElem[] = filterElemsStateWithFreq.slice(
         i,
-        i + numFilterElemsSelected
+        i + numFilterElemsSelected,
       );
 
       if (numFilterElemsSelected === 1 || i !== 0) {
         cy.get(
           `[data-testid=${filterType}-${selectedFilterElems[
             numFilterElemsSelected - 1
-          ].value.replace(/\.| /g, '')}]`
+          ].value.replace(/\.| /g, '')}]`,
         ).click();
       } else {
         selectedFilterElems.forEach((filterElem) => {
@@ -69,7 +69,7 @@ export const iterateThroughFilter = (
         i + numFilterElemsSelected !== filterElemsStateWithFreq.length
       ) {
         cy.get(
-          `[data-testid=${filterType}-${selectedFilterElems[0].value.replace(/\.| /g, '')}]`
+          `[data-testid=${filterType}-${selectedFilterElems[0].value.replace(/\.| /g, '')}]`,
         ).click();
       } else {
         selectedFilterElems.forEach((filterElem) => {
