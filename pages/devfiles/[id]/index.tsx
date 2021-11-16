@@ -76,8 +76,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [devfiles, _] = await getDevfileRegistryJSON();
+  const [devfiles] = await getDevfileRegistryJSON();
   const sourceWithNames = devfiles.map((devfile) => serializeURL(devfile));
   const paths: Path[] = sourceWithNames.map((id) => ({ params: { id } }));
 
