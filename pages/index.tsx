@@ -1,6 +1,5 @@
 import type { Devfile, FilterElem } from 'custom-types';
 import { getDevfileRegistryJSON, getFilterElemArr } from '@src/util/server';
-import { getAnalytics } from '@src/util/client';
 import {
   HomeGalleryFilter,
   HomeGalleryGrid,
@@ -162,10 +161,6 @@ export const getStaticProps: GetStaticProps = async () => {
   const registries = getFilterElemArr(devfiles, 'registry');
   const providers = getFilterElemArr(devfiles, 'provider');
 
-  const analytics = getAnalytics();
-  // Java objects need to be stringified before returning getStaticProps
-  const _analytics = JSON.stringify(analytics);
-
   return {
     props: {
       devfiles,
@@ -174,7 +169,6 @@ export const getStaticProps: GetStaticProps = async () => {
       registries,
       providers,
       errors,
-      _analytics,
     },
     // Next.js will attempt to re-generate the page:
     // - When a request comes in
