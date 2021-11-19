@@ -1,6 +1,7 @@
 import styles from './DevfilePageYAML.module.css';
 import type { DefaultProps, Devfile } from 'custom-types';
-import { getAnalytics, getUserRegion } from '@src/util/client';
+import type { SegmentEvent } from '@segment/analytics-next';
+import { getUserRegion } from '@src/util/client';
 import copy from '@public/images/copy.svg';
 import {
   Brand,
@@ -15,7 +16,6 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { LightAsync as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { github as style } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 import { useRouter } from 'next/router';
-import getConfig from 'next/config';
 
 export interface DevfilePageYAMLProps extends DefaultProps {
   devfile: Devfile;
@@ -25,23 +25,25 @@ export interface DevfilePageYAMLProps extends DefaultProps {
 export const DevfilePageYAML: React.FC<DevfilePageYAMLProps> = ({
   devfile,
   devfileYAML,
+  analytics,
 }: DevfilePageYAMLProps) => {
   const router = useRouter();
-  const analytics = getAnalytics();
 
   const onClick = (): void => {
-    const region = getUserRegion(router.locale);
-    const { publicRuntimeConfig } = getConfig();
-
     if (analytics) {
-      analytics.track({
-        userId: publicRuntimeConfig.segmentUserId,
+      const region = getUserRegion(router.locale);
+
+      const event: SegmentEvent = {
+        type: 'track',
+        anonymousId: analytics.user().anonymousId(),
         event: 'Copy Devfile Button Clicked',
         properties: {
           devfile: devfile.name,
         },
         context: { ip: '0.0.0.0', location: { country: region } },
-      });
+      };
+
+      analytics.track(event);
     }
   };
 

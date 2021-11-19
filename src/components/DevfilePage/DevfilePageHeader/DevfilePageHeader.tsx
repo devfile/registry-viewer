@@ -27,6 +27,7 @@ export const DevfilePageHeader: React.FC<DevfilePageHeaderProps> = ({
   devfile,
   devfileMetadata,
   registries,
+  analytics,
 }: DevfilePageHeaderProps) => {
   const devfileMetaInclude = ['projectType', 'version', 'language', 'provider']; // types to include in metadata from index
 
@@ -45,7 +46,7 @@ export const DevfilePageHeader: React.FC<DevfilePageHeaderProps> = ({
         </TextContent>
       </div>
       <div className={styles.linkButton}>
-        <DevfilePageHeaderShareButton devfile={devfile} />
+        <DevfilePageHeaderShareButton analytics={analytics} devfile={devfile} />
       </div>
       <div className={styles.basicInfo}>
         <Brand

@@ -26,8 +26,9 @@ declare module 'custom-types' {
     registryLink?: string;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface DefaultProps {}
+  export interface DefaultProps {
+    analytics?: import('@segment/analytics-next').Analytics;
+  }
 
   export interface FilterElem {
     value: string;

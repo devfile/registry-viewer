@@ -24,24 +24,32 @@ interface Path {
  * @param devfileText - text of devfile YAML, null when sample
  * @param devfileJSON -  json representation of devfile YAML, null when sample
  */
-const DevfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
+const DevfilePage: NextPage<InferGetStaticPropsType<GetStaticProps>> = ({
   devfile,
   devfileYAML,
   devfileJSON,
   registries,
   errors,
-}: InferGetStaticPropsType<typeof getStaticProps>) => (
+  analytics,
+}: InferGetStaticPropsType<GetStaticProps>) => (
   <div className={styles.devfilePage}>
     <ErrorBanner errors={errors} />
     <DevfilePageHeader
+      analytics={analytics}
       devfileMetadata={devfileJSON?.metadata}
       devfile={devfile}
       registries={registries}
     />
     {devfileJSON?.starterProjects?.length && devfile.type === 'stack' && (
-      <DevfilePageProjects devfile={devfile} starterProjects={devfileJSON.starterProjects} />
+      <DevfilePageProjects
+        analytics={analytics}
+        devfile={devfile}
+        starterProjects={devfileJSON.starterProjects}
+      />
     )}
-    {devfileYAML && <DevfilePageYAML devfile={devfile} devfileYAML={devfileYAML} />}
+    {devfileYAML && (
+      <DevfilePageYAML analytics={analytics} devfile={devfile} devfileYAML={devfileYAML} />
+    )}
   </div>
 );
 

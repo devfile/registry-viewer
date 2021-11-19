@@ -1,7 +1,8 @@
 import styles from './DevfilePageProjects.module.css';
 import type { Project, DefaultProps, Devfile } from 'custom-types';
+import type { SegmentEvent } from '@segment/analytics-next';
 import { DevfilePageProjectDisplay } from '@src/components';
-import { download, UnsupportedLinkError, getAnalytics, getUserRegion } from '@src/util/client';
+import { download, UnsupportedLinkError, getUserRegion } from '@src/util/client';
 import {
   Alert,
   AlertActionLink,
@@ -18,7 +19,6 @@ import {
 } from '@patternfly/react-core';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import getConfig from 'next/config';
 
 /**
  * type for errorAlert variable in {@link DevPageProjects}
@@ -60,6 +60,7 @@ export interface DevfilePageProjectsProps extends DefaultProps {
 export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
   devfile,
   starterProjects,
+  analytics,
 }: DevfilePageProjectsProps) => {
   const [expanded, setExpanded] = useState<boolean>(false);
   const [downloading, setDownloading] = useState<boolean>(false);
@@ -70,24 +71,25 @@ export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
   const [errorAlert, setErrorAlert] = useState<null | ErrorAlert>(null);
 
   const router = useRouter();
-  const analytics = getAnalytics();
 
   async function triggerDownload(project: Project): Promise<void> {
     setDownloading(true);
 
     if (analytics) {
       const region = getUserRegion(router.locale);
-      const { publicRuntimeConfig } = getConfig();
 
-      analytics.track({
-        userId: publicRuntimeConfig.segmentUserId,
+      const event: SegmentEvent = {
+        type: 'track',
+        anonymousId: analytics.user().anonymousId(),
         event: 'Starter Project Downloaded',
         properties: {
           devfile: devfile.name,
           starterProject: project.name,
         },
         context: { ip: '0.0.0.0', location: { country: region } },
-      });
+      };
+
+      analytics.track(event);
     }
 
     try {
