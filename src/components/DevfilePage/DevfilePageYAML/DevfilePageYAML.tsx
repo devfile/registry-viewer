@@ -1,6 +1,5 @@
 import styles from './DevfilePageYAML.module.css';
 import type { DefaultProps, Devfile } from 'custom-types';
-import type { SegmentEvent } from '@segment/analytics-next';
 import { getUserRegion } from '@src/util/client';
 import copy from '@public/images/copy.svg';
 import {
@@ -35,18 +34,14 @@ export const DevfilePageYAML: React.FC<DevfilePageYAMLProps> = ({
       const region = getUserRegion(router.locale);
       const { publicRuntimeConfig } = getConfig();
 
-      const event: SegmentEvent = {
-        type: 'track',
-        anonymousId: analytics.user().anonymousId(),
-        event: 'Copy Devfile Button Clicked',
-        properties: {
+      analytics.track(
+        'Copy Devfile Button Clicked',
+        {
           client: publicRuntimeConfig.segmentClientId,
           devfile: devfile.name,
         },
-        context: { ip: '0.0.0.0', location: { country: region } },
-      };
-
-      analytics.track(event);
+        { context: { ip: '0.0.0.0', location: { country: region } } },
+      );
     }
   };
 

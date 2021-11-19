@@ -9,11 +9,4 @@ import { forwardRef } from 'react';
  */
 export const HomeGalleryItemWrapper: React.ForwardRefExoticComponent<HomeGalleryItemProps> =
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  forwardRef(({ devfile, registries, providers, onClick }, ref) => (
-    <HomeGalleryItem
-      devfile={devfile}
-      registries={registries}
-      providers={providers}
-      onClick={onClick}
-    />
-  ));
+  forwardRef((props, ref) => <HomeGalleryItem {...props} />);

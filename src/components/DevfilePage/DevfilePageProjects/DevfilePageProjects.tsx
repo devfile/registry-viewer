@@ -1,6 +1,5 @@
 import styles from './DevfilePageProjects.module.css';
 import type { Project, DefaultProps, Devfile } from 'custom-types';
-import type { SegmentEvent } from '@segment/analytics-next';
 import { DevfilePageProjectDisplay } from '@src/components';
 import { download, UnsupportedLinkError, getUserRegion } from '@src/util/client';
 import {
@@ -80,19 +79,15 @@ export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
       const region = getUserRegion(router.locale);
       const { publicRuntimeConfig } = getConfig();
 
-      const event: SegmentEvent = {
-        type: 'track',
-        anonymousId: analytics.user().anonymousId(),
-        event: 'Starter Project Downloaded',
-        properties: {
+      analytics.track(
+        'Starter Project Downloaded',
+        {
           client: publicRuntimeConfig.segmentClientId,
           devfile: devfile.name,
           starterProject: project.name,
         },
-        context: { ip: '0.0.0.0', location: { country: region } },
-      };
-
-      analytics.track(event);
+        { context: { ip: '0.0.0.0', location: { country: region } } },
+      );
     }
 
     try {

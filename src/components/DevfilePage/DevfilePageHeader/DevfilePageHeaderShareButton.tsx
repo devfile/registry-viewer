@@ -1,6 +1,5 @@
 import styles from './DevfilePageHeaderShareButton.module.css';
 import type { Devfile, DefaultProps } from 'custom-types';
-import type { SegmentEvent } from '@segment/analytics-next';
 import link from '@public/images/link.svg';
 import { Brand, Button } from '@patternfly/react-core';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -27,19 +26,15 @@ export const DevfilePageHeaderShareButton: React.FC<DevfilePageHeaderShareButton
       const region = getUserRegion(router.locale);
       const { publicRuntimeConfig } = getConfig();
 
-      const event: SegmentEvent = {
-        type: 'track',
-        anonymousId: analytics.user().anonymousId(),
-        event: 'Share Link Button Clicked',
-        properties: {
+      analytics.track(
+        'Share Link Button Clicked',
+        {
           client: publicRuntimeConfig.segmentClientId,
           devfile: devfile.name,
           url: devfile.registryLink || '',
         },
-        context: { ip: '0.0.0.0', location: { country: region } },
-      };
-
-      analytics.track(event);
+        { context: { ip: '0.0.0.0', location: { country: region } } },
+      );
     }
   };
 
