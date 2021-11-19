@@ -21,10 +21,19 @@ const MyApp: NextPage<AppProps> = ({ Component, pageProps }: AppProps) => {
       const region = getUserRegion(router.locale);
       const { publicRuntimeConfig } = getConfig();
 
+      // analytics.identify(
+      //   analytics.user().anonymousId(),
+      //   {},
+      //   { context: { ip: '0.0.0.0', location: { country: region } } },
+      // );
+
       analytics.track(
         router.asPath,
         { client: publicRuntimeConfig.segmentClientId },
-        { context: { ip: '0.0.0.0', location: { country: region } } },
+        {
+          context: { ip: '0.0.0.0', location: { country: region } },
+          userId: analytics.user().anonymousId(),
+        },
       );
     }
   }, [analytics, router.asPath, router.locale]);

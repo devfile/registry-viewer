@@ -40,7 +40,10 @@ export const DevfilePageYAML: React.FC<DevfilePageYAMLProps> = ({
           client: publicRuntimeConfig.segmentClientId,
           devfile: devfile.name,
         },
-        { context: { ip: '0.0.0.0', location: { country: region } } },
+        {
+          context: { ip: '0.0.0.0', location: { country: region } },
+          userId: analytics.user().anonymousId(),
+        },
       );
     }
   };

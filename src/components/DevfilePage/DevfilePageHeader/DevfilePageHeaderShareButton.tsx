@@ -33,7 +33,10 @@ export const DevfilePageHeaderShareButton: React.FC<DevfilePageHeaderShareButton
           devfile: devfile.name,
           url: devfile.registryLink || '',
         },
-        { context: { ip: '0.0.0.0', location: { country: region } } },
+        {
+          context: { ip: '0.0.0.0', location: { country: region } },
+          userId: analytics.user().anonymousId(),
+        },
       );
     }
   };

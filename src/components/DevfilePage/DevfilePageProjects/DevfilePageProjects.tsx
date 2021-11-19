@@ -86,7 +86,10 @@ export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
           devfile: devfile.name,
           starterProject: project.name,
         },
-        { context: { ip: '0.0.0.0', location: { country: region } } },
+        {
+          context: { ip: '0.0.0.0', location: { country: region } },
+          userId: analytics.user().anonymousId(),
+        },
       );
     }
 
