@@ -16,6 +16,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { LightAsync as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { github as style } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 import { useRouter } from 'next/router';
+import getConfig from 'next/config';
 
 export interface DevfilePageYAMLProps extends DefaultProps {
   devfile: Devfile;
@@ -32,12 +33,14 @@ export const DevfilePageYAML: React.FC<DevfilePageYAMLProps> = ({
   const onClick = (): void => {
     if (analytics) {
       const region = getUserRegion(router.locale);
+      const { publicRuntimeConfig } = getConfig();
 
       const event: SegmentEvent = {
         type: 'track',
         anonymousId: analytics.user().anonymousId(),
         event: 'Copy Devfile Button Clicked',
         properties: {
+          client: publicRuntimeConfig.segmentClientId,
           devfile: devfile.name,
         },
         context: { ip: '0.0.0.0', location: { country: region } },

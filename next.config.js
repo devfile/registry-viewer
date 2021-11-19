@@ -38,5 +38,6 @@ module.exports = withPlugins([withTM, withImages, withBundleAnalyzer, withPWA], 
   },
   publicRuntimeConfig: {
     analyticsWriteKey: process.env.ANALYTICS_WRITE_KEY || '',
+    segmentClientId: 'registry-viewer',
   },
 });

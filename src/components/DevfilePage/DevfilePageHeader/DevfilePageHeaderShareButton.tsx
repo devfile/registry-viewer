@@ -6,6 +6,7 @@ import { Brand, Button } from '@patternfly/react-core';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { getUserRegion } from '@src/util/client';
 import { useRouter } from 'next/router';
+import getConfig from 'next/config';
 
 export interface Origin {
   origin: string;
@@ -24,12 +25,14 @@ export const DevfilePageHeaderShareButton: React.FC<DevfilePageHeaderShareButton
   const onClick = (): void => {
     if (analytics) {
       const region = getUserRegion(router.locale);
+      const { publicRuntimeConfig } = getConfig();
 
       const event: SegmentEvent = {
         type: 'track',
         anonymousId: analytics.user().anonymousId(),
         event: 'Share Link Button Clicked',
         properties: {
+          client: publicRuntimeConfig.segmentClientId,
           devfile: devfile.name,
           url: devfile.registryLink || '',
         },

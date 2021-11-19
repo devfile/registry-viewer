@@ -6,6 +6,7 @@ import { getUserRegion, useAnalytics } from '@src/util/client';
 import { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
 import { NextPage } from 'next';
+import getConfig from 'next/config';
 import { useEffect } from 'react';
 
 /**
@@ -18,16 +19,18 @@ const MyApp: NextPage<AppProps> = ({ Component, pageProps }: AppProps) => {
   // Client renders page
   useEffect(() => {
     const region = getUserRegion(router.locale);
+    const { publicRuntimeConfig } = getConfig();
 
     if (analytics) {
       const event: SegmentEvent = {
-        type: 'page',
+        type: 'track',
         anonymousId: analytics.user().anonymousId(),
         name: router.asPath,
         context: { ip: '0.0.0.0', location: { country: region } },
+        properties: { client: publicRuntimeConfig.segmentClientId },
       };
 
-      analytics.page(event);
+      analytics.track(event);
     }
   }, [analytics, router.asPath, router.locale]);
 
