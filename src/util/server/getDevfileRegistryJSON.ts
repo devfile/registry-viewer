@@ -18,7 +18,9 @@ export const getRemoteJSON = async (
   url: string,
   alias: string | undefined,
 ): Promise<Devfile[]> => {
-  const res = await fetch(`${url}/index/all?icon=base64`);
+  const res = await fetch(`${url}/index/all?icon=base64`, {
+    headers: { client: 'registry-viewer' },
+  });
   const devfilesWithoutName = (await res.json()) as Devfile[];
   const devfiles = devfilesWithoutName.map((devfile: Devfile) => {
     devfile.registry = registryName;
