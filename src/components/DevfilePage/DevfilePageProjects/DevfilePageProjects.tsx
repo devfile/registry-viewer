@@ -1,7 +1,7 @@
 import styles from './DevfilePageProjects.module.css';
 import type { Project, DefaultProps, Devfile } from 'custom-types';
 import { DevfilePageProjectDisplay } from '@src/components';
-import { download, UnsupportedLinkError, getAnalytics, getUserRegion } from '@src/util/client';
+import { download, UnsupportedLinkError, getUserRegion } from '@src/util/client';
 import {
   Alert,
   AlertActionLink,
@@ -60,6 +60,7 @@ export interface DevfilePageProjectsProps extends DefaultProps {
 export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
   devfile,
   starterProjects,
+  analytics,
 }: DevfilePageProjectsProps) => {
   const [expanded, setExpanded] = useState<boolean>(false);
   const [downloading, setDownloading] = useState<boolean>(false);
@@ -70,7 +71,6 @@ export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
   const [errorAlert, setErrorAlert] = useState<null | ErrorAlert>(null);
 
   const router = useRouter();
-  const analytics = getAnalytics();
 
   async function triggerDownload(project: Project): Promise<void> {
     setDownloading(true);
@@ -79,15 +79,18 @@ export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
       const region = getUserRegion(router.locale);
       const { publicRuntimeConfig } = getConfig();
 
-      analytics.track({
-        userId: publicRuntimeConfig.segmentUserId,
-        event: 'Starter Project Downloaded',
-        properties: {
+      analytics.track(
+        'Starter Project Downloaded',
+        {
+          client: publicRuntimeConfig.segmentClientId,
           devfile: devfile.name,
           starterProject: project.name,
         },
-        context: { ip: '0.0.0.0', location: { country: region } },
-      });
+        {
+          context: { ip: '0.0.0.0', location: { country: region } },
+          userId: analytics.user().anonymousId(),
+        },
+      );
     }
 
     try {

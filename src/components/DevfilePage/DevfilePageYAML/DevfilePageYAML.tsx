@@ -1,6 +1,6 @@
 import styles from './DevfilePageYAML.module.css';
 import type { DefaultProps, Devfile } from 'custom-types';
-import { getAnalytics, getUserRegion } from '@src/util/client';
+import { getUserRegion } from '@src/util/client';
 import copy from '@public/images/copy.svg';
 import {
   Brand,
@@ -25,23 +25,26 @@ export interface DevfilePageYAMLProps extends DefaultProps {
 export const DevfilePageYAML: React.FC<DevfilePageYAMLProps> = ({
   devfile,
   devfileYAML,
+  analytics,
 }: DevfilePageYAMLProps) => {
   const router = useRouter();
-  const analytics = getAnalytics();
 
   const onClick = (): void => {
-    const region = getUserRegion(router.locale);
-    const { publicRuntimeConfig } = getConfig();
-
     if (analytics) {
-      analytics.track({
-        userId: publicRuntimeConfig.segmentUserId,
-        event: 'Copy Devfile Button Clicked',
-        properties: {
+      const region = getUserRegion(router.locale);
+      const { publicRuntimeConfig } = getConfig();
+
+      analytics.track(
+        'Copy Devfile Button Clicked',
+        {
+          client: publicRuntimeConfig.segmentClientId,
           devfile: devfile.name,
         },
-        context: { ip: '0.0.0.0', location: { country: region } },
-      });
+        {
+          context: { ip: '0.0.0.0', location: { country: region } },
+          userId: analytics.user().anonymousId(),
+        },
+      );
     }
   };
 

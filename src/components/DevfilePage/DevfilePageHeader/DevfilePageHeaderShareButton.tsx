@@ -3,7 +3,7 @@ import type { Devfile, DefaultProps } from 'custom-types';
 import link from '@public/images/link.svg';
 import { Brand, Button } from '@patternfly/react-core';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { getAnalytics, getUserRegion } from '@src/util/client';
+import { getUserRegion } from '@src/util/client';
 import { useRouter } from 'next/router';
 import getConfig from 'next/config';
 
@@ -17,24 +17,27 @@ export interface DevfilePageHeaderShareButtonProps extends DefaultProps {
 
 export const DevfilePageHeaderShareButton: React.FC<DevfilePageHeaderShareButtonProps> = ({
   devfile,
+  analytics,
 }: DevfilePageHeaderShareButtonProps) => {
   const router = useRouter();
-  const analytics = getAnalytics();
 
   const onClick = (): void => {
-    const region = getUserRegion(router.locale);
-    const { publicRuntimeConfig } = getConfig();
-
     if (analytics) {
-      analytics.track({
-        userId: publicRuntimeConfig.segmentUserId,
-        event: 'Share Link Button Clicked',
-        properties: {
+      const region = getUserRegion(router.locale);
+      const { publicRuntimeConfig } = getConfig();
+
+      analytics.track(
+        'Share Link Button Clicked',
+        {
+          client: publicRuntimeConfig.segmentClientId,
           devfile: devfile.name,
           url: devfile.registryLink || '',
         },
-        context: { ip: '0.0.0.0', location: { country: region } },
-      });
+        {
+          context: { ip: '0.0.0.0', location: { country: region } },
+          userId: analytics.user().anonymousId(),
+        },
+      );
     }
   };
 
