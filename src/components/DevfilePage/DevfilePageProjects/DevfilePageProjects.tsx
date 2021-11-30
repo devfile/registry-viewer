@@ -75,26 +75,26 @@ export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
   async function triggerDownload(project: Project): Promise<void> {
     setDownloading(true);
 
-    if (analytics) {
-      const region = getUserRegion(router.locale);
-      const { publicRuntimeConfig } = getConfig();
-
-      analytics.track(
-        'Starter Project Downloaded',
-        {
-          client: publicRuntimeConfig.segmentClientId,
-          devfile: devfile.name,
-          starterProject: project.name,
-        },
-        {
-          context: { ip: '0.0.0.0', location: { country: region } },
-          userId: analytics.user().anonymousId(),
-        },
-      );
-    }
-
     try {
       await download(project);
+
+      if (analytics) {
+        const region = getUserRegion(router.locale);
+        const { publicRuntimeConfig } = getConfig();
+
+        analytics.track(
+          'Starter Project Downloaded',
+          {
+            client: publicRuntimeConfig.segmentClientId,
+            devfile: devfile.name,
+            starterProject: project.name,
+          },
+          {
+            context: { ip: '0.0.0.0', location: { country: region } },
+            userId: analytics.user().anonymousId(),
+          },
+        );
+      }
     } catch (error) {
       if (error instanceof UnsupportedLinkError) {
         setErrorAlert({
@@ -111,6 +111,24 @@ export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
             'Internal error has occurred during download. Please try again or report as issue. \n',
           alertType: 'danger',
         });
+      }
+
+      if (analytics) {
+        const region = getUserRegion(router.locale);
+        const { publicRuntimeConfig } = getConfig();
+
+        analytics.track(
+          'Starter Project Download Failed',
+          {
+            client: publicRuntimeConfig.segmentClientId,
+            devfile: devfile.name,
+            starterProject: project.name,
+          },
+          {
+            context: { ip: '0.0.0.0', location: { country: region } },
+            userId: analytics.user().anonymousId(),
+          },
+        );
       }
     }
 
