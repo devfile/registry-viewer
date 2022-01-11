@@ -20,13 +20,23 @@ const MyApp: NextPage<AppProps> = ({ Component, pageProps }: AppProps) => {
     if (analytics) {
       const region = getUserRegion(router.locale);
       const { publicRuntimeConfig } = getConfig();
+      const anonymousId = analytics.user().anonymousId();
+      analytics.identify(
+        anonymousId,
+        {
+          id: anonymousId,
+        },
+        {
+          context: { ip: '0.0.0.0', location: { country: region } },
+        },
+      );
 
       analytics.track(
         router.asPath,
         { client: publicRuntimeConfig.segmentClientId },
         {
           context: { ip: '0.0.0.0', location: { country: region } },
-          userId: analytics.user().anonymousId(),
+          userId: anonymousId,
         },
       );
     }
