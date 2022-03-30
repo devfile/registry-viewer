@@ -63,8 +63,8 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create next
 
 ## Contributing
 
-Please see our [contributing.md](https://github.com/devfile/registry-viewer/blob/main/CONTRIBUTING.md).
+Please see our [contributing.md](CONTRIBUTING.md).
 
 ## License
 
-Apache License 2.0, see [LICENSE](https://github.com/devfile/registry-viewer/blob/main/LICENSE) for details.
+Apache License 2.0, see [LICENSE](LICENSE) for details.

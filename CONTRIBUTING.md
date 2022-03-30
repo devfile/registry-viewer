@@ -2,20 +2,21 @@
 
 Contributions are welcome!
 
-- Issues are tracked via the the [devfile/api](https://github.com/devfile/api) repo. Open or search for issues on the [devfile/api](https://github.com/devfile/api) repo with the label `area/registry`.
-
-- If a related issue doesn't exist, you can open a new issue using a relevant [issue form](https://github.com/devfile/api/issues/new/choose).
-You can tag Devfile Registry related issues with the `/area registry` text in your issue.
-
-- Search for existing PR's or issues that are related before you start a PR.
-
 ## Code of Conduct
 
 Before contributing to this repository for the first time, please review our project's [Code of Conduct](https://github.com/devfile/api/blob/main/CODE_OF_CONDUCT.md).
 
-## Development
+## Getting Started
 
-### Run the development server:
+### Issues
+
+- Issues are tracked via the the [devfile/api](https://github.com/devfile/api) repo. Open or search for [issues](https://github.com/devfile/api/issues) with the label `area/registry`.
+
+- If a related issue doesn't exist, you can open a new issue using a relevant [issue form](https://github.com/devfile/api/issues/new/choose). You can tag issues with `/area registry`.
+
+### Development
+
+#### Run the development server:
 
 ```bash
 npm run dev
@@ -27,7 +28,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
 
-### Creating a Production Build
+#### Creating a Production Build
 
 Create an optimized production build of your application:
 
@@ -37,7 +38,7 @@ npm run build
 yarn build
 ```
 
-### Serving a Production Build
+#### Serving a Production Build
 
 Start the application in production mode:
 
@@ -47,7 +48,7 @@ npm run start
 yarn start
 ```
 
-## Adding remote repositories
+### Adding remote repositories
 
 Notes:
 
@@ -141,7 +142,7 @@ Configure the registry viewer through config file.
 }
 ```
 
-## Environment Variables
+### Environment Variables
 
 You can add local environment variables by creating an `.env.local` file in the root registry viewer directory to store the environment variables.
 
@@ -153,9 +154,10 @@ The environment variable `DEVFILE_BANNER` controls whether the registry viewer b
 
 The environment variable `ANALYTICS_WRITE_KEY` is the Segment write key. Note: Defaults to `null`.
 
-## Pull Requests
+### Pull Requests
 
-**Note:** All commits must be signed off with the footer:
+All commits must be signed off with the footer:
+
 ```
 Signed-off-by: First Lastname <email@email.com>
 ```
@@ -166,4 +168,4 @@ Owners of the repository will watch out for and review new PRs.
 
 If comments have been given in a review, they have to be addressed before merging.
 
-After addressing review comments, don’t forget to add a comment in the PR afterward, so everyone gets notified by Github and know to re-review.
+After addressing review comments, don’t forget to add a comment in the PR afterward, so everyone gets notified by Github and knows to re-review.
