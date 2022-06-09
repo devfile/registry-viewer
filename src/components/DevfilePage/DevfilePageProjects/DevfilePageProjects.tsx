@@ -1,7 +1,7 @@
 import styles from './DevfilePageProjects.module.css';
 import type { Project, DefaultProps, Devfile } from 'custom-types';
 import { DevfilePageProjectDisplay } from '@src/components';
-import { download, UnsupportedLinkError, getUserRegion } from '@src/util/client';
+import { getUserRegion } from '@src/util/client';
 import {
   Alert,
   AlertActionLink,
@@ -72,11 +72,11 @@ export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
 
   const router = useRouter();
 
-  async function triggerDownload(project: Project): Promise<void> {
+  async function downloadStarterProject(devfile: Devfile, project: Project): Promise<void> {
     setDownloading(true);
 
     try {
-      await download(project);
+      window.open(`${devfile.registryLink}/starter-projects/${project.name}`);
 
       if (analytics) {
         const region = getUserRegion(router.locale);
@@ -96,22 +96,13 @@ export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
         );
       }
     } catch (error) {
-      if (error instanceof UnsupportedLinkError) {
-        setErrorAlert({
-          name: 'Unsupported Link',
-          error: error.toString(),
-          message: error.message,
-          alertType: 'warning',
-        });
-      } else {
-        setErrorAlert({
-          name: 'Download Error',
-          error: (error as Error).toString(),
-          message:
-            'Internal error has occurred during download. Please try again or report as issue. \n',
-          alertType: 'danger',
-        });
-      }
+      setErrorAlert({
+        name: 'Download Error',
+        error: (error as Error).toString(),
+        message:
+          'Internal error has occurred during download. Please try again or report as issue. \n',
+        alertType: 'danger',
+      });
 
       if (analytics) {
         const region = getUserRegion(router.locale);
@@ -179,7 +170,7 @@ export const DevfilePageProjects: React.FC<DevfilePageProjectsProps> = ({
                 data-testid="download-button"
                 className={styles.button}
                 isLoading={downloading}
-                onClick={(): Promise<void> => triggerDownload(selectedProject)}
+                onClick={(): Promise<void> => downloadStarterProject(devfile, selectedProject)}
                 variant="tertiary"
               >
                 Download
