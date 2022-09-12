@@ -6,6 +6,22 @@ Contributions are welcome!
 
 Before contributing to this repository for the first time, please review our project's [Code of Conduct](https://github.com/devfile/api/blob/main/CODE_OF_CONDUCT.md).
 
+## Certificate of Origin
+
+By contributing to this project you agree to the Developer Certificate of
+Origin (DCO). This document was created by the Linux Kernel community and is a
+simple statement that you, as a contributor, have the legal right to make the
+contribution. See the [DCO](DCO) file for details.
+
+In order to show your agreement with the DCO you should include at the end of the commit message,
+the following line:
+
+```
+Signed-off-by: First Lastname <email@email.com>
+```
+
+Once you set your user.name and user.email in your git config, you can sign your commit automatically with `git commit -s`.
+
 ## Getting Started
 
 ### Issues
@@ -13,6 +29,14 @@ Before contributing to this repository for the first time, please review our pro
 - Issues are tracked via the the [devfile/api](https://github.com/devfile/api) repo. Open or search for [issues](https://github.com/devfile/api/issues) with the label `area/registry`.
 
 - If a related issue doesn't exist, you can open a new issue using a relevant [issue form](https://github.com/devfile/api/issues/new/choose). You can tag issues with `/area registry`.
+
+## Prerequisites
+
+The following are required to build the viewer:
+
+- Node.js 15.6.1 or greater
+- React 17.0.08 or greater
+- yarn
 
 ### Development
 
@@ -48,20 +72,30 @@ npm run start
 yarn start
 ```
 
+#### Formatting code
+
+`yarn lint` to check if files are formatted correctly
+`yarn format` to run the code formatter
+
 ### Adding remote repositories
 
-Notes:
-
 - For devfile hosts (environment variable or config file) specify a remote url or a local directory structure and `index.json` that follows the `devfile/api` spec.
+
 - You can have infinitely many sources as long as the name for the source repository is different.
-- There are two types of source types, url and local.
+
+- There are two types of source types: url and local.
+
   - url is for specifying a remote hosts.
-  - local is for specifying a local hosts. NOTE: Local MUST have `index.json` under the root path specified, an example is below.
+  - local is for specifying a local hosts.
+    - _Local MUST have `index.json` under the root path specified, an example is below._
+
 - The "alias" property is optional and can only be assigned if using the "url" property.
+
 - An alias is only recommended if the "url" property is assigned a localhost address. If no alias is specified the share button will use the "url" property.
+
 - The link for the share button will not work if "local" is specified.
 
-`/devfiles`
+e.g. `/devfiles` directory
 
 ```
 +-- devfiles
@@ -72,7 +106,7 @@ Notes:
 |   +-- index.json
 ```
 
-`/**/index.json`
+e.g. `/**/index.json` file
 
 ```json
 [
@@ -108,24 +142,23 @@ Notes:
 ]
 ```
 
-Configure the registry viewer through environment the variable.
-
-`DEVFILE_REGISTRY_HOSTS`
-
-Notes about environment variable:
-
-- The value assigned to the environment variable must be surrounded by quotes.
-- Each source MUST contain a name for the source repository, a source type (url or local), and a location.
-- A source is split by ">". i.e. `name>type>location>alias`
-- Multiple sources are be split by "|". i.e. `name>type>location>alias|name>type>location`
+Configure the registry viewer through the `DEVFILE_REGISTRY_HOSTS` environment variable:
 
 ```
 DEVFILE_REGISTRY_HOSTS="example1>url>localhost:8080>https://registry.devfile.io|example2>local>/devfiles"
 ```
 
-Configure the registry viewer through config file.
+- The value assigned to the environment variable must be surrounded by quotes.
 
-`/config/devfile-registry-hosts.json`
+- Each source MUST contain a name for the source repository, a source type (url or local), and a location.
+
+- A source is split by ">". i.e. `name>type>location>alias`
+
+- Multiple sources are be split by "|". i.e. `name>type>location>alias|name>type>location`
+
+Configure the registry viewer through config file:
+
+e.g. `/config/devfile-registry-hosts.json`
 
 ```json
 {
@@ -156,13 +189,7 @@ The environment variable `ANALYTICS_WRITE_KEY` is the Segment write key. Note: D
 
 ### Pull Requests
 
-All commits must be signed off with the footer:
-
-```
-Signed-off-by: First Lastname <email@email.com>
-```
-
-Once you set your `user.name` and `user.email` in your git config, you can sign your commit automatically with `git commit -s`. When you think the code is ready for review, create a pull request and link the issue associated with it.
+When you think the code is ready for review, create a pull request and link the issue associated with it.
 
 Owners of the repository will watch out for and review new PRs.
 
