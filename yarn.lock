@@ -10271,10 +10271,10 @@ typedoc@^0.21.4:
     shiki "^0.9.3"
     typedoc-default-themes "^0.12.10"
 
-typescript-is@^0.18.3:
-  version "0.18.3"
-  resolved "https://registry.yarnpkg.com/typescript-is/-/typescript-is-0.18.3.tgz#143ce2b348684083fc3963b95a6c2e24abd89389"
-  integrity sha512-kBgZIJt3AKrtye1H2GYf9bWu1YS0Z9AZZl4OZG4z2Ps2jPMZuycilP9RkxPLP+tPxCUjXfmaJti9TNGoz5schA==
+typescript-is@^0.20.0:
+  version "0.20.0"
+  resolved "https://registry.yarnpkg.com/typescript-is/-/typescript-is-0.20.0.tgz#cfc0367efbd21c009cd94989f03add4179d0fb24"
+  integrity sha512-ZcwQ9ekYaSjWFxHpfnHeP61lOuitpQpejdYB5wtmEqdtaphVf/idQm4cMT99j2gkty+M+GIW/KYUxk4lzK/Bbg==
   dependencies:
     nested-error-stacks "^2"
     tsutils "^3.17.1"
